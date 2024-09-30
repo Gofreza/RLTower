@@ -1,0 +1,23 @@
+{
+    "logs_title": "Logs",
+    "dialog_title": "Dialogue",
+    "equipments_title": "Equipements",
+    "inventory_title": "Inventaire",
+    "hp_title": "PV: ",
+    "mana_title": "Mana: ",
+    "energy_title": "Energie: ",
+    "gold_title": "Or: ",
+    "silver_title": "Argent: ",
+    "copper_title": "Bronze: ",
+    "left_hand_equipment": "MainDroite:",
+    "right_hand_equipment": "MainGauche:",
+    "head_equipment": "Tete:",
+    "torso_equipment": "Torse:",
+    "hands_equipment": "Mains:",
+    "foot_equipment": "Pied",
+    "ring_equipment": "Anneau",
+    "amulet_equipment": "Amulette",
+    "logger_info": "[INFO]",
+    "logger_danger": "[DANGER]",
+    "logger_combat": "[COMBAT]"
+}

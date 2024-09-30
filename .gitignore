@@ -1,0 +1,8 @@
+# macOS specific files
+.DS_Store
+
+# VSCode specific files
+.vscode/
+
+# Build directory
+build/

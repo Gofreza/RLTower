@@ -1,0 +1,224 @@
+{
+    "effects": [
+        {
+            "id": 0,
+            "name": "heal_25_hp",
+            "description" : "Heal 25 HP.",
+            "log": "You are healed 25 HP!",
+            "type": "Burst",
+            "duration": 1,
+            "stats": ["Hp"],
+            "resultType": true,
+            "value": 25
+        },
+        {
+            "id": 1,
+            "name": "restore_25_mana",
+            "description" : "Restore 25 Mana.",
+            "log": "You restore 25 Mana!",
+            "type": "Burst",
+            "duration": 1,
+            "stats": ["Mana"],
+            "resultType": true,
+            "value": 25
+        },
+        {
+            "id": 2,
+            "name": "restore_25_stamina",
+            "description" : "Restore 25 Stamina.",
+            "log": "You restore 25 Stamina!",
+            "type": "Burst",
+            "duration": 1,
+            "stats": ["Stamina"],
+            "resultType": true,
+            "value": 25
+        },
+        {
+            "id": 3,
+            "name": "restore_25_energy",
+            "description" : "Restore 25 Energy.",
+            "log": "You restore 25 Energy!",
+            "type": "Burst",
+            "duration": 1,
+            "stats": ["Energy"],
+            "resultType": true,
+            "value": 25
+        },
+        {
+            "id": 4,
+            "name": "increase_strength_1",
+            "description" : "Strength +1",
+            "log": "You feel a bit stronger!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Strength"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 5,
+            "name": "decrease_strength_1",
+            "description" : "Strength -1",
+            "log": "You feel a bit weaker!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Strength"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 6,
+            "name": "increase_dexterity_1",
+            "description" : "Dexterity +1",
+            "log": "You feel more agile!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Dexterity"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 7,
+            "name": "decrease_dexterity_1",
+            "description" : "Dexterity -1",
+            "log": "You feel clumsier!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Dexterity"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 8,
+            "name": "increase_intelligence_1",
+            "description" : "Intelligence +1",
+            "log": "Your mind feels sharper!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Intelligence"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 9,
+            "name": "decrease_intelligence_1",
+            "description" : "Intelligence -1",
+            "log": "Your thoughts feels clouded!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Intelligence"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 10,
+            "name": "increase_wisdom_1",
+            "description" : "Wisdom +1",
+            "log": "You feel more insightfull!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Wisdom"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 11,
+            "name": "decrease_wisdom_1",
+            "description" : "Wisdom -1",
+            "log": "You feel less perceptive!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Wisdom"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 12,
+            "name": "increase_constitution_1",
+            "description" : "Constitution +1",
+            "log": "You feel sturdier!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Constitution"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 13,
+            "name": "decrease_constitution_1",
+            "description" : "Constitution -1",
+            "log": "You feel more fragile!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Constitution"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 14,
+            "name": "increase_luck_1",
+            "description" : "Luck +1",
+            "log": "You feel fortune's favor!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Luck"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 15,
+            "name": "decrease_luck_1",
+            "description" : "Luck -1",
+            "log": "You feel less fortunate!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["Luck"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 16,
+            "name": "increase_phy_defense_1",
+            "description" : "Physical Defense +1",
+            "log": "A physical veil protects you!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["PhyDefense"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 17,
+            "name": "decrease_phy_defense_1",
+            "description" : "Physical Defense -1",
+            "log": "The veil protecting you vanished!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["PhyDefense"],
+            "resultType": false,
+            "value": 1
+        },
+        {
+            "id": 18,
+            "name": "increase_mag_defense_1",
+            "description" : "Magical Defense +1",
+            "log": "A magical veil protects you!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["MagDefense"],
+            "resultType": true,
+            "value": 1
+        },
+        {
+            "id": 19,
+            "name": "decrease_mag_defense_1",
+            "description" : "Magical Defense -1",
+            "log": "The veil protecting you vanished!",
+            "type": "Permanent",
+            "duration": 1,
+            "stats": ["MagDefense"],
+            "resultType": false,
+            "value": 1
+        }
+    ]
+}
