@@ -127,6 +127,7 @@ int main(int argc, char* argv[]) {
         }
 
         UiManager::instance().updateUI(renderer, font);
+        GameManager::instance().update();
         // SDL_GetMouseState(&mouseX, &mouseY);
         // MouseManager::instance().handleMouseHovering(mouseX, mouseY);
 

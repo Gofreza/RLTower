@@ -91,7 +91,7 @@ void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
     }
 
     // Update game area if dirty
-    if (gameDirty) {
+    if (gameDirty || isMouseHovering(gameRect)) {
         //std::cout << "Game is behin updated" << std::endl;
         
         SDL_ClearError();
@@ -441,8 +441,6 @@ void UiManager::renderGame(SDL_Renderer* renderer, const SDL_Rect& rect) {
 
         // Render the map
         GameManager::instance().renderMap(renderer, rect, tileset, tiles);
-
-        std::cout << "Game is being rendered" << std::endl;
     } else {
         throw std::runtime_error("UiManager is not initialized.");
     }

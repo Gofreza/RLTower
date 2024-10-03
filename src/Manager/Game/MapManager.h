@@ -13,7 +13,9 @@ public:
 
     void generateMap(int width, int height, int iterations, float wRatio = 0.45f, float hRatio = 0.45f, bool discardByRatio = true);
 
-    void addPlayer();
+    void addPlayer(Player* player);
+    void movePlayerInMap(Player* player, int dx, int dy);
+    bool canPlayerMove(Player* player, int dx, int dy);
 
     const std::vector<std::vector<char>>& getAsciiMap() const;
     
