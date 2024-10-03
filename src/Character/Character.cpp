@@ -14,7 +14,8 @@ static float DODGE_LUCK_SCALAR = 0.3f;
 Character::Character(float hp, int mana, int energy, int stamina, int speed,
                     int phyDamage, int magDamage, int strength, int dexterity,
                     int intelligence, int wisdom, int constitution, int luck)
-    : hp(hp), mana(mana), energy(energy), stamina(stamina), 
+    : xPosition(0), yPosition(0),
+    hp(hp), mana(mana), energy(energy), stamina(stamina), 
     maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
     // Level
     level(0), experience(0),
@@ -137,6 +138,33 @@ void Character::update() {
         }
     }
     updateStatsDependants();
+}
+
+//===============
+// POSITION
+//===============
+
+int Character::getXPosition() const {
+    return xPosition;
+}
+
+void Character::setXPosition(int xPosition) {
+    this->xPosition = xPosition;
+}
+
+int Character::getYPosition() const {
+    return yPosition;
+}
+
+void Character::setYPosition(int yPosition) {
+    this->yPosition = yPosition;
+}
+
+void Character::move(int x, int y) {
+    xPosition += x;
+    yPosition += y;
+    hasMoved = true;
+    hasAttack = false;
 }
 
 //===============

@@ -24,6 +24,10 @@ void UiManager::initialize(SDL_Window* window, SDL_Renderer* renderer, TTF_Font*
         gameTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, gameRect.w, gameRect.h);
         menuTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, menuRect.w, menuRect.h);
 
+        // Load the tileset
+        loadTileset(renderer, "../res/tilesets/Potash_10x10.png");
+        initializeTiles();
+
         isInitialize = true;
     }
     else {
@@ -94,9 +98,13 @@ void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
         SDL_SetRenderTarget(renderer, gameTexture);
         if (SDL_GetError()[0] != '\0') {
             std::cerr << "Failed to set game render target! SDL_Error: " << SDL_GetError() << std::endl;
-        }
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Red for game area
+        }    
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Red for game area
         SDL_RenderFillRect(renderer, nullptr); // Fill the game texture
+
+        // Render game
+        renderGame(renderer, gameRect);
+
         SDL_SetRenderTarget(renderer, nullptr);
         gameDirty = false; // Mark as clean
     }
@@ -421,6 +429,75 @@ void UiManager::renderConsole(SDL_Renderer* renderer, TTF_Font* font, const SDL_
     }
 }
 
+//==================
+// GAME
+//==================
+
+void UiManager::renderGame(SDL_Renderer* renderer, const SDL_Rect& rect) {
+    if (isInitialize) {
+        // Clear the game area
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
+        SDL_RenderFillRect(renderer, nullptr);
+
+        // Render the map
+        GameManager::instance().renderMap(renderer, rect, tileset, tiles);
+
+        std::cout << "Game is being rendered" << std::endl;
+    } else {
+        throw std::runtime_error("UiManager is not initialized.");
+    }
+}
+
+//==================
+// TILESET
+//==================
+
+void UiManager::loadTileset(SDL_Renderer* renderer, const char* path) {
+    // Load the tileset image (PNG in this case)
+    SDL_Surface* surface = IMG_Load(path);
+    if (!surface) {
+        std::cerr << "Failed to load tileset: " << IMG_GetError() << std::endl;
+        return;
+    }
+
+    // Set the color key for transparency (magenta in this case)
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 0, 255));
+
+    // Create a texture from the surface
+    if (tileset) {
+        SDL_DestroyTexture(tileset);
+    }
+    tileset = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!tileset) {
+        std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(surface);
+        return;
+    }
+
+    // Free the surface
+    SDL_FreeSurface(surface);
+}
+
+
+// Function to initialize the tiles array
+void UiManager::initializeTiles() {
+    tiles.resize(256); // Resize the vector to hold 256 tiles
+    for (int i = 0; i < 256; i++) {
+        int x = (i % tileset_columns) * tile_width;
+        int y = (i / tileset_columns) * tile_height;
+        
+        // Store the rectangle representing the tile in the tileset
+        tiles[i].x = x;
+        tiles[i].y = y;
+        tiles[i].w = tile_width;
+        tiles[i].h = tile_height;
+    }
+}
+
+//==================
+// DESTRUCTOR
+//==================
+
 UiManager::~UiManager() {
     SDL_DestroyTexture(consoleTexture);
     SDL_DestroyTexture(gameTexture);
@@ -444,4 +521,7 @@ UiManager::~UiManager() {
         delete(characterMenu);
     if (spellMenu)
         delete(spellMenu);
+
+    if (tileset)
+        SDL_DestroyTexture(tileset);
 }

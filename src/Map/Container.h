@@ -3,22 +3,12 @@
 #include <random>
 #include <cmath>
 #include <stdexcept>
-
-std::random_device rd;
-std::mt19937 rng(rd());
-
-int getRandomNumber(int min, int max) {
-    if (min > max) {
-        throw std::invalid_argument("Min cannot be greater than Max");
-    }
-
-    std::uniform_int_distribution<int> dist(min, max);
-    return dist(rng);
-}
+#include "../Misc/RandomUtils.h"
 
 class Container
 {
 public:
+    std::mt19937 rng;
     int x, y;
     int w, h;
     int centerX, centerY;
@@ -35,16 +25,16 @@ public:
 
     Room(Container& c) {
         // Calculate x and y with gutter applied
-        x = c.x + gutter + getRandomNumber(0, std::floor((c.w - 2 * gutter) / 3));
-        y = c.y + gutter + getRandomNumber(0, std::floor((c.h - 2 * gutter) / 3));
+        x = c.x + gutter + RandomUtils::getRandomNumber(0, std::floor((c.w - 2 * gutter) / 3));
+        y = c.y + gutter + RandomUtils::getRandomNumber(0, std::floor((c.h - 2 * gutter) / 3));
 
         // Calculate width and height with gutter applied
         w = c.w - (x - c.x) - gutter;
         h = c.h - (y - c.y) - gutter;
 
         // Further reduce width and height randomly, with gutter taken into account
-        w -= getRandomNumber(0, w / 3);
-        h -= getRandomNumber(0, h / 3);
+        w -= RandomUtils::getRandomNumber(0, w / 3);
+        h -= RandomUtils::getRandomNumber(0, h / 3);
 
         centerX = x + (w / 2);
         centerY = y + (h / 2);

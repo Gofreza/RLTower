@@ -19,8 +19,32 @@ void MapManager::generateMap(int width, int height, int iterations, float wRatio
     bsp2.generateMap(rooms, paths, ascii_map);
 }
 
+void MapManager::addPlayer()
+{
+    if (rooms.empty()) {
+        return;
+    }
+
+    // Pick a random room
+    const Room& room = rooms[rand() % rooms.size()];
+    // Place the player in the center of the room
+    ascii_map[room.y + room.h / 2][room.x + room.w / 2] = '@';
+    Player* player = CharactersManager::instance().getPlayer();
+    player->setXPosition(room.x + room.w / 2);
+    player->setYPosition(room.y + room.h / 2);
+}
+
 const std::vector<std::vector<char>>& MapManager::getAsciiMap() const {
     return ascii_map;
+}
+
+void MapManager::printDungeonMap() {
+    for (const auto& row : ascii_map) {
+        for (const auto& cell : row) {
+            std::cout << cell;
+        }
+        std::cout << std::endl;
+    }
 }
 
 MapManager::~MapManager()

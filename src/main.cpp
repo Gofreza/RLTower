@@ -8,6 +8,7 @@
 #include "Manager/Item/ItemManager.h"
 #include "Manager/Spell/SpellManager.h"
 #include "Manager/Controls/InputManager.h"
+#include "Manager/Game/GameManager.h"
 #include "Misc/Utils.h"
 #include "Misc/Logger.h"
 #include "Character/Player.h"
@@ -68,12 +69,13 @@ int main(int argc, char* argv[]) {
     // Managers
     //=========
 
-    UiManager::instance().initialize(window, renderer, font);
     Logger::instance();
     LocalizationManager::instance().loadLocalizationFromFile("../res/localization/" + LANGUAGE + "/strings.json");
     EffectManager::instance().loadEffectsFromFile("../res/localization/" + LANGUAGE + "/effects.json");
     ItemManager::instance().loadItemsFromFile("../res/localization/" + LANGUAGE + "/items.json");
     SpellManager::instance().loadSpellsFromFile("../res/localization/" + LANGUAGE + "/spells.json");
+    GameManager::instance().initialize();
+    UiManager::instance().initialize(window, renderer, font);
 
     //=========
     // CHEATS

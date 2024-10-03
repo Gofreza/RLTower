@@ -18,6 +18,9 @@
 class Character
 {
 protected:
+    int xPosition;
+    int yPosition;
+
     int gold, silver, copper;
 
     Item* leftHand;
@@ -111,6 +114,14 @@ public:
             int intelligence, int wisdom, int constitution, int luck);
     ~Character();
 
+    // Position
+    int getXPosition() const;
+    void setXPosition(int newXPosition);
+    int getYPosition() const;
+    void setYPosition(int newYPosition);
+    void move(int x, int y);
+
+    // Next
     void updateStatsDependants();
     void update();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Map/BSP2.h"
+#include "../Characters/CharactersManager.h"
 
 class MapManager
 {
@@ -12,7 +13,12 @@ public:
 
     void generateMap(int width, int height, int iterations, float wRatio = 0.45f, float hRatio = 0.45f, bool discardByRatio = true);
 
+    void addPlayer();
+
     const std::vector<std::vector<char>>& getAsciiMap() const;
+    
+    void printDungeonMap();
+
 private:   
     MapManager();
     ~MapManager();

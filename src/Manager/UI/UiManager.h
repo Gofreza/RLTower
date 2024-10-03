@@ -3,6 +3,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <vector>
 
+#include "../Game/GameManager.h"
+
 #include "../../Menu/StatusMenu.h"
 #include "../../Menu/EquipmentMenu.h"
 #include "../../Menu/InventoryMenu.h"
@@ -51,6 +53,9 @@ public:
     void closeSpellMenu();
 
     void renderConsole(SDL_Renderer* renderer, TTF_Font* font, const SDL_Rect& rect);
+
+    void renderGame(SDL_Renderer* renderer, const SDL_Rect& rect);
+
     void updateUI(SDL_Renderer* renderer, TTF_Font* font);
 
     void updateMenu(bool force = false);
@@ -112,6 +117,16 @@ private:
     bool isSpellMenuOpen;
     Spell* subSpell;
 
+    // Tileset
+    SDL_Texture* tileset = nullptr;
+
+    const int tile_width = 10;    
+    const int tile_height = 10;   
+    const int tileset_columns = 16; 
+
+    // SDL_Rect tiles[256]; 
+    std::vector<SDL_Rect> tiles;
+
     // Methods
     UiManager();
     ~UiManager();
@@ -119,6 +134,9 @@ private:
     void updateRects(int windowWidth, int windowHeight);
 
     bool isMouseHovering(const SDL_Rect& rect) const;
+
+    void loadTileset(SDL_Renderer* renderer, const char* path);
+    void initializeTiles();
 
     // Prevent copying
     UiManager(const UiManager&) = delete;
