@@ -103,7 +103,7 @@ void GameManager::movePlayer() {
         }
     }
     if (moved) {
-        // Find a mean to re-render the map
+        UiManager::instance().updateGame(true);
     }
 }
 
