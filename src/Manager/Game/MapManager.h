@@ -17,7 +17,7 @@ public:
     void movePlayerInMap(Player* player, int dx, int dy);
     bool canPlayerMove(Player* player, int dx, int dy);
 
-    const std::vector<std::vector<char>>& getAsciiMap() const;
+    const std::vector<std::vector<Cell>>& getAsciiMap() const;
     
     void printDungeonMap();
 
@@ -31,7 +31,7 @@ private:
     Tree<Container>* root;
     std::vector<Room> rooms;
     std::vector<Path> paths;
-    std::vector<std::vector<char>> ascii_map;
+    std::vector<std::vector<Cell>> ascii_map;
 
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;

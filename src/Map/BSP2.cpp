@@ -40,14 +40,15 @@ void BSP2::createPaths(Tree<Container>* node, std::vector<Path>& paths) {
     createPaths(node->right, paths);
 }
 
-void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::vector<std::vector<char>>& map) {
+void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::vector<std::vector<Cell>>& map) {
     // Fill the map with rooms
     for (const auto& room : rooms) {
         for (int i = room.y; i < room.y + room.h; ++i) {
             if (i < 0 || i >= map.size()) continue; // Boundary check for rows
             for (int j = room.x; j < room.x + room.w; ++j) {
                 if (j < 0 || j >= map[i].size()) continue; // Boundary check for columns
-                map[i][j] = '.';
+                // map[i][j] = '.';
+                map[i][j] = Cell('.');
             }
         }
     }
@@ -58,7 +59,8 @@ void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::
             if (i < 0 || i >= map.size()) continue; // Boundary check for rows
             for (int j = path.x; j < path.x + path.w; ++j) {
                 if (j < 0 || j >= map[i].size()) continue; // Boundary check for columns
-                map[i][j] = '.';
+                // map[i][j] = '.';
+                map[i][j] = Cell('.');
             }
         }
     }

@@ -5,6 +5,7 @@
 #include <random>
 
 #include "Container.h"
+#include "Cell.h"
 
 template <typename T>
 class Tree {
@@ -61,7 +62,7 @@ public:
 
     void createPaths(Tree<Container>* node, std::vector<Path>& paths);
 
-    void generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::vector<std::vector<char>>& map);
+    void generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::vector<std::vector<Cell>>& map);
 
     // void drawRooms(SDL_Renderer* renderer, std::vector<Room>& rooms) {
     //     for (const auto& room : rooms) {

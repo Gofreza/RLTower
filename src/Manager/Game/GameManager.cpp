@@ -25,10 +25,9 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     const int map_width = ascii_map[0].size();
     const int map_height = ascii_map.size();
 
-    int player_x = player->getXPosition();  // Integer player position
+    int player_x = player->getXPosition(); 
     int player_y = player->getYPosition();
 
-    // Tile size (assuming 20x20 pixels per tile)
     const int tile_size = 20;
 
     // Calculate half the screen size in tiles (integer tiles)
@@ -46,7 +45,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
             // Ensure the map coordinates are within bounds
             if (map_x >= 0 && map_x < map_width && map_y >= 0 && map_y < map_height) {
-                char tile_char = ascii_map[map_y][map_x];
+                char tile_char = ascii_map[map_y][map_x].getSymbol();
                 int ascii_value = static_cast<int>(tile_char);
 
                 SDL_Rect src = tiles[ascii_value];

@@ -129,6 +129,7 @@ void Character::update() {
     // Progress
     if (hasMoved) {
         characterProgress->progress();
+        hasMoved = false;
     } else {
         if (!hasAttack) {
             fatigue--;
