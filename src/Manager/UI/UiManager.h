@@ -117,14 +117,14 @@ private:
     bool isSpellMenuOpen;
     Spell* subSpell;
 
-    // Tileset
+    // Tileset / MAP
     SDL_Texture* tileset = nullptr;
 
     const int tile_width = 10;    
     const int tile_height = 10;   
     const int tileset_columns = 16; 
 
-    // SDL_Rect tiles[256]; 
+    // Map tiles
     std::vector<SDL_Rect> tiles;
 
     // Methods

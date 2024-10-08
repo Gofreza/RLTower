@@ -29,7 +29,8 @@ void MapManager::addPlayer(Player* player)
     // Pick a random room
     const Room& room = rooms[rand() % rooms.size()];
     // Place the player in the center of the room
-    ascii_map[room.y + room.h / 2][room.x + room.w / 2].setSymbol('@');
+    ascii_map[room.y + room.h / 2][room.x + room.w / 2].addPlayer(player);
+    // ascii_map[room.y + room.h / 2][room.x + room.w / 2].setSymbol('@');
     player->setXPosition(room.x + room.w / 2);
     player->setYPosition(room.y + room.h / 2);
 }
@@ -41,8 +42,8 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     int old_x = x - dx;
     int old_y = y - dy;
 
-    ascii_map[old_y][old_x].setSymbol('.');
-    ascii_map[y][x].setSymbol('@');
+    ascii_map[old_y][old_x].removePlayer();
+    ascii_map[y][x].addPlayer(player);
 }
 
 bool MapManager::canPlayerMove(Player* player, int dx, int dy)

@@ -12,6 +12,18 @@ Cell::Cell(char symbol)
     }
 }
 
+void Cell::addPlayer(Player* player)
+{
+    this->player = player;
+    this->symbol = '@';
+}
+
+void Cell::removePlayer()
+{
+    player = nullptr;
+    symbol = '.';
+}
+
 void Cell::setSymbol(char symbol)
 {
     this->symbol = symbol;

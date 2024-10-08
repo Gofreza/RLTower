@@ -115,6 +115,7 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }
 
+            // DEBUG Click
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     // MouseManager::instance().handleLeftClick(event.button.x, event.button.y);
@@ -128,8 +129,6 @@ int main(int argc, char* argv[]) {
 
         UiManager::instance().updateUI(renderer, font);
         GameManager::instance().update();
-        // SDL_GetMouseState(&mouseX, &mouseY);
-        // MouseManager::instance().handleMouseHovering(mouseX, mouseY);
 
         // Update the screen
         SDL_RenderPresent(renderer);

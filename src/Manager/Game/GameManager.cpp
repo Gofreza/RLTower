@@ -57,7 +57,13 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                 dest.w = tile_size;
                 dest.h = tile_size;
 
+                // Change the color of the src
+                SDL_SetTextureColorMod(tileset, 255, 255, 100); 
+
                 SDL_RenderCopy(renderer, tileset, &src, &dest);
+
+                // Reset the color modulation to default (white)
+                SDL_SetTextureColorMod(tileset, 255, 255, 255);
             }
         }
     }
