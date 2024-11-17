@@ -2,7 +2,9 @@
 
 Cell::Cell(char symbol)
 : symbol(symbol), item(nullptr),
-  isWalkable(false)
+  isWalkable(false),
+  isExplored(false),
+  isInSight(false)
 {
     int ascii_value = static_cast<int>(symbol);
 

@@ -206,6 +206,8 @@ RarityType ItemManager::getRarity(const std::string rarity) const {
         return RarityType::Poor;
     } else if (rarity == "Normal") {
         return RarityType::Normal;
+    } else if (rarity == "Good") {
+        return RarityType::Good;
     } else if (rarity == "Rare") {
         return RarityType::Rare;
     } else if (rarity == "Epic") {

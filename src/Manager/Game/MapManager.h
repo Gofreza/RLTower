@@ -33,6 +33,9 @@ private:
     std::vector<Path> paths;
     std::vector<std::vector<Cell>> ascii_map;
 
+    std::vector<Cell*> visibleCells;
+    void bresenham(int x1, int y1, int const x2, int const y2);
+
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;
 };

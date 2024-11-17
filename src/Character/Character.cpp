@@ -11,7 +11,7 @@ static float DODGE_SCALAR = 1.0f;
 static float DODGE_DEXTERITY_SCALAR = 0.7f;
 static float DODGE_LUCK_SCALAR = 0.3f;
 
-Character::Character(float hp, int mana, int energy, int stamina, int speed,
+Character::Character(float hp, int mana, int energy, int stamina, int fov, int speed,
                     int phyDamage, int magDamage, int strength, int dexterity,
                     int intelligence, int wisdom, int constitution, int luck)
     : xPosition(0), yPosition(0),
@@ -19,6 +19,8 @@ Character::Character(float hp, int mana, int energy, int stamina, int speed,
     maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
     // Level
     level(0), experience(0),
+    // Fov
+    fov(fov),
     // Speed
     baseSpeed(speed), speed(0), 
     // Progress
@@ -479,19 +481,21 @@ void Character::unequipLeftWeapon() {
     {
         this->leftHand = nullptr;
         this->rightHand = nullptr;
-    } else 
+    } else {
         this->leftHand = nullptr;
+    }
 }
 
 void Character::unequipRightWeapon() {
-    Equipment* e = static_cast<Equipment*>(leftHand);
+    Equipment* e = static_cast<Equipment*>(rightHand);
     e->use(this);
     if (rightHand == leftHand)
     {
         this->leftHand = nullptr;
         this->rightHand = nullptr;
-    } else 
+    } else {
         this->rightHand = nullptr;
+    }
 }
 
 Item* Character::getLeftHand() const {
@@ -869,6 +873,9 @@ void Character::setExperience(int newExperience) { experience = newExperience; }
 
 int Character::getSpeed() const { return speed; }
 // void Character::setSpeed(int newSpeed) { speed = newSpeed; }
+
+int Character::getFov() const { return fov; }
+void Character::setFov(int newFov) { fov = newFov; }
 
 int Character::getPhyDamage() const { return phyDamage; }
 void Character::setPhyDamage(int newDamage) { phyDamage = newDamage; }

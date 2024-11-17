@@ -45,25 +45,49 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
             // Ensure the map coordinates are within bounds
             if (map_x >= 0 && map_x < map_width && map_y >= 0 && map_y < map_height) {
-                char tile_char = ascii_map[map_y][map_x].getSymbol();
-                int ascii_value = static_cast<int>(tile_char);
+                if (!ascii_map[map_y][map_x].isExplored) {
+                    // Render a dark cell
+                    SDL_Rect dest;
+                    dest.x = x * tile_size;
+                    dest.y = y * tile_size;
+                    dest.w = tile_size;
+                    dest.h = tile_size;
 
-                SDL_Rect src = tiles[ascii_value];
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_RenderFillRect(renderer, &dest);
+                } else {
+                    char tile_char = ascii_map[map_y][map_x].getSymbol();
+                    int ascii_value = static_cast<int>(tile_char);
 
-                // Set destination rect for rendering
-                SDL_Rect dest;
-                dest.x = x * tile_size;
-                dest.y = y * tile_size;
-                dest.w = tile_size;
-                dest.h = tile_size;
+                    SDL_Rect src = tiles[ascii_value];
 
-                // Change the color of the src
-                SDL_SetTextureColorMod(tileset, 255, 255, 100); 
+                    // Set destination rect for rendering
+                    SDL_Rect dest;
+                    dest.x = x * tile_size;
+                    dest.y = y * tile_size;
+                    dest.w = tile_size;
+                    dest.h = tile_size;
 
-                SDL_RenderCopy(renderer, tileset, &src, &dest);
+                    if (ascii_map[map_y][map_x].isInSight) {
+                        // Change the color of the src
+                        SDL_SetTextureColorMod(tileset, 255, 255, 100); 
+                        // Set background color to lighter yellow
+                        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+                    } else {
+                        // Change the color of the src
+                        SDL_SetTextureColorMod(tileset, 100, 100, 100);
+                        // Set background color to default
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    }
 
-                // Reset the color modulation to default (white)
-                SDL_SetTextureColorMod(tileset, 255, 255, 255);
+                    // Render the background
+                    SDL_RenderFillRect(renderer, &dest);
+                    // Render the tile
+                    SDL_RenderCopy(renderer, tileset, &src, &dest);
+
+                    // Reset the color modulation to default (white)
+                    SDL_SetTextureColorMod(tileset, 255, 255, 255);
+                }                
             }
         }
     }

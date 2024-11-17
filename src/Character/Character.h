@@ -49,6 +49,9 @@ protected:
     int level;
     int experience;
 
+    // Field of vision
+    int fov; // Define the radius of the circle of vision around the character
+
     // Speed
     int baseSpeed;
     int speed;
@@ -109,7 +112,7 @@ protected:
     // Struct with a name and the modified stats
 
 public:
-    Character(float hp, int mana, int energy, int stamina, int speed,
+    Character(float hp, int mana, int energy, int stamina, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck);
     ~Character();
@@ -179,6 +182,9 @@ public:
     void setExperience(int newExperience);
     int getSpeed() const;
     // void setSpeed(int newSpeed); // Use bonus
+
+    int getFov() const;
+    void setFov(int newFov);
 
     bool isOverweight() const;
     bool hasCharacterDodge() const;
