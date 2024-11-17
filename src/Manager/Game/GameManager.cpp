@@ -71,8 +71,8 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                     if (ascii_map[map_y][map_x].isInSight) {
                         // Change the color of the src
                         SDL_SetTextureColorMod(tileset, 255, 255, 100); 
-                        // Set background color to lighter yellow
-                        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+                        // Set background color to light gray
+                        SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
                     } else {
                         // Change the color of the src
                         SDL_SetTextureColorMod(tileset, 100, 100, 100);

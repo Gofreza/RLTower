@@ -493,6 +493,32 @@ void UiManager::initializeTiles() {
 }
 
 //==================
+// FPS
+//==================
+
+void UiManager::renderFps(float fps) {
+    // Render the FPS
+    SDL_Color color = {100, 100, 100, 255};
+    std::string fpsText = std::to_string(static_cast<int>(fps * 10) / 10.0).substr(0, 4);
+    SDL_Surface* surface = TTF_RenderText_Solid(font, fpsText.c_str(), color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    // Get the width and height of the text
+    int width, height;
+    SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+
+    // Set the destination rect
+    SDL_Rect dest = {0, 0, width, height};
+
+    // Render the text
+    SDL_RenderCopy(renderer, texture, nullptr, &dest);
+
+    // Free the surface and texture
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+}
+
+//==================
 // DESTRUCTOR
 //==================
 

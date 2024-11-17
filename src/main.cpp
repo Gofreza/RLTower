@@ -106,7 +106,31 @@ int main(int argc, char* argv[]) {
     // Give spells
     player->addSpellInSpellBook(SpellManager::instance().getSpell(0));
 
+    //=========
+    // FPS
+    //=========
+    bool showFPS = true;
+    Uint32 lastTime = SDL_GetTicks(); // Time of the last frame
+    Uint32 fpsCounterLastUpdate = lastTime;
+    int frameCount = 0; // Count frames
+    float currentFPS = 0.0f;
+
     while (!quit) {
+        if (showFPS) {
+            Uint32 currentTime = SDL_GetTicks();
+            Uint32 deltaTime = currentTime - lastTime; // Time elapsed since the last frame
+            lastTime = currentTime;
+
+            // Calculate FPS
+            frameCount++;
+            if (currentTime - fpsCounterLastUpdate >= 1000) { // Update every 1 second
+                currentFPS = frameCount / ((currentTime - fpsCounterLastUpdate) / 1000.0f);
+                frameCount = 0;
+                fpsCounterLastUpdate = currentTime;
+                // Logger::instance().info("FPS: " + std::to_string(currentFPS));
+            }
+        }
+        
         while (SDL_PollEvent(&event) != 0) {
 
             InputManager::instance().update(event);
@@ -129,11 +153,17 @@ int main(int argc, char* argv[]) {
 
         UiManager::instance().updateUI(renderer, font);
         GameManager::instance().update();
+        if (showFPS) {
+            UiManager::instance().renderFps(currentFPS);
+        }
 
         // Update the screen
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(32); // 16 ~60 FPS
+        // 32 ms for ~30 FPS
+        // 16 ms for ~60 FPS
+        // 7 ms for ~140 FPS
+        SDL_Delay(32); // Adjust this value to limit FPS
     }
 
     TTF_CloseFont(font);

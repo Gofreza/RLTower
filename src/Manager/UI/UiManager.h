@@ -64,6 +64,8 @@ public:
 
     void toggleRenderSpellBook();
     bool isRenderingSpellBook() const;
+
+    void renderFps(float fps);
 private:
     SDL_Renderer* renderer;
     TTF_Font* font;
