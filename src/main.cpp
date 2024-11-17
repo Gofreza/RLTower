@@ -115,7 +115,14 @@ int main(int argc, char* argv[]) {
     int frameCount = 0; // Count frames
     float currentFPS = 0.0f;
 
+    const int TARGET_FPS = 60;
+    const int FRAME_DELAY = 1000 / TARGET_FPS; // Target frame time in milliseconds
+
+    Uint32 frameStart, frameTime;
+
     while (!quit) {
+        frameStart = SDL_GetTicks();
+
         if (showFPS) {
             Uint32 currentTime = SDL_GetTicks();
             Uint32 deltaTime = currentTime - lastTime; // Time elapsed since the last frame
@@ -160,10 +167,11 @@ int main(int argc, char* argv[]) {
         // Update the screen
         SDL_RenderPresent(renderer);
 
-        // 32 ms for ~30 FPS
-        // 16 ms for ~60 FPS
-        // 7 ms for ~140 FPS
-        SDL_Delay(32); // Adjust this value to limit FPS
+        // Calculate frame time and adjust delay
+        frameTime = SDL_GetTicks() - frameStart;
+        if (frameTime < FRAME_DELAY) {
+            SDL_Delay(FRAME_DELAY - frameTime); // Delay to match target frame time
+        }
     }
 
     TTF_CloseFont(font);
