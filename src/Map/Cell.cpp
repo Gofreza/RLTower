@@ -1,12 +1,14 @@
 #include "Cell.h"
 
-Cell::Cell(char symbol)
-: symbol(symbol), item(nullptr),
+Cell::Cell(char baseSymbol, SDL_Color baseColor)
+: baseSymbol(baseSymbol), currentSymbol(baseSymbol),
+  item(nullptr),
   isWalkable(false),
   isExplored(false),
-  isInSight(false)
+  isInSight(false),
+  baseColor(baseColor), currentColor(baseColor)
 {
-    int ascii_value = static_cast<int>(symbol);
+    int ascii_value = static_cast<int>(baseSymbol);
 
     // 46 = '.'
     if (ascii_value == 46) {
@@ -17,18 +19,24 @@ Cell::Cell(char symbol)
 void Cell::addPlayer(Player* player)
 {
     this->player = player;
-    this->symbol = '@';
+    this->currentSymbol = player->getSymbol();
 }
 
 void Cell::removePlayer()
 {
     player = nullptr;
-    symbol = '.';
+    currentSymbol = baseSymbol;
 }
 
 void Cell::setSymbol(char symbol)
 {
-    this->symbol = symbol;
+    this->currentSymbol = symbol;
+}
+
+void Cell::resetCell()
+{
+    currentSymbol = baseSymbol;
+    currentColor = baseColor;
 }
 
 void Cell::addEffect(Effect* effect)
@@ -57,7 +65,7 @@ Item* Cell::getItem() const
 }
 
 char Cell::getSymbol() const {
-    return symbol;
+    return currentSymbol;
 }
 
 Cell::~Cell()

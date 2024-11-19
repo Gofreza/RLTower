@@ -1,0 +1,38 @@
+{
+    "enemies": [
+        {
+            "id": 0,
+            "name": "Goblin",
+            "symbol": "g",
+            "color": [121, 228, 108],
+            "description": "A small, green creature with a big nose and pointy ears. It's not very strong, but it's quick and agile.",
+            "group": "Goblinoid",
+            "level": 1,
+            "minTowerSpawnLevel": 1,
+            "maxTowerSpawnLevel": 10,
+            "value": 1,
+            "health": 30,
+            "mana": 0,
+            "energy": 0,
+            "stamina": 10,
+            "fov": 5,
+            "speed": 70,
+            "phyDamage": 1,
+            "magDamage": 0,
+            "strength": 1,
+            "dexterity": 2,
+            "intelligence": 0,
+            "wisdom": 0,
+            "constitution": 1,
+            "luck": 1,
+            "money": [0, 0, 10],
+            "resistances": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "equipments": [0, -1, -1, -1, -1, -1, -1, -1, -1],
+            "aggression": 1,
+            "fear": 1,
+            "desire": 1,
+            "wander": 1,
+            "misc": 0
+        }
+    ]
+}

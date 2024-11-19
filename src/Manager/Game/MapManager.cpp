@@ -16,7 +16,7 @@ void MapManager::generateMap(int width, int height, int iterations, float wRatio
     bsp2.createRooms(root, rooms);
     bsp2.createPaths(root, paths);
 
-    ascii_map = std::vector<std::vector<Cell>>(height, std::vector<Cell>(width, Cell('#')));
+    ascii_map = std::vector<std::vector<Cell>>(height, std::vector<Cell>(width, Cell('#', {255, 255, 255, 255})));
     bsp2.generateMap(rooms, paths, ascii_map);
 }
 
@@ -30,6 +30,7 @@ void MapManager::addPlayer(Player* player)
     const Room& room = rooms[rand() % rooms.size()];
     // Place the player in the center of the room
     ascii_map[room.y + room.h / 2][room.x + room.w / 2].addPlayer(player);
+    ascii_map[room.y + room.h / 2][room.x + room.w / 2].currentColor = player->getColor();
     // ascii_map[room.y + room.h / 2][room.x + room.w / 2].setSymbol('@');
     player->setXPosition(room.x + room.w / 2);
     player->setYPosition(room.y + room.h / 2);
@@ -50,8 +51,8 @@ void MapManager::addPlayer(Player* player)
     }
 
     for (const auto& [i, j] : circle_extremes) {
-        int map_x = x + i;
-        int map_y = y + j;
+        size_t map_x = x + i;
+        size_t map_y = y + j;
 
         if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
             bresenham(x, y, map_x, map_y);
@@ -68,7 +69,9 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     int old_y = y - dy;
 
     ascii_map[old_y][old_x].removePlayer();
+    ascii_map[old_y][old_x].resetCell();
     ascii_map[y][x].addPlayer(player);
+    ascii_map[y][x].currentColor = player->getColor();
 
     // Check cells visibility
     int fov = player->getFov();
@@ -89,8 +92,8 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     visibleCells.clear();
 
     for (const auto& [i, j] : circle_extremes) {
-        int map_x = x + i;
-        int map_y = y + j;
+        size_t map_x = x + i;
+        size_t map_y = y + j;
 
         if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
             bresenham(x, y, map_x, map_y);

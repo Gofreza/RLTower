@@ -110,14 +110,14 @@ void InventoryMenu::render(const SDL_Rect& rect) {
         };
     }
 
-    if (isMouseHovering(switchButtonRect, rect.x, rect.y)) {
+    if (isMouseHovering(switchButtonRect, rect.x)) {
         SDL_SetTextureColorMod(switchTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
     } else {
         SDL_SetTextureColorMod(switchTexture, Utils::textColor.r, Utils::textColor.g, Utils::textColor.b);
     }
 
     // Click Listeners
-    if (InputManager::instance().isLeftClicked() && isMouseHovering(switchButtonRect, rect.x, rect.y)) {
+    if (InputManager::instance().isLeftClicked() && isMouseHovering(switchButtonRect, rect.x)) {
         //isRenderingSpells = !isRenderingSpells;
         UiManager::instance().toggleRenderSpellBook();
         InputManager::instance().deactivateLeftClick();
@@ -230,7 +230,7 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                 }
 
                 // Update color modulation based on mouse hover
-                if (isMouseHovering(itemNameRect, rect.x, rect.y)) {
+                if (isMouseHovering(itemNameRect, rect.x)) {
                     SDL_SetTextureColorMod(itemNameTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
                     UiManager::instance().triggerRenderItemSubMenu(item);
                 } else {
@@ -261,12 +261,12 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                 // Input Listeners
                 //=================
                 
-                if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(itemNameRect, rect.x, rect.y)) {
+                if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(itemNameRect, rect.x)) {
                     player->removeItemFromInventory(item);
                     InputManager::instance().deactivateKey(SDLK_a);
                 }
 
-                if (InputManager::instance().isLeftClicked() && isMouseHovering(itemNameRect, rect.x, rect.y)) {
+                if (InputManager::instance().isLeftClicked() && isMouseHovering(itemNameRect, rect.x)) {
                     player->equipItem(item);
                     InputManager::instance().deactivateLeftClick();
                     UiManager::instance().renderEquipmentMenu();
@@ -298,7 +298,7 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                 };
 
                 // Update color modulation based on mouse hover
-                if (isMouseHovering(itemNameRect, rect.x, rect.y)) {
+                if (isMouseHovering(itemNameRect, rect.x)) {
                     SDL_SetTextureColorMod(spellNameTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
                     UiManager::instance().triggerRenderSpellMenu(spell);
                 } else {

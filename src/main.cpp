@@ -58,9 +58,10 @@ int main(int argc, char* argv[]) {
     //=========
     // Player
     //=========
-    Player* player = new Player(1000.0f, 100, 0, 100, 5, 100,
+    Player* player = new Player("Player", {0, 255, 0, 255}, 1000.0f, 100, 0, 100, 5, 100,
                                 1, 0, 
-                                7, 3, 1, 1, 5, 1);
+                                7, 3, 1, 1, 5, 1,
+                                '@');
     CharactersManager::instance().setPlayer(player);
 
     player->setHp(player->getHp() - 100);
@@ -134,7 +135,6 @@ int main(int argc, char* argv[]) {
                 currentFPS = frameCount / ((currentTime - fpsCounterLastUpdate) / 1000.0f);
                 frameCount = 0;
                 fpsCounterLastUpdate = currentTime;
-                // Logger::instance().info("FPS: " + std::to_string(currentFPS));
             }
         }
         

@@ -66,6 +66,22 @@ namespace Utils {
         }
     }
 
+    /**
+     * Check if the mouse is hovering over a rect
+     */
+    bool isMouseHovering(const SDL_Rect& rect, int renderTargetX, int renderTargetY) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+
+        // Adjust the mouse position relative to the render target
+        int adjustedX = mouseX - renderTargetX;
+        int adjustedY = mouseY - renderTargetY;
+
+        // Check if the adjusted mouse position is within the rect
+        return (adjustedX >= rect.x && adjustedX < rect.x + rect.w &&
+                adjustedY >= rect.y && adjustedY < rect.y + rect.h);
+    }
+
     SDL_Color borderColor = {255, 255, 255, 255}; // White border
     SDL_Color textColor = {255, 255, 255, 255};  // White text
     SDL_Color hoverColor = {215, 215, 215, 255}; // Grey text

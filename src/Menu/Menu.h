@@ -26,7 +26,7 @@ protected:
         }
     }
 
-    bool isMouseHovering(const SDL_Rect& rect, int renderTargetX, int renderTargetY) {
+    bool isMouseHovering(const SDL_Rect& rect, int renderTargetX) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
 

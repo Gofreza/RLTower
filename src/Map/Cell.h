@@ -7,13 +7,14 @@
 class Cell
 {
 public:
-    Cell(char symbol);
+    Cell(char baseSymbol, SDL_Color baseColor);
     ~Cell();
 
     void addPlayer(Player* player);
     void removePlayer();
 
     void setSymbol(char symbol);
+    void resetCell();
 
     void addEffect(Effect* effect);
     void removeEffect(Effect* effect);
@@ -23,6 +24,10 @@ public:
     Item* getItem() const;
 
     char getSymbol() const;
+
+    // Colors
+    SDL_Color baseColor;
+    SDL_Color currentColor;
     
     // Declare is the cell has been seen by the player
     // When a cell has been visited, if it's not in sight, it will be displayed as a dark cell
@@ -36,8 +41,8 @@ private:
     std::vector<Effect*> effects;
     Item* item;
 
-    char symbol;
-
+    char baseSymbol;
+    char currentSymbol;
 
 };
 

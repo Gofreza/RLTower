@@ -11,10 +11,11 @@ static float DODGE_SCALAR = 1.0f;
 static float DODGE_DEXTERITY_SCALAR = 0.7f;
 static float DODGE_LUCK_SCALAR = 0.3f;
 
-Character::Character(float hp, int mana, int energy, int stamina, int fov, int speed,
+Character::Character(const std::string& name, SDL_Color color, int hp, int mana, int energy, int stamina, int fov, int speed,
                     int phyDamage, int magDamage, int strength, int dexterity,
-                    int intelligence, int wisdom, int constitution, int luck)
-    : xPosition(0), yPosition(0),
+                    int intelligence, int wisdom, int constitution, int luck,
+                    const char symbol)
+    : name(name), color(color), xPosition(0), yPosition(0), symbol(symbol),
     hp(hp), mana(mana), energy(energy), stamina(stamina), 
     maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
     // Level
@@ -823,6 +824,15 @@ void Character::setStat(EffectStat stat, bool resultType, int value) {
 //=========
 // Getters
 //=========
+
+const std::string& Character::getName() const { return name; }
+void Character::setName(const std::string& name) { this->name = name; }
+
+SDL_Color Character::getColor() const { return color; }
+void Character::setColor(const SDL_Color color) { this->color = color; }
+
+char Character::getSymbol() const { return symbol; }
+void Character::setSymbol(const char symbol) { this->symbol = symbol; }
 
 float Character::getHp() const { return hp; }
 void Character::setHp(float newHp) {

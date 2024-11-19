@@ -17,6 +17,9 @@ public:
     void movePlayerInMap(Player* player, int dx, int dy);
     bool canPlayerMove(Player* player, int dx, int dy);
 
+    // TODO: Implement
+    void moveCharacterInMap(Character* character, int dx, int dy);
+
     const std::vector<std::vector<Cell>>& getAsciiMap() const;
     
     void printDungeonMap();

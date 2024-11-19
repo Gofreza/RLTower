@@ -1,5 +1,4 @@
 #include "EquipmentMenu.h"
-#include "../Misc/Utils.h"
 
 #include "../Manager/Localization/LocalizationManager.h"
 #include "../Manager/UI/UiManager.h"
@@ -269,7 +268,7 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
                         };
                     }
 
-                    if (isMouseHovering(equipmentSlotRect, renderTargetX, renderTargetY)) {
+                    if (isMouseHovering(equipmentSlotRect, renderTargetX)) {
                         SDL_SetTextureColorMod(itemNameTextTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
                         UiManager::instance().triggerRenderItemSubMenu(item);
                     } else {
@@ -289,12 +288,13 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
                     // Input Listeners
                     //=================
                     
-                    if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(equipmentSlotRect, renderTargetX, renderTargetY)) {
+                    // TODO: Correclty remove and drop item
+                    if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(equipmentSlotRect, renderTargetX)) {
                         player->removeItemFromInventory(item);
                         InputManager::instance().deactivateKey(SDLK_a);
                     }
 
-                    if (InputManager::instance().isLeftClicked() && isMouseHovering(equipmentSlotRect, renderTargetX, renderTargetY)) {
+                    if (InputManager::instance().isLeftClicked() && isMouseHovering(equipmentSlotRect, renderTargetX)) {
                         player->unequipItem(item);
                         InputManager::instance().deactivateLeftClick();
                         UiManager::instance().renderInventoryMenu();

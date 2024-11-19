@@ -1,4 +1,5 @@
 #include "BSP2.h"
+#include <set>
 
 BSP2::BSP2()
 : wRatio(0.45f), hRatio(0.45f), discardByRatio(true) 
@@ -42,25 +43,46 @@ void BSP2::createPaths(Tree<Container>* node, std::vector<Path>& paths) {
 
 void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::vector<std::vector<Cell>>& map) {
     // Fill the map with rooms
+    std::set<std::pair<int, int>> visitedCells;
+
+    // Fill the map with rooms
     for (const auto& room : rooms) {
-        for (int i = room.y; i < room.y + room.h; ++i) {
+        for (size_t i = room.y; i < room.y + room.h; ++i) {
             if (i < 0 || i >= map.size()) continue; // Boundary check for rows
-            for (int j = room.x; j < room.x + room.w; ++j) {
+            for (size_t j = room.x; j < room.x + room.w; ++j) {
                 if (j < 0 || j >= map[i].size()) continue; // Boundary check for columns
-                // map[i][j] = '.';
-                map[i][j] = Cell('.');
+                std::pair<int, int> cellPos = {i, j};
+                if (visitedCells.find(cellPos) == visitedCells.end()) {
+                    SDL_Color color = {
+                        static_cast<Uint8>(std::max(0, map[i][j].baseColor.r - 50)),
+                        static_cast<Uint8>(std::max(0, map[i][j].baseColor.g - 50)),
+                        static_cast<Uint8>(std::max(0, map[i][j].baseColor.b - 50)),
+                        map[i][j].baseColor.a // Assuming alpha channel remains unchanged
+                    };
+                    map[i][j] = Cell('.', color);
+                    visitedCells.insert(cellPos);
+                }
             }
         }
     }
 
     // Fill the map with paths
     for (const auto& path : paths) {
-        for (int i = path.y; i < path.y + path.h; ++i) {
+        for (size_t i = path.y; i < path.y + path.h; ++i) {
             if (i < 0 || i >= map.size()) continue; // Boundary check for rows
-            for (int j = path.x; j < path.x + path.w; ++j) {
+            for (size_t j = path.x; j < path.x + path.w; ++j) {
                 if (j < 0 || j >= map[i].size()) continue; // Boundary check for columns
-                // map[i][j] = '.';
-                map[i][j] = Cell('.');
+                std::pair<int, int> cellPos = {i, j};
+                if (visitedCells.find(cellPos) == visitedCells.end()) {
+                    SDL_Color color = {
+                        static_cast<Uint8>(std::max(0, map[i][j].baseColor.r - 50)),
+                        static_cast<Uint8>(std::max(0, map[i][j].baseColor.g - 50)),
+                        static_cast<Uint8>(std::max(0, map[i][j].baseColor.b - 50)),
+                        map[i][j].baseColor.a // Assuming alpha channel remains unchanged
+                    };
+                    map[i][j] = Cell('.', color);
+                    visitedCells.insert(cellPos);
+                }
             }
         }
     }

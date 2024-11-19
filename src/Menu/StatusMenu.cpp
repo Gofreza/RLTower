@@ -230,7 +230,7 @@ void StatusMenu::render(const SDL_Rect& rect) {
     };
     
     // Listeners
-    if (isMouseHovering(hoverRect, rect.x, rect.y)) {
+    if (isMouseHovering(hoverRect, rect.x)) {
         UiManager::instance().triggerRenderCharacterMenu();
     }
     

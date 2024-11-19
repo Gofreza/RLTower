@@ -13,6 +13,8 @@ namespace Utils {
 
     void getCWD();
 
+    bool isMouseHovering(const SDL_Rect& rect, int renderTargetX, int renderTargetY);
+
     // Define colors
     extern SDL_Color borderColor;
     extern SDL_Color textColor;

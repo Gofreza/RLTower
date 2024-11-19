@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "../../Misc/Utils.h"
 
 GameManager::GameManager()
 : player(CharactersManager::instance().getPlayer())
@@ -45,32 +46,27 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
             // Ensure the map coordinates are within bounds
             if (map_x >= 0 && map_x < map_width && map_y >= 0 && map_y < map_height) {
+                SDL_Rect dest;
+                dest.x = x * tile_size;
+                dest.y = y * tile_size;
+                dest.w = tile_size;
+                dest.h = tile_size;
+
+                SDL_Rect src = tiles[0];
+
                 if (!ascii_map[map_y][map_x].isExplored) {
                     // Render a dark cell
-                    SDL_Rect dest;
-                    dest.x = x * tile_size;
-                    dest.y = y * tile_size;
-                    dest.w = tile_size;
-                    dest.h = tile_size;
-
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderFillRect(renderer, &dest);
                 } else {
                     char tile_char = ascii_map[map_y][map_x].getSymbol();
                     int ascii_value = static_cast<int>(tile_char);
 
-                    SDL_Rect src = tiles[ascii_value];
-
-                    // Set destination rect for rendering
-                    SDL_Rect dest;
-                    dest.x = x * tile_size;
-                    dest.y = y * tile_size;
-                    dest.w = tile_size;
-                    dest.h = tile_size;
+                    src = tiles[ascii_value];
 
                     if (ascii_map[map_y][map_x].isInSight) {
                         // Change the color of the src
-                        SDL_SetTextureColorMod(tileset, 255, 255, 100); 
+                        SDL_SetTextureColorMod(tileset, ascii_map[map_y][map_x].currentColor.r, ascii_map[map_y][map_x].currentColor.g, ascii_map[map_y][map_x].currentColor.b); 
                         // Set background color to light gray
                         SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
                     } else {
@@ -84,10 +80,15 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                     SDL_RenderFillRect(renderer, &dest);
                     // Render the tile
                     SDL_RenderCopy(renderer, tileset, &src, &dest);
+                } 
 
-                    // Reset the color modulation to default (white)
-                    SDL_SetTextureColorMod(tileset, 255, 255, 255);
-                }                
+                // Listeners
+                // TODO: Check if the mouse is inside the rect, if not doesn't render the hover effect
+                if (Utils::isMouseHovering(dest, rect.x, rect.y)) {
+                    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+                    SDL_RenderFillRect(renderer, &dest);
+                    SDL_RenderCopy(renderer, tileset, &src, &dest);
+                }    
             }
         }
     }
