@@ -11,11 +11,11 @@ static float DODGE_SCALAR = 1.0f;
 static float DODGE_DEXTERITY_SCALAR = 0.7f;
 static float DODGE_LUCK_SCALAR = 0.3f;
 
-Character::Character(const std::string& name, SDL_Color color, int hp, int mana, int energy, int stamina, int fov, int speed,
+Character::Character(const std::string& name, SDL_Color color, GroupType group, float hp, int mana, int energy, int stamina, int fov, int speed,
                     int phyDamage, int magDamage, int strength, int dexterity,
                     int intelligence, int wisdom, int constitution, int luck,
                     const char symbol)
-    : name(name), color(color), xPosition(0), yPosition(0), symbol(symbol),
+    : name(name), color(color), group(group), xPosition(0), yPosition(0), symbol(symbol),
     hp(hp), mana(mana), energy(energy), stamina(stamina), 
     maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
     // Level
@@ -205,7 +205,7 @@ void Character::setCopper(int copper) {
 
 void Character::addItemInInventory(Item* item) {
     this->weight += item->getWeight();
-    Item* newItem = item->clone();
+    Item* newItem = item; //item->clone();
 
     // If new items is a containers, check for possible objects to put in
     if (newItem->getType() == ItemType::Container) {
@@ -280,28 +280,38 @@ void Character::equipItem(Item* item) {
 
     // Check for requirements
     if (!(requirements.at(0) == -1)) {
-        if (requirements.at(0) >= this->strength) {
-            Logger::instance().info(LocalizationManager::instance().getText("not_enough_strength"));
+        if (this->strength < requirements.at(0)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_strength"));
+            }
             return;
         }
 
-        if (requirements.at(1) >= this->dexterity) {
-            Logger::instance().info(LocalizationManager::instance().getText("not_enough_dexterity"));
+        if (this->dexterity < requirements.at(1)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_dexterity"));
+            }
             return;
         }
         
-        if (requirements.at(2) >= this->intelligence) {
-            Logger::instance().info(LocalizationManager::instance().getText("not_enough_intelligence"));
+        if (this->intelligence < requirements.at(2)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_intelligence"));
+            }
             return;
         }
         
-        if (requirements.at(3) >= this->wisdom) {
-            Logger::instance().info(LocalizationManager::instance().getText("not_enough_wisdom"));
+        if (this->wisdom < requirements.at(3)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_wisdom"));
+            }
             return;
         } 
         
-        if (requirements.at(4) >= this->constitution) {
-            Logger::instance().info(LocalizationManager::instance().getText("not_enough_constitution"));
+        if (this->constitution < requirements.at(4)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_constitution"));
+            }
             return;
         }
     }
@@ -351,17 +361,6 @@ void Character::equipItem(Item* item) {
 }
 
 void Character::unequipItem(Item* item) {
-    // std::cout << "Item: " << item << std::endl;
-    // std::cout << "LH: " << this->leftHand << std::endl;
-    // std::cout << "RH: " << this->rightHand << std::endl;
-    // std::cout << "Head: " << this->head << std::endl;
-    // std::cout << "Torso: " << this->torso << std::endl;
-    // std::cout << "Hands: " << this->hands << std::endl;
-    // std::cout << "Foots: " << this->boots << std::endl;
-    // std::cout << "Ring1: " << this->ring1 << std::endl;
-    // std::cout << "Ring2: " << this->ring2 << std::endl;
-    // std::cout << "Amulet: " << this->amulet << std::endl;
-
     if (item == leftHand) {
         unequipLeftWeapon();
     } else if (item == rightHand) {
@@ -388,8 +387,9 @@ void Character::unequipItem(Item* item) {
     updateStatsDependants();
 
     // No need to calculate weight here, done in addBackInInventory
-
-    Logger::instance().info(LocalizationManager::instance().getText("unequip") + item->getName() + ".");
+    if (this->group == GroupType::Player) {
+        Logger::instance().info(LocalizationManager::instance().getText("unequip") + item->getName() + ".");
+    }
 }
 
 std::vector<Item*> Character::getEquipEquipments() {
@@ -430,12 +430,16 @@ bool Character::equipWeapons(Item* weapon) {
             if (it != inventory.end()) {
                 inventory.erase(it);
             }
-            Logger::instance().info(LocalizationManager::instance().getText("equip") + weapon->getName() + ".");
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("equip") + weapon->getName() + ".");
+            }
             // Use the item to get the stats
             w->use(this);
             return true;
         } else {
-            Logger::instance().warning(LocalizationManager::instance().getText("empty_hands"));
+            if (this->group == GroupType::Player) {
+                Logger::instance().warning(LocalizationManager::instance().getText("empty_hands"));
+            }
             return false;
         }
         
@@ -447,7 +451,9 @@ bool Character::equipWeapons(Item* weapon) {
             if (it != inventory.end()) {
                 inventory.erase(it);
             }
-            Logger::instance().info(LocalizationManager::instance().getText("equip") + weapon->getName() + ".");
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("equip") + weapon->getName() + ".");
+            }
             // Use the item to get the stats
             w->use(this);
             return true;
@@ -458,17 +464,24 @@ bool Character::equipWeapons(Item* weapon) {
             if (it != inventory.end()) {
                 inventory.erase(it);
             }
-            Logger::instance().info(LocalizationManager::instance().getText("equip") + weapon->getName() + ".");
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("equip") + weapon->getName() + ".");
+            }
             // Use the item to get the stats
             w->use(this);
             return true;
         } else {
             // Weapons already equip
             // Can't equip need to de-equip before
-            if (leftHand && rightHand)
-                Logger::instance().warning(LocalizationManager::instance().getText("empty_hands"));
-            else
-                Logger::instance().warning(LocalizationManager::instance().getText("unequip_weapon"));
+            if (leftHand && rightHand) {
+                if (this->group == GroupType::Player) {
+                    Logger::instance().warning(LocalizationManager::instance().getText("empty_hands"));
+                }
+            } else {
+                if (this->group == GroupType::Player) {
+                    Logger::instance().warning(LocalizationManager::instance().getText("unequip_weapon"));
+                } 
+            }
             
             return false;
         }
@@ -518,7 +531,9 @@ bool Character::equipShield(Item* shield) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + shield->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + shield->getName() + ".");
+        }
         // Use items to get stats
         s->use(this);
         return true;
@@ -529,17 +544,24 @@ bool Character::equipShield(Item* shield) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + shield->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + shield->getName() + ".");
+        }
         // Use items to get stats
         s->use(this);
         return true;
     } else {
         // Weapons already equip
         // Can't equip need to de-equip before
-        if (leftHand && rightHand)
-            Logger::instance().warning(LocalizationManager::instance().getText("empty_hands"));
-        else
-            Logger::instance().warning(LocalizationManager::instance().getText("unequip_weapon"));
+        if (leftHand && rightHand) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().warning(LocalizationManager::instance().getText("empty_hands"));
+            }
+        } else {
+            if (this->group == GroupType::Player) {
+                Logger::instance().warning(LocalizationManager::instance().getText("unequip_weapon"));
+            } 
+        }
         return false;
     }
 }
@@ -553,12 +575,16 @@ bool Character::equipHead(Item* helmet) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + helmet->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + helmet->getName() + ".");
+        } 
         // Use item to get stats
         h->use(this);
         return true;
     } else {
-        Logger::instance().warning(LocalizationManager::instance().getText("unequip_helmet"));
+        if (this->group == GroupType::Player) {
+            Logger::instance().warning(LocalizationManager::instance().getText("unequip_helmet"));
+        } 
         return false;
     }
     
@@ -583,12 +609,16 @@ bool Character::equipTorso(Item* armor) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + armor->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + armor->getName() + ".");
+        }
         // Use item to get stats
         c->use(this);
         return true;
     } else {
-        Logger::instance().warning(LocalizationManager::instance().getText("unequip_chest"));
+        if (this->group == GroupType::Player) {
+            Logger::instance().warning(LocalizationManager::instance().getText("unequip_chest"));
+        } 
         return false;
     }
 }
@@ -612,12 +642,16 @@ bool Character::equipHands(Item* glove) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + glove->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + glove->getName() + ".");
+        }
         // Use item to get stats
         g->use(this);
         return true;
     } else {
-        Logger::instance().warning(LocalizationManager::instance().getText("unequip_hands"));
+        if (this->group == GroupType::Player) {
+            Logger::instance().warning(LocalizationManager::instance().getText("unequip_hands"));
+        } 
         return false;
     }
 }
@@ -641,12 +675,16 @@ bool Character::equipBoots(Item* armor) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + armor->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + armor->getName() + ".");
+        }
         // Use item to get stats
         l->use(this);
         return true;
     } else {
-        Logger::instance().warning(LocalizationManager::instance().getText("unequip_boots"));
+        if (this->group == GroupType::Player) {
+            Logger::instance().warning(LocalizationManager::instance().getText("unequip_boots"));
+        }
         return false;
     }
     
@@ -672,7 +710,9 @@ bool Character::equipRing(Item* ring) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + ring->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + ring->getName() + ".");
+        }
         // Use item to get stats
         r->use(this);
         return true;
@@ -683,12 +723,16 @@ bool Character::equipRing(Item* ring) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + ring->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + ring->getName() + ".");
+        }
         // Use item to get stats
         r->use(this);
         return true;
     } else {
-        Logger::instance().warning(LocalizationManager::instance().getText("unequip_ring"));
+        if (this->group == GroupType::Player) {
+            Logger::instance().warning(LocalizationManager::instance().getText("unequip_ring"));
+        }
         return false;
     }
 }
@@ -722,12 +766,16 @@ bool Character::equipAmulet(Item* amulet) {
         if (it != inventory.end()) {
             inventory.erase(it);
         }
-        Logger::instance().info(LocalizationManager::instance().getText("equip") + amulet->getName() + ".");
+        if (this->group == GroupType::Player) {
+            Logger::instance().info(LocalizationManager::instance().getText("equip") + amulet->getName() + ".");
+        }
         // Use item to get stats
         a->use(this);
         return true;
     } else {
-        Logger::instance().warning(LocalizationManager::instance().getText("unequip_amulet"));
+        if (this->group == GroupType::Player) {
+            Logger::instance().warning(LocalizationManager::instance().getText("unequip_amulet"));
+        } 
         return false;
     }
 }

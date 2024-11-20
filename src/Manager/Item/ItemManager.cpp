@@ -188,6 +188,10 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
     }
 }
 
+/**
+ * @brief Get an item by ID
+ * @return A copy of the item
+ */
 Item* ItemManager::getItem(short id) const {
     if (!isInitialize) {
         throw std::runtime_error("ItemManager is not initialized. (getItem)");
@@ -195,7 +199,7 @@ Item* ItemManager::getItem(short id) const {
 
     auto it = items.find(id);
     if (it != items.end()) {
-        return it->second;
+        return it->second->clone();
     }
 
     throw std::runtime_error("Item with ID " + std::to_string(id) + " not found.");

@@ -11,7 +11,7 @@ public:
         return instance;
     }
 
-    void loadEnemies();
+    void loadEnemiesFromFile(const std::string& filePath);
 
     void initialize(int towerLevel, int numberOfEnemies);
     void addEnemy(Enemy* enemy);
@@ -21,6 +21,7 @@ public:
 
     void update();
 private:
+    bool isInitialized;
     int enemyCount;
     std::map<int, Enemy*> enemies;
 

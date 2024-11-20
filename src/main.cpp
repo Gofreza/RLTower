@@ -7,6 +7,7 @@
 #include "Manager/Effect/EffectManager.h"
 #include "Manager/Item/ItemManager.h"
 #include "Manager/Spell/SpellManager.h"
+#include "Manager/Characters/EnemyManager.h"
 #include "Manager/Controls/InputManager.h"
 #include "Manager/Game/GameManager.h"
 #include "Misc/Utils.h"
@@ -58,7 +59,7 @@ int main(int argc, char* argv[]) {
     //=========
     // Player
     //=========
-    Player* player = new Player("Player", {0, 255, 0, 255}, 1000.0f, 100, 0, 100, 5, 100,
+    Player* player = new Player("Player", {55, 55, 160, 255}, GroupType::Player, 1000.0f, 100, 0, 100, 5, 100,
                                 1, 0, 
                                 7, 3, 1, 1, 5, 1,
                                 '@');
@@ -75,8 +76,13 @@ int main(int argc, char* argv[]) {
     EffectManager::instance().loadEffectsFromFile("../res/localization/" + LANGUAGE + "/effects.json");
     ItemManager::instance().loadItemsFromFile("../res/localization/" + LANGUAGE + "/items.json");
     SpellManager::instance().loadSpellsFromFile("../res/localization/" + LANGUAGE + "/spells.json");
+    EnemyManager::instance().loadEnemiesFromFile("../res/localization/" + LANGUAGE + "/enemies.json");
     GameManager::instance().initialize();
     UiManager::instance().initialize(window, renderer, font);
+
+    for (const auto& [key, value] : EnemyManager::instance().getEnemies()) {
+        std::cout << "Enemy: " << value->getName() << std::endl;
+    }
 
     //=========
     // CHEATS

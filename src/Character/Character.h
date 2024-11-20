@@ -14,12 +14,14 @@
 #include "../Object/Equipment/Amulet.h"
 #include "../Object/Misc/Consumable.h"
 #include "../Object/Misc/Containers.h"
+#include "GroupType.h"
 
 class Character
 {
 protected:
     std::string name;
     SDL_Color color;
+    GroupType group;
 
     int xPosition;
     int yPosition;
@@ -116,7 +118,7 @@ protected:
     // Struct with a name and the modified stats
 
 public:
-    Character(const std::string& name, SDL_Color color, int hp, int mana, int energy, int stamina, int fov, int speed,
+    Character(const std::string& name, SDL_Color color, GroupType group, float hp, int mana, int energy, int stamina, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol);

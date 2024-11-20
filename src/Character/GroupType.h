@@ -5,7 +5,8 @@
 enum class GroupType {
     Player,
     NPC,
-    Goblinoid
+    Goblinoid,
+    Unknown
 };
 
 inline std::string to_string(GroupType groupType) {
@@ -14,5 +15,17 @@ inline std::string to_string(GroupType groupType) {
         case GroupType::NPC:       return "NPC";
         case GroupType::Goblinoid: return "Goblinoid";
         default:                   return "Unknown";
+    }
+}
+
+inline GroupType getGroupType(const std::string& groupType) {
+    if (groupType == "Player") {
+        return GroupType::Player;
+    } else if (groupType == "NPC") {
+        return GroupType::NPC;
+    } else if (groupType == "Goblinoid") {
+        return GroupType::Goblinoid;
+    } else {
+        return GroupType::Unknown;
     }
 }
