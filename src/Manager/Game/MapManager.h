@@ -19,7 +19,6 @@ public:
     bool canPlayerMove(Player* player, int dx, int dy);
 
     void addEnemies(std::vector<Enemy*> enemies);
-    // TODO: Implement
     void moveCharacterInMap(Character* character, int dx, int dy);
 
     const std::vector<std::vector<Cell>>& getAsciiMap() const;

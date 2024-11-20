@@ -16,6 +16,10 @@ Cell::Cell(char baseSymbol, SDL_Color baseColor)
     }
 }
 
+bool Cell::hasCharacter() const {
+    return character != nullptr;
+}
+
 void Cell::addCharacter(Character* character)
 {
     this->character = character;

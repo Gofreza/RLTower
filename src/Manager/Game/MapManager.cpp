@@ -132,7 +132,7 @@ bool MapManager::canPlayerMove(Player* player, int dx, int dy)
     int x = player->getXPosition();
     int y = player->getYPosition();
 
-    return ascii_map[y + dy][x + dx].isWalkable;
+    return ascii_map[y + dy][x + dx].isWalkable && !ascii_map[y + dy][x + dx].hasCharacter();
 }
 
 //=========
@@ -156,6 +156,20 @@ void MapManager::addEnemies(std::vector<Enemy*> enemies)
         enemy->setXPosition(x);
         enemy->setYPosition(y);
     }
+}
+
+void MapManager::moveCharacterInMap(Character* player, int dx, int dy)
+{
+    // Move player
+    int x = player->getXPosition();
+    int y = player->getYPosition();
+    int old_x = x - dx;
+    int old_y = y - dy;
+
+    ascii_map[old_y][old_x].removeCharacter();
+    ascii_map[old_y][old_x].resetCell();
+    ascii_map[y][x].addCharacter(player);
+    ascii_map[y][x].currentColor = player->getColor();
 }
 
 //=========

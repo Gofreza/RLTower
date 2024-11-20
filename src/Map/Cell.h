@@ -10,6 +10,8 @@ public:
     Cell(char baseSymbol, SDL_Color baseColor);
     ~Cell();
 
+    bool hasCharacter() const;
+
     void addCharacter(Character* character);
     void removeCharacter();
 
