@@ -13,10 +13,14 @@ public:
             const char symbol,
             int minSpawnLevel, int maxSpawnLevel, int value,
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc);
+    Enemy(const Enemy& enemy);
     ~Enemy();
 
     void check();
     void update();
+    int getValue() const;
+
+    virtual Enemy* clone() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Enemy& enemy);
 private:

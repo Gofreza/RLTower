@@ -7,7 +7,11 @@ EnemyManager::EnemyManager()
 }
 
 EnemyManager::~EnemyManager() {
-    clearEnemies();
+    for (auto& [id, enemy] : enemies) {
+        delete enemy;
+    }
+    enemies.clear();
+    enemyCount = 0;
 }
 
 void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
@@ -111,25 +115,20 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
 
 }
 
-void EnemyManager::initialize(int towerLevel, int numberOfEnemies) {
+void EnemyManager::initialize(std::vector<Enemy*>& enemies, int towerLevel, int numberOfEnemies) {
     // Add ennemies based on the tower level
+    while(numberOfEnemies > 0) {
+        // Get a random enemy
+        int randomEnemy = rand() % enemyCount;
+        Enemy* enemy = getEnemy(randomEnemy);
+        enemies.push_back(enemy);
+        numberOfEnemies -= enemy->getValue();
+    }
 }
 
 void EnemyManager::addEnemy(Enemy* enemy) {
     enemies[enemyCount] = enemy;
     enemyCount++;
-}
-
-void EnemyManager::removeEnemy(Enemy* enemy) {
-    
-}
-
-void EnemyManager::clearEnemies() {
-    for (auto& [id, enemy] : enemies) {
-        delete enemy;
-    }
-    enemies.clear();
-    enemyCount = 0;
 }
 
 void EnemyManager::update() {
@@ -144,4 +143,8 @@ void EnemyManager::update() {
 
 std::map<int, Enemy*>& EnemyManager::getEnemies() {
     return enemies;
+}
+
+Enemy* EnemyManager::getEnemy(int id) {
+    return enemies[id]->clone();
 }

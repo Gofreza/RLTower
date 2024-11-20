@@ -16,15 +16,15 @@ Cell::Cell(char baseSymbol, SDL_Color baseColor)
     }
 }
 
-void Cell::addPlayer(Player* player)
+void Cell::addCharacter(Character* character)
 {
-    this->player = player;
-    this->currentSymbol = player->getSymbol();
+    this->character = character;
+    this->currentSymbol = character->getSymbol();
 }
 
-void Cell::removePlayer()
+void Cell::removeCharacter()
 {
-    player = nullptr;
+    character = nullptr;
     currentSymbol = baseSymbol;
 }
 

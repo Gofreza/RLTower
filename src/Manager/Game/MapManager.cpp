@@ -1,6 +1,6 @@
 #include "MapManager.h"
 
-static bool DEBUG = false;
+static bool DEBUG = true;
 
 MapManager::MapManager()
 : bsp2(), c(0, 0, 0, 0), root(nullptr), rooms(), paths(), ascii_map()
@@ -22,6 +22,10 @@ void MapManager::generateMap(int width, int height, int iterations, float wRatio
     bsp2.generateMap(rooms, paths, ascii_map);
 }
 
+//=========
+// Player
+//=========
+
 void MapManager::addPlayer(Player* player)
 {
     if (rooms.empty()) {
@@ -31,7 +35,7 @@ void MapManager::addPlayer(Player* player)
     // Pick a random room
     const Room& room = rooms[rand() % rooms.size()];
     // Place the player in the center of the room
-    ascii_map[room.y + room.h / 2][room.x + room.w / 2].addPlayer(player);
+    ascii_map[room.y + room.h / 2][room.x + room.w / 2].addCharacter(player);
     ascii_map[room.y + room.h / 2][room.x + room.w / 2].currentColor = player->getColor();
     // ascii_map[room.y + room.h / 2][room.x + room.w / 2].setSymbol('@');
     player->setXPosition(room.x + room.w / 2);
@@ -80,9 +84,9 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     int old_x = x - dx;
     int old_y = y - dy;
 
-    ascii_map[old_y][old_x].removePlayer();
+    ascii_map[old_y][old_x].removeCharacter();
     ascii_map[old_y][old_x].resetCell();
-    ascii_map[y][x].addPlayer(player);
+    ascii_map[y][x].addCharacter(player);
     ascii_map[y][x].currentColor = player->getColor();
 
     // Check cells visibility
@@ -130,6 +134,33 @@ bool MapManager::canPlayerMove(Player* player, int dx, int dy)
 
     return ascii_map[y + dy][x + dx].isWalkable;
 }
+
+//=========
+// Enemies
+//=========
+
+void MapManager::addEnemies(std::vector<Enemy*> enemies)
+{
+    if (rooms.empty()) {
+        return;
+    }
+
+    for (auto& enemy : enemies) {
+        // Pick a random room
+        const Room& room = rooms[rand() % rooms.size()];
+        // Place randomly the enemy in the room
+        int x = room.x + rand() % room.w;
+        int y = room.y + rand() % room.h;
+        ascii_map[y][x].addCharacter(enemy);
+        ascii_map[y][x].currentColor = enemy->getColor();
+        enemy->setXPosition(x);
+        enemy->setYPosition(y);
+    }
+}
+
+//=========
+// Miscs
+//=========
 
 void MapManager::bresenham(int x1,
     int y1,

@@ -3,6 +3,7 @@
 #include "MapManager.h"
 #include "../Controls/InputManager.h"
 #include "../UI/UiManager.h"
+#include "../Characters/EnemyManager.h"
 #include <SDL2/SDL.h>
 
 class GameManager
@@ -20,6 +21,7 @@ public:
     void movePlayer();
 private:
     Player* player;
+    std::vector<Enemy*> enemies;
 
     GameManager();
     ~GameManager();

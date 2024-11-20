@@ -10,8 +10,8 @@ public:
     Cell(char baseSymbol, SDL_Color baseColor);
     ~Cell();
 
-    void addPlayer(Player* player);
-    void removePlayer();
+    void addCharacter(Character* character);
+    void removeCharacter();
 
     void setSymbol(char symbol);
     void resetCell();
@@ -36,7 +36,7 @@ public:
 
     bool isWalkable;
 private:
-    Player* player;
+    Character* character;
 
     std::vector<Effect*> effects;
     Item* item;

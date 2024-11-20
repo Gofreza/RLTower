@@ -12,6 +12,12 @@ void GameManager::initialize()
     MapManager::instance().generateMap(100, 100, 5);
     MapManager::instance().addPlayer(player);
 
+    // Add enemies
+    EnemyManager::instance().initialize(this->enemies, 1, 10);
+    
+    // Put enemies in the map
+    MapManager::instance().addEnemies(this->enemies);
+
     std::cout << "Map generated" << std::endl;
 }
 

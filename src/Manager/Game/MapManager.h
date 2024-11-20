@@ -2,6 +2,7 @@
 
 #include "../../Map/BSP2.h"
 #include "../Characters/CharactersManager.h"
+#include "../../Character/Enemy.h"
 
 class MapManager
 {
@@ -17,6 +18,7 @@ public:
     void movePlayerInMap(Player* player, int dx, int dy);
     bool canPlayerMove(Player* player, int dx, int dy);
 
+    void addEnemies(std::vector<Enemy*> enemies);
     // TODO: Implement
     void moveCharacterInMap(Character* character, int dx, int dy);
 

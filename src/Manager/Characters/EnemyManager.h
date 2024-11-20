@@ -13,11 +13,11 @@ public:
 
     void loadEnemiesFromFile(const std::string& filePath);
 
-    void initialize(int towerLevel, int numberOfEnemies);
+    void initialize(std::vector<Enemy*>& enemies, int towerLevel, int numberOfEnemies);
     void addEnemy(Enemy* enemy);
-    void removeEnemy(Enemy* enemy);
-    void clearEnemies();
+
     std::map<int, Enemy*>& getEnemies();
+    Enemy* getEnemy(int id);
 
     void update();
 private:

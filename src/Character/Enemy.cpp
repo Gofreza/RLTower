@@ -13,6 +13,13 @@ Enemy::Enemy(const std::string& name, SDL_Color color, GroupType group,
 {
 }
 
+Enemy::Enemy(const Enemy& enemy)
+    : Character(enemy),
+    minSpawnLevel(enemy.minSpawnLevel), maxSpawnLevel(enemy.maxSpawnLevel), value(enemy.value),
+    basicAggression(enemy.basicAggression), basicFear(enemy.basicFear), bascDesire(enemy.bascDesire), basicWander(enemy.basicWander), basicMisc(enemy.basicMisc)
+{
+}
+
 Enemy::~Enemy()
 {
 }
@@ -25,6 +32,14 @@ void Enemy::check()
 void Enemy::update()
 {
     // Update the enemy
+}
+
+int Enemy::getValue() const {
+    return value;
+}
+
+Enemy* Enemy::clone() const {
+    return new Enemy(*this);
 }
 
 std::ostream& operator<<(std::ostream& os, const Enemy& enemy)

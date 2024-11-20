@@ -80,10 +80,6 @@ int main(int argc, char* argv[]) {
     GameManager::instance().initialize();
     UiManager::instance().initialize(window, renderer, font);
 
-    for (const auto& [key, value] : EnemyManager::instance().getEnemies()) {
-        std::cout << "Enemy: " << *value << std::endl;
-    }
-
     //=========
     // CHEATS
     //=========
