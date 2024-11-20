@@ -1,6 +1,6 @@
 #include "MapManager.h"
 
-static bool DEBUG = true;
+static bool DEBUG = false;
 
 MapManager::MapManager()
 : bsp2(), c(0, 0, 0, 0), root(nullptr), rooms(), paths(), ascii_map()

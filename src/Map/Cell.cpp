@@ -2,6 +2,7 @@
 
 Cell::Cell(char baseSymbol, SDL_Color baseColor)
 : baseSymbol(baseSymbol), currentSymbol(baseSymbol),
+  character(nullptr),
   item(nullptr),
   isWalkable(false),
   isExplored(false),
@@ -30,6 +31,11 @@ void Cell::removeCharacter()
 {
     character = nullptr;
     currentSymbol = baseSymbol;
+}
+
+Character* Cell::getCharacter() const
+{
+    return character;
 }
 
 void Cell::setSymbol(char symbol)

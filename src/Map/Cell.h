@@ -14,6 +14,7 @@ public:
 
     void addCharacter(Character* character);
     void removeCharacter();
+    Character* getCharacter() const;
 
     void setSymbol(char symbol);
     void resetCell();
