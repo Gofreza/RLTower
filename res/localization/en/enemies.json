@@ -3,7 +3,7 @@
         {
             "id": 0,
             "name": "Goblin",
-            "symbol": "ù",
+            "symbol": "g",
             "color": [121, 228, 108, 255],
             "description": "A small, green creature with a big nose and pointy ears. It's not very strong, but it's quick and agile.",
             "group": "Goblinoid",
@@ -11,7 +11,7 @@
             "minSpawnLevel": 1,
             "maxSpawnLevel": 10,
             "value": 1,
-            "health": 30,
+            "health": 100,
             "mana": 0,
             "energy": 0,
             "stamina": 10,
