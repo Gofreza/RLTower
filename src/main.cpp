@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     UiManager::instance().initialize(window, renderer, font);
 
     for (const auto& [key, value] : EnemyManager::instance().getEnemies()) {
-        std::cout << "Enemy: " << value->getName() << std::endl;
+        std::cout << "Enemy: " << *value << std::endl;
     }
 
     //=========

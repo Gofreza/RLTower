@@ -1,5 +1,7 @@
 #include "MapManager.h"
 
+static bool DEBUG = false;
+
 MapManager::MapManager()
 : bsp2(), c(0, 0, 0, 0), root(nullptr), rooms(), paths(), ascii_map()
 {
@@ -50,12 +52,22 @@ void MapManager::addPlayer(Player* player)
         }
     }
 
-    for (const auto& [i, j] : circle_extremes) {
-        size_t map_x = x + i;
-        size_t map_y = y + j;
+    if (!DEBUG) {
+        for (const auto& [i, j] : circle_extremes) {
+            size_t map_x = x + i;
+            size_t map_y = y + j;
 
-        if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
-            bresenham(x, y, map_x, map_y);
+            if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
+                bresenham(x, y, map_x, map_y);
+            }
+        }
+    } else {
+        // If debug mode is on, reveal the entire map
+        for (auto& row : ascii_map) {
+            for (auto& cell : row) {
+                cell.isInSight = true;
+                cell.isExplored = true;
+            }
         }
     }
 }
@@ -91,12 +103,22 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     }
     visibleCells.clear();
 
-    for (const auto& [i, j] : circle_extremes) {
-        size_t map_x = x + i;
-        size_t map_y = y + j;
+    if (!DEBUG) {
+        for (const auto& [i, j] : circle_extremes) {
+            size_t map_x = x + i;
+            size_t map_y = y + j;
 
-        if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
-            bresenham(x, y, map_x, map_y);
+            if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
+                bresenham(x, y, map_x, map_y);
+            }
+        }
+    } else {
+        // If debug mode is on, reveal the entire map
+        for (auto& row : ascii_map) {
+            for (auto& cell : row) {
+                cell.isInSight = true;
+                cell.isExplored = true;
+            }
         }
     }
 }

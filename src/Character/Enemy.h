@@ -11,11 +11,14 @@ public:
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
+            int minSpawnLevel, int maxSpawnLevel, int value,
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc);
     ~Enemy();
 
     void check();
     void update();
+
+    friend std::ostream& operator<<(std::ostream& os, const Enemy& enemy);
 private:
     int minSpawnLevel;
     int maxSpawnLevel;
