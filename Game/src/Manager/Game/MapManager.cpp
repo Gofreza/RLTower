@@ -158,18 +158,18 @@ void MapManager::addEnemies(std::vector<Enemy*> enemies)
     }
 }
 
-void MapManager::moveCharacterInMap(Character* player, int dx, int dy)
+void MapManager::moveCharacterInMap(Character* character, int dx, int dy)
 {
     // Move player
-    int x = player->getXPosition();
-    int y = player->getYPosition();
+    int x = character->getXPosition();
+    int y = character->getYPosition();
     int old_x = x - dx;
     int old_y = y - dy;
 
     ascii_map[old_y][old_x].removeCharacter();
     ascii_map[old_y][old_x].resetCell();
-    ascii_map[y][x].addCharacter(player);
-    ascii_map[y][x].currentColor = player->getColor();
+    ascii_map[y][x].addCharacter(character);
+    ascii_map[y][x].currentColor = character->getColor();
 }
 
 //=========
