@@ -256,8 +256,8 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
                     };
 
                     SDL_Rect durabilityRect = {};
+                    int durabilityWidth = 0, durabilityHeight = 0;
                     if (hasDurability && durabilityTexture) {
-                        int durabilityWidth = 0, durabilityHeight = 0;
                         SDL_QueryTexture(durabilityTexture, nullptr, nullptr, &durabilityWidth, &durabilityHeight);
 
                         durabilityRect = {
@@ -268,11 +268,18 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
                         };
                     }
 
-                    if (isMouseHovering(equipmentSlotRect, renderTargetX)) {
-                        SDL_SetTextureColorMod(itemNameTextTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
+                    int itemHeight = std::max(textHeight, durabilityHeight);
+                    SDL_Rect equipmentRect = {
+                        10 + maxTextTextureWidth + 10,
+                        currentY - (padding / 2),
+                        renderTargetW - maxTextTextureWidth - 25,
+                        itemHeight + (itemHeight + padding) / 2 + borderThickness
+                    };
+
+                    if (isMouseHovering(equipmentRect, renderTargetX)) {
+                        SDL_SetRenderDrawColor(renderer, Utils::hoverBackColor.r, Utils::hoverBackColor.g, Utils::hoverBackColor.b, 255);
+                        SDL_RenderFillRect(renderer, &equipmentRect);
                         UiManager::instance().triggerRenderItemSubMenu(item);
-                    } else {
-                        SDL_SetTextureColorMod(itemNameTextTexture, Utils::textColor.r, Utils::textColor.g, Utils::textColor.b);
                     }
 
                     SDL_RenderCopy(renderer, itemNameTextTexture, nullptr, &equipmentSlotRect);
@@ -289,12 +296,12 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
                     //=================
                     
                     // TODO: Correclty remove and drop item
-                    if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(equipmentSlotRect, renderTargetX)) {
+                    if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(equipmentRect, renderTargetX)) {
                         player->removeItemFromInventory(item);
                         InputManager::instance().deactivateKey(SDLK_a);
                     }
 
-                    if (InputManager::instance().isLeftClicked() && isMouseHovering(equipmentSlotRect, renderTargetX)) {
+                    if (InputManager::instance().isLeftClicked() && isMouseHovering(equipmentRect, renderTargetX)) {
                         player->unequipItem(item);
                         InputManager::instance().deactivateLeftClick();
                         UiManager::instance().renderInventoryMenu();
@@ -308,7 +315,7 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
         // SDL_SetRenderDrawColor(renderer, Utils::hpFillColor.r, Utils::hpFillColor.g, Utils::hpFillColor.b, Utils::hpFillColor.a);
         // SDL_RenderFillRect(renderer, &equipmentSlotRect);
     
-        currentY += textHeight + padding;
+       currentY += textHeight + padding;
     }
 
 }

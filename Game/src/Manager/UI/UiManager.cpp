@@ -5,7 +5,7 @@
 UiManager::UiManager() 
 : isInitialize(false), areMenusInitialize(false), isConsoleInitialize(false), isSpellsRendering(false),
   consoleDirty(true), gameDirty(true), menuDirty(true),
-  isInConsole(false), isInGame(false), isInMenu(false),
+  isInConsole(false), isInGame(false), isInMenu(false), isInMenuStatus(false), isInMenuEquipment(false), isInMenuInventory(false),
   forceConsoleRender(false), forceGameRender(false), forceMenuRender(false),
   isItemMenuOpen(false), isCharacterMenuOpen(false), isSpellMenuOpen(false)
 {}
@@ -200,6 +200,17 @@ void UiManager::resetRectsDisplay() {
         menuDirty = true;
         this->isInMenu = false;
     }
+
+    if (this->isInMenuStatus) {
+        renderStatusMenu();
+        this->isInMenuStatus = false;
+    } else if (this->isInMenuEquipment) {
+        renderEquipmentMenu();
+        this->isInMenuEquipment = false;
+    } else if (this->isInMenuInventory) {
+        renderInventoryMenu();
+        this->isInMenuInventory = false;
+    }
 }
 
 //==================
@@ -288,6 +299,23 @@ void UiManager::renderAllMenus(SDL_Renderer* renderer, TTF_Font* font, const SDL
         statusRect = {mainRect.x, mainRect.y, mainRect.w, statusHeight};
         equipmentRect = {mainRect.x, mainRect.y + statusHeight, mainRect.w, equipmentHeight};
         inventoryRect = {mainRect.x, mainRect.y + statusHeight + equipmentHeight, mainRect.w, remainingHeight};
+
+        if (isMouseHovering(statusRect)) {
+            if (this->isInMenuEquipment || this->isInMenuInventory) {
+                resetRectsDisplay();
+            }
+            this->isInMenuStatus = true;
+        } else if (isMouseHovering(equipmentRect)) {
+            if (this->isInMenuStatus || this->isInMenuInventory) {
+                resetRectsDisplay();
+            }
+            this->isInMenuEquipment = true;
+        } else if (isMouseHovering(inventoryRect)) {
+            if (this->isInMenuStatus || this->isInMenuEquipment) {
+                resetRectsDisplay();
+            }
+            this->isInMenuInventory = true;
+        }
 
         // Render each menu
         if (!isHovering || force) {

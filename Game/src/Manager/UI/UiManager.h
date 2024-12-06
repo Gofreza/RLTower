@@ -90,6 +90,9 @@ private:
     bool isInConsole;
     bool isInGame;
     bool isInMenu;
+    bool isInMenuStatus;
+    bool isInMenuEquipment;
+    bool isInMenuInventory;
 
     // Force
     bool forceConsoleRender;

@@ -142,7 +142,6 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                 } 
 
                 // Listeners
-                // TODO: Check if the mouse is inside the rect, if not doesn't render the hover effect
                 if (Utils::isMouseHovering(dest, rect.x, rect.y)) {
                     SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
                     SDL_RenderFillRect(renderer, &dest);
