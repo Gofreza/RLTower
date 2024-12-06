@@ -62,7 +62,8 @@ int main(int argc, char* argv[]) {
     Player* player = new Player("Player", {55, 55, 160, 255}, GroupType::Player, 1000.0f, 100, 0, 100, 5, 100,
                                 1, 0, 
                                 7, 3, 1, 1, 5, 1,
-                                '@');
+                                '@',
+                                std::vector<int>{}, std::vector<int>{});
     CharactersManager::instance().setPlayer(player);
 
     player->setHp(player->getHp() - 100);
@@ -118,7 +119,7 @@ int main(int argc, char* argv[]) {
     int frameCount = 0; // Count frames
     float currentFPS = 0.0f;
 
-    const int TARGET_FPS = 60;
+    const int TARGET_FPS = 144;
     const int FRAME_DELAY = 1000 / TARGET_FPS; // Target frame time in milliseconds
 
     Uint32 frameStart, frameTime;

@@ -19,6 +19,7 @@ namespace Utils {
     extern SDL_Color borderColor;
     extern SDL_Color textColor;
     extern SDL_Color hoverColor;
+    extern SDL_Color hoverBackColor;
     extern SDL_Color hpBarBorderColor;
     extern SDL_Color hpFillColor;
     extern SDL_Color manaBarBorderColor;

@@ -1,8 +1,14 @@
 #include "GameManager.h"
 #include "../../Misc/Utils.h"
+#include "../../Misc/RandomUtils.h"
+#include <queue>
 
 GameManager::GameManager()
-: player(CharactersManager::instance().getPlayer())
+: player(CharactersManager::instance().getPlayer()),
+  turn(0),
+  charactersQueue([](Character* a, Character* b) {
+        return a->getSpeed() < b->getSpeed();
+    }) 
 {
 }
 
@@ -22,8 +28,55 @@ void GameManager::initialize()
 }
 
 void GameManager::update()
-{
-    movePlayer();
+{   
+    playTurn();
+}
+
+void GameManager::playTurn() {
+
+    // Add all characters to the priority queue
+    if (characters.empty()/*charactersQueue.empty()*/) {
+        characters.reserve(1 + npcs.size() + enemies.size());
+        characters.push_back(player);
+        // charactersQueue.push(player);
+        for (auto& npc : npcs) {
+            // charactersQueue.push(npc);
+            characters.push_back(npc);
+        }
+        for (auto& enemy : enemies) {
+            // charactersQueue.push(enemy);
+            characters.push_back(enemy);
+        }
+        std::sort(characters.begin(), characters.end(), [](Character* a, Character* b) {
+            return a->getSpeed() > b->getSpeed();
+        });
+        this->currentCharacterIndex = 0;
+    }
+
+    // Check the top characters and see if he has played
+    // Character* character = charactersQueue.top();
+    Character* character = characters[currentCharacterIndex];
+    bool hasPlay = character->update();
+
+    // Check if character is dead
+    if (character->getHp() <= 0) {
+        std::cout << character->getName() << " is dead" << std::endl;
+        // Remove the character from the map
+        MapManager::instance().removeCharacter(character->getXPosition(), character->getYPosition());
+        // Remove it from the vector
+        characters.erase(characters.begin() + currentCharacterIndex);
+        if (currentCharacterIndex >= characters.size()) {
+            currentCharacterIndex = 0; // Wrap back to start if necessary
+        }
+        // Free the character
+        delete character;
+    } else {
+        if (hasPlay) {
+            // charactersQueue.pop();
+            currentCharacterIndex = (currentCharacterIndex + 1) % characters.size();
+        }
+    }
+
 }
 
 void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Texture* tileset, const std::vector<SDL_Rect>& tiles)
@@ -100,7 +153,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     }
 }
 
-void GameManager::movePlayer() {
+bool GameManager::movePlayer() {
     bool moved = false;
     if (InputManager::instance().isKeyPressed(SDLK_UP)) {
         InputManager::instance().deactivateKey(SDLK_UP);
@@ -140,6 +193,14 @@ void GameManager::movePlayer() {
     }
     if (moved) {
         UiManager::instance().updateGame(true);
+    }
+    return moved;
+}
+
+void GameManager::moveCharacter(Character* character, int dx, int dy) {
+    if (MapManager::instance().canCharacterMove(character, dx, dy)) {
+        character->move(dx, dy);
+        MapManager::instance().moveCharacterInMap(character, dx, dy);
     }
 }
 

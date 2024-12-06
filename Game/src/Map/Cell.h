@@ -7,7 +7,7 @@
 class Cell
 {
 public:
-    Cell(char baseSymbol, SDL_Color baseColor);
+    Cell(int x, int y, char baseSymbol, SDL_Color baseColor);
     ~Cell();
 
     bool hasCharacter() const;
@@ -28,6 +28,11 @@ public:
 
     char getSymbol() const;
 
+    void setX(int x);
+    int getX() const;
+    void setY(int y);
+    int getY() const;
+
     // Colors
     SDL_Color baseColor;
     SDL_Color currentColor;
@@ -39,6 +44,9 @@ public:
 
     bool isWalkable;
 private:
+    int x;
+    int y;
+
     Character* character;
 
     std::vector<Effect*> effects;

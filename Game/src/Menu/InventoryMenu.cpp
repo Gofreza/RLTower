@@ -211,30 +211,38 @@ void InventoryMenu::render(const SDL_Rect& rect) {
 
                 SDL_Rect itemNameRect = {
                     inventoryRect.x + 5, 
-                    currentY,
+                    currentY + 2,
                     itemNameWidth,
                     itemNameHeight
                 };
 
                 SDL_Rect durabilityRect = {};
+                int durabilityWidth = 0, durabilityHeight = 0;
                 if (hasDurability && durabilityTexture) {
-                    int durabilityWidth = 0, durabilityHeight = 0;
                     SDL_QueryTexture(durabilityTexture, nullptr, nullptr, &durabilityWidth, &durabilityHeight);
 
                     durabilityRect = {
                         inventoryRect.x + inventoryRect.w - durabilityWidth - 5, 
-                        currentY,
+                        currentY + 2,
                         durabilityWidth,
                         durabilityHeight
                     };
                 }
 
+                // Define the full item rectangle (itemRect)
+                int itemHeight = std::max(itemNameHeight, durabilityHeight) + 5;
+                SDL_Rect itemRect = {
+                    inventoryRect.x + 5,
+                    currentY,
+                    inventoryRect.w - 10,
+                    itemHeight
+                };
+
                 // Update color modulation based on mouse hover
-                if (isMouseHovering(itemNameRect, rect.x)) {
-                    SDL_SetTextureColorMod(itemNameTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
+                if (isMouseHovering(itemRect, rect.x)) {
+                    SDL_SetRenderDrawColor(renderer, Utils::hoverBackColor.r, Utils::hoverBackColor.g, Utils::hoverBackColor.b, 255);
+                    SDL_RenderFillRect(renderer, &itemRect);
                     UiManager::instance().triggerRenderItemSubMenu(item);
-                } else {
-                    SDL_SetTextureColorMod(itemNameTexture, Utils::textColor.r, Utils::textColor.g, Utils::textColor.b);
                 }
                 
                 // Render the item name texture
@@ -253,7 +261,7 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                 }
 
                 // Update the Y position for the next item
-                currentY += (itemNameHeight + 5);
+                currentY += itemHeight;
 
                 SDL_DestroyTexture(itemNameTexture);
 
@@ -261,12 +269,12 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                 // Input Listeners
                 //=================
                 
-                if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(itemNameRect, rect.x)) {
+                if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(itemRect, rect.x)) {
                     player->removeItemFromInventory(item);
                     InputManager::instance().deactivateKey(SDLK_a);
                 }
 
-                if (InputManager::instance().isLeftClicked() && isMouseHovering(itemNameRect, rect.x)) {
+                if (InputManager::instance().isLeftClicked() && isMouseHovering(itemRect, rect.x)) {
                     player->equipItem(item);
                     InputManager::instance().deactivateLeftClick();
                     UiManager::instance().renderEquipmentMenu();

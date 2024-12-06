@@ -5,6 +5,7 @@
 UiManager::UiManager() 
 : isInitialize(false), areMenusInitialize(false), isConsoleInitialize(false), isSpellsRendering(false),
   consoleDirty(true), gameDirty(true), menuDirty(true),
+  isInConsole(false), isInGame(false), isInMenu(false),
   forceConsoleRender(false), forceGameRender(false), forceMenuRender(false),
   isItemMenuOpen(false), isCharacterMenuOpen(false), isSpellMenuOpen(false)
 {}
@@ -70,6 +71,24 @@ void UiManager::updateRects(int windowWidth, int windowHeight) {
 }
 
 void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
+    // Reset hover states
+    if (isMouseHovering(consoleRect)) {
+        if (this->isInGame || this->isInMenu) {
+            resetRectsDisplay();
+        }
+        this->isInConsole = true;
+    } else if (isMouseHovering(gameRect)) {
+        if (this->isInConsole || this->isInMenu) {
+            resetRectsDisplay();
+        }
+        this->isInGame = true;
+    } else if (isMouseHovering(menuRect)) {
+        if (this->isInConsole || this->isInGame) {
+            resetRectsDisplay();
+        }
+        this->isInMenu = true;
+    }
+
     // Update console area if dirty
     if (consoleDirty) {
         //std::cout << "Console is behin updated" << std::endl;
@@ -166,6 +185,21 @@ bool UiManager::isMouseHovering(const SDL_Rect& rect) const {
     SDL_GetMouseState(&mouseX, &mouseY);
     return mouseX >= rect.x && mouseX <= rect.x + rect.w &&
            mouseY >= rect.y && mouseY <= rect.y + rect.h;
+}
+
+void UiManager::resetRectsDisplay() {
+    if (this->isInConsole) {
+        consoleDirty = true;
+        this->isInConsole = false;
+    }
+    else if (this->isInGame) {
+        gameDirty = true;
+        this->isInGame = false;
+    }
+    else if (this->isInMenu) {
+        menuDirty = true;
+        this->isInMenu = false;
+    }
 }
 
 //==================

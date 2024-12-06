@@ -1,6 +1,7 @@
 #include "MapManager.h"
+#include "../../Misc/RandomUtils.h"
 
-static bool DEBUG = false;
+static bool DEBUG = true;
 
 MapManager::MapManager()
 : bsp2(), c(0, 0, 0, 0), root(nullptr), rooms(), paths(), ascii_map()
@@ -18,8 +19,12 @@ void MapManager::generateMap(int width, int height, int iterations, float wRatio
     bsp2.createRooms(root, rooms);
     bsp2.createPaths(root, paths);
 
-    ascii_map = std::vector<std::vector<Cell>>(height, std::vector<Cell>(width, Cell('#', {255, 255, 255, 255})));
+    ascii_map = std::vector<std::vector<Cell>>(height, std::vector<Cell>(width, Cell(0, 0, '#', {100, 100, 100, 255})));
     bsp2.generateMap(rooms, paths, ascii_map);
+}
+
+void MapManager::removeCharacter(int dx, int dy) {
+    this->ascii_map[dy][dx].removeCharacter();
 }
 
 //=========
@@ -146,8 +151,10 @@ void MapManager::addEnemies(std::vector<Enemy*> enemies)
     }
 
     for (auto& enemy : enemies) {
+        // Get random number
+        int random = RandomUtils::getRandomNumber(0, rooms.size() - 1);
         // Pick a random room
-        const Room& room = rooms[rand() % rooms.size()];
+        const Room& room = rooms[random];
         // Place randomly the enemy in the room
         int x = room.x + rand() % room.w;
         int y = room.y + rand() % room.h;
@@ -170,6 +177,14 @@ void MapManager::moveCharacterInMap(Character* character, int dx, int dy)
     ascii_map[old_y][old_x].resetCell();
     ascii_map[y][x].addCharacter(character);
     ascii_map[y][x].currentColor = character->getColor();
+}
+
+bool MapManager::canCharacterMove(Character* character, int dx, int dy)
+{
+    int x = character->getXPosition();
+    int y = character->getYPosition();
+
+    return ascii_map[y + dy][x + dx].isWalkable && !ascii_map[y + dy][x + dx].hasCharacter();
 }
 
 //=========

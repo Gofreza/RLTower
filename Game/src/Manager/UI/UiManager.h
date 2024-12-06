@@ -86,6 +86,11 @@ private:
     bool gameDirty;
     bool menuDirty;
 
+    // MousePosition
+    bool isInConsole;
+    bool isInGame;
+    bool isInMenu;
+
     // Force
     bool forceConsoleRender;
     bool forceGameRender;
@@ -136,6 +141,7 @@ private:
     void updateRects(int windowWidth, int windowHeight);
 
     bool isMouseHovering(const SDL_Rect& rect) const;
+    void resetRectsDisplay();
 
     void loadTileset(SDL_Renderer* renderer, const char* path);
     void initializeTiles();

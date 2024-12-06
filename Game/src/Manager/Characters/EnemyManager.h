@@ -3,6 +3,12 @@
 #include <map>
 #include "../../Character/Enemy.h"
 
+/**
+ * @brief Manager for the enemies
+ * It loads the enemies from a file and allow to get a
+ * copy of an enemy based on its id when needed in
+ * the game.
+ */
 class EnemyManager
 {
 public:
@@ -18,8 +24,6 @@ public:
 
     std::map<int, Enemy*>& getEnemies();
     Enemy* getEnemy(int id);
-
-    void update();
 private:
     bool isInitialized;
     int enemyCount;

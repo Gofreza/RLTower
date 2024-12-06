@@ -1,7 +1,8 @@
 #include "Cell.h"
 
-Cell::Cell(char baseSymbol, SDL_Color baseColor)
-: baseSymbol(baseSymbol), currentSymbol(baseSymbol),
+Cell::Cell(int x, int y, char baseSymbol, SDL_Color baseColor)
+: x(x), y(y),
+  baseSymbol(baseSymbol), currentSymbol(baseSymbol),
   character(nullptr),
   item(nullptr),
   isWalkable(false),
@@ -76,6 +77,26 @@ Item* Cell::getItem() const
 
 char Cell::getSymbol() const {
     return currentSymbol;
+}
+
+void Cell::setX(int x)
+{
+    this->x = x;
+}
+
+int Cell::getX() const
+{
+    return x;
+}
+
+void Cell::setY(int y)
+{
+    this->y = y;
+}
+
+int Cell::getY() const
+{
+    return y;
 }
 
 Cell::~Cell()

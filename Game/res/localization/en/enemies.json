@@ -28,6 +28,8 @@
             "money": [0, 0, 10],
             "resistances": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             "equipments": [0, -1, -1, -1, -1, -1, -1, -1, -1],
+            "desires": [0, 4, 5],
+            "disgusts": [1, 2, 3],
             "aggression": 1,
             "fear": 1,
             "desire": 1,

@@ -14,7 +14,7 @@
 #include "../Object/Equipment/Amulet.h"
 #include "../Object/Misc/Consumable.h"
 #include "../Object/Misc/Containers.h"
-#include "GroupType.h"
+#include "../Enum/GroupType.h"
 
 class Character
 {
@@ -114,6 +114,10 @@ protected:
     float soundResistance;
     float illusionResistance;
 
+    // Desire
+    std::vector<int> desires;
+    std::vector<int> disgusts;
+
     // Insert status effect here
     // Struct with a name and the modified stats
 
@@ -121,8 +125,9 @@ public:
     Character(const std::string& name, SDL_Color color, GroupType group, float hp, int mana, int energy, int stamina, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
-            const char symbol);
-    ~Character();
+            const char symbol,
+            std::vector<int> desires, std::vector<int> disgusts);
+    virtual ~Character();
 
     // Name
     const std::string& getName() const;
@@ -131,6 +136,10 @@ public:
     // Color
     SDL_Color getColor() const;
     void setColor(SDL_Color newColor);
+
+    // Group
+    GroupType getGroupType() const;
+    void setGroupType(GroupType newGroup);
 
     // Position
     int getXPosition() const;
@@ -145,7 +154,8 @@ public:
 
     // Next
     void updateStatsDependants();
-    void update();
+    void updateProgress();
+    virtual bool update() = 0;
 
     int getGold() const;
     void setGold(int gold);
@@ -282,6 +292,11 @@ public:
     void setSoundResistance(float newSoundResistance);
     float getIllusionResistance() const;
     void setIllusionResistance(float newIllusionResistance);
+
+    void setDesire(std::vector<int> newDesire);
+    std::vector<int> getDesire() const;
+    void setDisgust(std::vector<int> newDisgust);
+    std::vector<int> getDisgust() const;
 private:
     bool equipWeapons(Item* weapon);
     void unequipLeftWeapon();

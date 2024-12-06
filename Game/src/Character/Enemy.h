@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Character.h"
-#include "GroupType.h"
+#include "../Struct/AIDecision.h"
 
 class Enemy : public Character 
 {
@@ -11,13 +11,13 @@ public:
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
+            std::vector<int> desire, std::vector<int> disgust,
             int minSpawnLevel, int maxSpawnLevel, int value,
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc);
     Enemy(const Enemy& enemy);
     ~Enemy();
 
-    void check();
-    void update();
+    bool update() override;
     int getValue() const;
 
     virtual Enemy* clone() const;
@@ -33,4 +33,6 @@ private:
     float bascDesire;
     float basicWander;
     float basicMisc;
+    
+    AIDecision check();
 };

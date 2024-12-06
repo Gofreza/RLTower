@@ -47,6 +47,16 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
             std::string symbol = enemyJson.value("symbol", "b");
             char c = symbol[0];
 
+            // Desire
+            std::vector<int> desires;
+            for (const auto& element : enemyJson["desires"]) {
+                desires.push_back(element.get<int>());
+            }
+            std::vector<int> disgusts;
+            for (const auto& element : enemyJson["disgusts"]) {
+                disgusts.push_back(element.get<int>());
+            }
+
             // Create the enemy
             Enemy* enemy = new Enemy(
                 enemyJson.value("name", "Unknown"),
@@ -67,6 +77,8 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
                 enemyJson.value("constitution", 0),
                 enemyJson.value("luck", 0),
                 c,
+                desires,
+                disgusts,
                 enemyJson.value("minSpawnLevel", 0),
                 enemyJson.value("maxSpawnLevel", 0),
                 enemyJson.value("value", 0),
@@ -129,16 +141,6 @@ void EnemyManager::initialize(std::vector<Enemy*>& enemies, int towerLevel, int 
 void EnemyManager::addEnemy(Enemy* enemy) {
     enemies[enemyCount] = enemy;
     enemyCount++;
-}
-
-void EnemyManager::update() {
-    for (auto& [id, enemy] : enemies) {
-        enemy->check();
-    }
-
-    for (auto& [id, enemy] : enemies) {
-        enemy->update();
-    }
 }
 
 std::map<int, Enemy*>& EnemyManager::getEnemies() {

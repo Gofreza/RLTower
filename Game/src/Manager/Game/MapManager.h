@@ -13,6 +13,7 @@ public:
     }
 
     void generateMap(int width, int height, int iterations, float wRatio = 0.45f, float hRatio = 0.45f, bool discardByRatio = true);
+    void removeCharacter(int dx, int dy);
 
     void addPlayer(Player* player);
     void movePlayerInMap(Player* player, int dx, int dy);
@@ -20,6 +21,7 @@ public:
 
     void addEnemies(std::vector<Enemy*> enemies);
     void moveCharacterInMap(Character* character, int dx, int dy);
+    bool canCharacterMove(Character* character, int dx, int dy);
 
     const std::vector<std::vector<Cell>>& getAsciiMap() const;
     

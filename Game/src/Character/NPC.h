@@ -10,6 +10,9 @@ public:
     NPC(const std::string& name, SDL_Color color, GroupType group, float hp, int mana, int energy, int stamina, int fov, int speed,
         int phyDamage, int magDamage, int strength, int dexterity,
         int intelligence, int wisdom, int constitution, int luck,
-        const char symbol);
+        const char symbol,
+        std::vector<int> desires, std::vector<int> disgusts);
     ~NPC();
+
+    bool update() override;
 };

@@ -85,6 +85,7 @@ namespace Utils {
     SDL_Color borderColor = {255, 255, 255, 255}; // White border
     SDL_Color textColor = {255, 255, 255, 255};  // White text
     SDL_Color hoverColor = {215, 215, 215, 255}; // Grey text
+    SDL_Color hoverBackColor = {120, 120, 120, 255}; // Grey text
     SDL_Color hpBarBorderColor = {255, 255, 255, 255}; // White HP bar border
     SDL_Color hpFillColor = {255, 0, 0, 255};    // Red for HP fill
     SDL_Color manaBarBorderColor = {255, 255, 255, 255}; // White Mana bar border

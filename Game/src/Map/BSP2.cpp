@@ -59,7 +59,7 @@ void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::
                         static_cast<Uint8>(std::max(0, map[i][j].baseColor.b - 50)),
                         map[i][j].baseColor.a // Assuming alpha channel remains unchanged
                     };
-                    map[i][j] = Cell('.', color);
+                    map[i][j] = Cell(cellPos.second, cellPos.first, '.', color);
                     visitedCells.insert(cellPos);
                 }
             }
@@ -80,10 +80,18 @@ void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::
                         static_cast<Uint8>(std::max(0, map[i][j].baseColor.b - 50)),
                         map[i][j].baseColor.a // Assuming alpha channel remains unchanged
                     };
-                    map[i][j] = Cell('.', color);
+                    map[i][j] = Cell(cellPos.second, cellPos.first, '.', color);
                     visitedCells.insert(cellPos);
                 }
             }
+        }
+    }
+
+    // Browse through the map and set cells position
+    for (size_t i = 0; i < map.size(); ++i) {
+        for (size_t j = 0; j < map[i].size(); ++j) {
+            map[i][j].setX(j);
+            map[i][j].setY(i);
         }
     }
 }

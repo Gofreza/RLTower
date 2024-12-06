@@ -1,13 +1,15 @@
 #include "Enemy.h"
+#include "../Manager/Game/MapManager.h"
 
 Enemy::Enemy(const std::string& name, SDL_Color color, GroupType group, 
             float hp, int mana, int energy, int stamina, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
+            std::vector<int> desire, std::vector<int> disgust,
             int minSpawnLevel, int maxSpawnLevel, int value,
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc)
- : Character(name, color, group, hp, mana, energy, stamina, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol),
+ : Character(name, color, group, hp, mana, energy, stamina, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desire, disgust),
     minSpawnLevel(minSpawnLevel), maxSpawnLevel(maxSpawnLevel), value(value),
     basicAggression(basicAggression), basicFear(basicFear), bascDesire(bascDesire), basicWander(basicWander), basicMisc(basicMisc)
 {
@@ -24,14 +26,28 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::check()
+AIDecision Enemy::check()
 {
-    // Check the enemy
+    // Check the enemy, see it's state and what will it's next move be
+    return AIDecision();
 }
 
-void Enemy::update()
+bool Enemy::update()
 {
-    // Update the enemy
+    AIDecision decision = this->check();
+    // Move, attack, etc
+    int dx = RandomUtils::getRandomNumber(-1, 1);
+    int dy = RandomUtils::getRandomNumber(-1, 1);
+    if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+        this->move(dx, dy);
+        MapManager::instance().moveCharacterInMap(this, dx, dy);
+        this->hasMoved = true;
+    }
+
+    // Update hasMoved and hasAttack and call updateProgress
+    Character::updateProgress();
+    
+    return true;
 }
 
 int Enemy::getValue() const {
@@ -95,5 +111,15 @@ std::ostream& operator<<(std::ostream& os, const Enemy& enemy)
         os << "Ring 2: " << enemy.getRing2()->getName() << std::endl;
     if (enemy.getAmulet() != nullptr)
         os << "Amulet: " << enemy.getAmulet()->getName() << std::endl;
+    os << "Desires: ";
+    for (auto& desire : enemy.desires) {
+        os << desire << " ";
+    }
+    os << std::endl;
+    os << "Disgusts: ";
+    for (auto& disgust : enemy.disgusts) {
+        os << disgust << " ";
+    }
+    os << std::endl;
     return os;
 }
