@@ -248,10 +248,7 @@ std::vector<Item*>& Character::getInventory() {
     return inventory;
 }
 
-void Character::removeItemFromInventory(Item* item) {
-    // Drop item from the inventory
-
-    // Placeholder
+void Character::removeItemFromInventory(Item* item, bool drop) {
     if (isEquipedItem(item)) {
         unequipItem(item);
     }
@@ -259,7 +256,15 @@ void Character::removeItemFromInventory(Item* item) {
     if (it != inventory.end()) {
         inventory.erase(it);
     }
-    delete (item);
+    // Update weight
+    this->weight -= item->getWeight();
+    if (this->weight > this->maxWeight) {
+        overweight = true;
+        updateStatsDependants();
+    }
+    if (!drop) {
+        delete (item);
+    }
 }
 
 //===============
@@ -797,10 +802,8 @@ Item* Character::getAmulet() const {
 bool Character::useConsumable(Item* item) {
     Consumable* c = static_cast<Consumable*>(item);
     c->use(this);
-    auto it = std::find(inventory.begin(), inventory.end(), item);
-    if (it != inventory.end()) {
-        inventory.erase(it);
-    }
+    // Remove item from inventory
+    removeItemFromInventory(item, false);
     return true;
 }
 

@@ -12,7 +12,7 @@ public:
         const std::string& description,
         ItemType type, 
         WeaponType wType,
-        int weight, 
+        float weight, 
         int durability, 
         RarityType rarity, 
         int phyDamage,

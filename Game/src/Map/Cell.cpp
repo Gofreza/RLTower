@@ -46,8 +46,13 @@ void Cell::setSymbol(char symbol)
 
 void Cell::resetCell()
 {
-    currentSymbol = baseSymbol;
-    currentColor = baseColor;
+    if (!item) {
+        currentSymbol = baseSymbol;
+        currentColor = baseColor;
+    } else {
+        currentSymbol = to_char(item->getType());
+        currentColor = to_color(item->getType());
+    }
 }
 
 void Cell::addEffect(Effect* effect)
@@ -65,14 +70,21 @@ const std::vector<Effect*>& Cell::getEffects() const
     return effects;
 }
 
-void Cell::setItem(Item* item)
-{
+void Cell::setItem(Item* item) {
     this->item = item;
+    this->currentSymbol = to_char(item->getType());
+    this->currentColor = to_color(item->getType());
 }
 
-Item* Cell::getItem() const
-{
+Item* Cell::takeItem() {
+    this->resetCell();
+    auto item = this->item;
+    this->item = nullptr;
     return item;
+}
+
+bool Cell::hasItem() const {
+    return item != nullptr;
 }
 
 char Cell::getSymbol() const {

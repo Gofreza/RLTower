@@ -24,7 +24,8 @@ public:
     const std::vector<Effect*>& getEffects() const;
 
     void setItem(Item* item);
-    Item* getItem() const;
+    Item* takeItem();
+    bool hasItem() const;
 
     char getSymbol() const;
 

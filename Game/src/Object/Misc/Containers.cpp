@@ -1,7 +1,7 @@
 #include "Containers.h"
 #include "../../Character/Character.h"
 
-Containers::Containers(short id, std::string name, std::string description, ItemType type, int weight, RarityType rarity,
+Containers::Containers(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
     std::list<short> itemsIds, float weightReduce)
 : Misc(id, name, description, type, weight, rarity),
 acceptedItems(itemsIds), weightReduce(weightReduce / 100)
@@ -28,12 +28,15 @@ void Containers::use(Character* character) {
         if (std::find(acceptedItems.begin(), acceptedItems.end(), itemId) != acceptedItems.end()) {
             // The item is accepted, add it to the container's items list
             items.push_back(item);
-
+            
             // Update weigth and remove the item from the inventory
             // Deduce weight of items
             character->setWeight(character->getWeight() - item->getWeight());
-            // Put back the reduce weight
-            character->setWeight(character->getWeight() + (item->getWeight() * weightReduce));
+            // Update weight of container and put it back
+            float newWeight = this->getWeight() + (item->getWeight() * weightReduce);
+            character->setWeight(character->getWeight() - this->getWeight());
+            this->setWeight(newWeight);
+            character->setWeight(character->getWeight() + newWeight);
             it = inventory.erase(it); 
         } else {
             ++it; 

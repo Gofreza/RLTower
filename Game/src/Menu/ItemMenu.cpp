@@ -89,7 +89,11 @@ void ItemMenu::render(const SDL_Rect& rect, Item* item) {
     SDL_DestroyTexture(typeTextTexture);
 
     // Weight
-    std::string weightText = LocalizationManager::instance().getText("item_weight") + std::to_string(item->getWeight());
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(1) << item->getWeight();
+    std::string weightStr = stream.str();
+
+    std::string weightText = LocalizationManager::instance().getText("item_weight") + weightStr;
     SDL_Texture* weightTextTexture = Utils::loadTextTexture(renderer, font, weightText, Utils::textColor);
     if (weightTextTexture) {
         SDL_QueryTexture(weightTextTexture, nullptr, nullptr, &textWidth, &textHeight);

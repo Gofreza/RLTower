@@ -10,6 +10,9 @@ MapManager::MapManager()
 
 void MapManager::generateMap(int width, int height, int iterations, float wRatio, float hRatio, bool discardByRatio)
 {   
+    this->width = width;
+    this->height = height;
+
     bsp2.setWidthRatio(wRatio);
     bsp2.setHeightRatio(hRatio);
     bsp2.setDiscardByRatio(discardByRatio);
@@ -190,6 +193,38 @@ bool MapManager::canCharacterMove(Character* character, int dx, int dy)
 //=========
 // Miscs
 //=========
+
+bool MapManager::dropItem(int x, int y, Item* item) {
+    // Check if the current position already has an item
+    if (ascii_map[y][x].hasItem()) {
+        // Directions for adjacent cells: up, down, left, right, and diagonals
+        static const int dx[] = { -1,  0,  1, -1, 1, -1, 0,  1 };
+        static const int dy[] = { -1, -1, -1,  0, 0,  1, 1,  1 };
+
+        // Try to find an empty adjacent cell
+        for (int i = 0; i < 8; ++i) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            // Ensure the position is within bounds
+            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                // Check if the cell is empty
+                if (!ascii_map[ny][nx].hasItem() && ascii_map[ny][nx].isWalkable) {
+                    ascii_map[ny][nx].setItem(item);
+                    return true;
+                }
+            }
+        }
+
+        // If no empty cell is found
+        Logger::instance().warning(LocalizationManager::instance().getText("no_empty_cell_found"));
+        return false;
+    }
+
+    // If the current position is empty, place the item
+    ascii_map[y][x].setItem(item);
+    return true;
+}
 
 void MapManager::bresenham(int x1,
     int y1,

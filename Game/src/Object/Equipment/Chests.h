@@ -5,7 +5,7 @@
 class Chests : public Equipment
 {
 public:
-    Chests(short id, std::string name, const std::string& description, ItemType type, int weight, int durability, RarityType rarity, int phyDefense, int magDefense, 
+    Chests(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity, int phyDefense, int magDefense, 
         std::vector<Effect*> effects = std::vector<Effect*>{},
         std::array<int, 5> requirements = std::array<int, 5>{-1, -1, -1, -1, -1});
     ~Chests();

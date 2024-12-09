@@ -270,8 +270,11 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                 //=================
                 
                 if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(itemRect, rect.x)) {
-                    player->removeItemFromInventory(item);
                     InputManager::instance().deactivateKey(SDLK_a);
+                    bool isDrop = MapManager::instance().dropItem(player->getXPosition(), player->getYPosition(), item);
+                    if (isDrop) {
+                        player->removeItemFromInventory(item, true);
+                    }
                 }
 
                 if (InputManager::instance().isLeftClicked() && isMouseHovering(itemRect, rect.x)) {

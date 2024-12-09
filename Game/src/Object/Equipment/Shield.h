@@ -11,7 +11,7 @@ public:
         std::string name, 
         const std::string& description,
         ItemType type, 
-        int weight, 
+        float weight, 
         int durability, 
         RarityType rarity, 
         int phyDefense, int magDefense,

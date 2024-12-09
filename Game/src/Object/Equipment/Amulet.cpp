@@ -2,7 +2,7 @@
 #include "../../Character/Character.h"
 #include "../../Character/Player.h"
 
-Amulet::Amulet(short id, std::string name, const std::string& description, ItemType type, int weight, int durability, RarityType rarity,
+Amulet::Amulet(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity,
             int physicalDefense, int magicalDefense,
             std::vector<Effect*> effects,
             std::array<int, 5> requirements)

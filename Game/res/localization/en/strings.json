@@ -123,5 +123,6 @@
     "not_enough_dexterity": "You don't have enough dexterity.",
     "not_enough_intelligence": "You don't have enough intelligence.",
     "not_enough_wisdom": "You don't have enough wisdom.",
-    "not_enough_constitution": "You don't have enough constitution."
+    "not_enough_constitution": "You don't have enough constitution.",
+    "no_empty_cell_found": "No place to drop the item."
 }

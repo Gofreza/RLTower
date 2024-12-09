@@ -9,7 +9,7 @@ class Character;
 class Consumable : public Misc
 {
 public:
-    Consumable(short id, std::string name, std::string description, ItemType type, int weight, RarityType rarity,
+    Consumable(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
             std::vector<Effect*> effects);
     Consumable(const Consumable& consumable);
     ~Consumable();

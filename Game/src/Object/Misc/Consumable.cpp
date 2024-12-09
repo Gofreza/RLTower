@@ -2,7 +2,7 @@
 
 #include "../../Character/Character.h"
 
-Consumable::Consumable(short id, std::string name, std::string description, ItemType type, int weight, RarityType rarity,
+Consumable::Consumable(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
             std::vector<Effect*> effects) 
 : Misc(id, name, description, type, weight, rarity, effects)
 {

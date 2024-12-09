@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-Projectile::Projectile(short id, const std::string& name, const std::string& description, ItemType type, int weight, RarityType rarity,
+Projectile::Projectile(short id, const std::string& name, const std::string& description, ItemType type, float weight, RarityType rarity,
                     int damage, DamageType damageType)
 : Misc(id, name, description, type, weight, rarity), damage(damage), damageType(damageType)
 {

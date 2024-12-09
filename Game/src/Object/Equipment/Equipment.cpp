@@ -1,7 +1,7 @@
 #include "Equipment.h"
 #include "../../Character/Character.h"
 
-Equipment::Equipment(short id, std::string name, const std::string& description, ItemType type, int weight, RarityType rarity, int durability,
+Equipment::Equipment(short id, std::string name, const std::string& description, ItemType type, float weight, RarityType rarity, int durability,
                     int phyDefense, int magDefense,
                     std::vector<Effect*> effects,
                     std::array<int, 5> requirements)

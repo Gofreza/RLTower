@@ -167,7 +167,7 @@ public:
     void addItemInInventory(Item* item);
     void addBackItemInInventory(Item* item);
     std::vector<Item*>& getInventory();
-    void removeItemFromInventory(Item* item);
+    void removeItemFromInventory(Item* item, bool drop);
     
     void addSpellInSpellBook(Spell* spell);
     std::vector<Spell*> getSpells() const;

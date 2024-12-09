@@ -1,6 +1,6 @@
 #include "Item.h"
 
-Item::Item(short id, std::string name, std::string description, ItemType type, int weight, RarityType rarity,
+Item::Item(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
         std::vector<Effect*> effects,
         std::array<int, 5> requirements)
 : id(id), name(name), description(description), type(type), weight(weight), rarity(rarity),
@@ -32,8 +32,12 @@ ItemType Item::getType() const {
     return this->type;
 }
 
-int Item::getWeight() const {
+float Item::getWeight() const {
     return this->weight;
+}
+
+void Item::setWeight(float weight) {
+    this->weight = weight;
 }
 
 RarityType Item::getRarity() const {

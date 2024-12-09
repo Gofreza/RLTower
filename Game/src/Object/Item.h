@@ -11,7 +11,7 @@
 class Item
 {
 public:
-    Item(short id, std::string name, std::string description, ItemType type, int weight, RarityType rarity,
+    Item(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
         std::vector<Effect*> effects = std::vector<Effect*>{},
         std::array<int, 5> requirements = {-1, -1, -1, -1, -1});
     virtual ~Item();
@@ -20,7 +20,8 @@ public:
     std::string getName() const;
     std::string getDescription() const;
     ItemType getType() const;
-    int getWeight() const;
+    float getWeight() const;
+    void setWeight(float weight);
     RarityType getRarity() const;
     const std::array<int, 5>& getRequirements() const;
 
@@ -38,7 +39,7 @@ private:
     std::string name;
     std::string description;
     ItemType type;
-    int weight;
+    float weight;
     RarityType rarity;
 
     std::array<int, 5> requirements;

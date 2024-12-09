@@ -23,13 +23,16 @@ public:
     void moveCharacterInMap(Character* character, int dx, int dy);
     bool canCharacterMove(Character* character, int dx, int dy);
 
+    bool dropItem(int x, int y, Item* item);
+
     const std::vector<std::vector<Cell>>& getAsciiMap() const;
-    
     void printDungeonMap();
 
 private:   
     MapManager();
     ~MapManager();
+    
+    int width, height;
 
     BSP2 bsp2;
 

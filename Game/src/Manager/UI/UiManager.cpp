@@ -538,7 +538,6 @@ void UiManager::loadTileset(SDL_Renderer* renderer, const char* path) {
     SDL_FreeSurface(surface);
 }
 
-
 // Function to initialize the tiles array
 void UiManager::initializeTiles() {
     tiles.resize(256); // Resize the vector to hold 256 tiles
