@@ -22,6 +22,7 @@ public:
         int length,
         bool magical,
         int phyDefense, int magDefense,
+        std::string imagePath,
         std::vector<Effect*> effects,
         std::array<int, 5> requirements);
     ~Weapon();

@@ -4,14 +4,15 @@
 
 Amulet::Amulet(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity,
             int physicalDefense, int magicalDefense,
+            std::string imagePath,
             std::vector<Effect*> effects,
             std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, physicalDefense, magicalDefense, effects, requirements)
+: Equipment(id, name, description, type, weight, rarity, durability, physicalDefense, magicalDefense, imagePath, effects, requirements)
 {
 }
 
 Amulet::Amulet(const Amulet& amulet)
-: Equipment(amulet.getId(), amulet.getName(), amulet.getDescription(), amulet.getType(), amulet.getWeight(), amulet.getRarity(), amulet.getDurability(), amulet.getPhyDefense(), amulet.getMagDefense(), amulet.getEffects(), amulet.getRequirements())
+: Equipment(amulet.getId(), amulet.getName(), amulet.getDescription(), amulet.getType(), amulet.getWeight(), amulet.getRarity(), amulet.getDurability(), amulet.getPhyDefense(), amulet.getMagDefense(), amulet.getImagePath(), amulet.getEffects(), amulet.getRequirements())
 {
 }
 

@@ -2,13 +2,14 @@
 #include "../../Character/Character.h"
 
 Containers::Containers(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
+    std::string imagePath,
     std::list<short> itemsIds, float weightReduce)
-: Misc(id, name, description, type, weight, rarity),
+: Misc(id, name, description, type, weight, rarity, imagePath),
 acceptedItems(itemsIds), weightReduce(weightReduce / 100)
 {}
 
 Containers::Containers(const Containers& containers) 
-: Misc(containers.getId(), containers.getName(), containers.getDescription(), containers.getType(), containers.getWeight(), containers.getRarity(), containers.getEffects()),
+: Misc(containers.getId(), containers.getName(), containers.getDescription(), containers.getType(), containers.getWeight(), containers.getRarity(), containers.getImagePath(), containers.getEffects()),
 items(containers.items), acceptedItems(containers.acceptedItems), weightReduce(containers.weightReduce)
 {}
 

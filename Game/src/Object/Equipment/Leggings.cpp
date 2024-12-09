@@ -3,14 +3,15 @@
 
 Leggings::Leggings(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity,
                int phyDefense, int magDefense,
+               std::string imagePath,
                std::vector<Effect*> effects,
                std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, effects, requirements)
+: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, imagePath, effects, requirements)
 {
 }
 
 Leggings::Leggings(const Leggings& leggings)
-: Equipment(leggings.getId(), leggings.getName(), leggings.getDescription(), leggings.getType(), leggings.getWeight(), leggings.getRarity(), leggings.getDurability(), leggings.getPhyDefense(), leggings.getMagDefense(), leggings.getEffects(), leggings.getRequirements())
+: Equipment(leggings.getId(), leggings.getName(), leggings.getDescription(), leggings.getType(), leggings.getWeight(), leggings.getRarity(), leggings.getDurability(), leggings.getPhyDefense(), leggings.getMagDefense(), leggings.getImagePath(), leggings.getEffects(), leggings.getRequirements())
 {
 }
 

@@ -53,6 +53,8 @@ public:
     void closeSpellMenu();
 
     void renderConsole(SDL_Renderer* renderer, TTF_Font* font, const SDL_Rect& rect);
+    void triggerRenderItemDialog(Item* item);
+    void triggerRenderCharacterDialog(Character* character);
 
     void renderGame(SDL_Renderer* renderer, const SDL_Rect& rect);
 
@@ -98,6 +100,12 @@ private:
     bool forceConsoleRender;
     bool forceGameRender;
     bool forceMenuRender;
+
+    // Console trigger
+    bool isItemInDialog;
+    Item* dialogItem;
+    bool isCharacterInDialog;
+    Character* dialogCharacter;
 
     // Rect
     SDL_Rect consoleRect;

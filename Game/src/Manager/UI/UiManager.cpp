@@ -7,6 +7,7 @@ UiManager::UiManager()
   consoleDirty(true), gameDirty(true), menuDirty(true),
   isInConsole(false), isInGame(false), isInMenu(false), isInMenuStatus(false), isInMenuEquipment(false), isInMenuInventory(false),
   forceConsoleRender(false), forceGameRender(false), forceMenuRender(false),
+  isItemInDialog(false), isCharacterInDialog(false),
   isItemMenuOpen(false), isCharacterMenuOpen(false), isSpellMenuOpen(false)
 {}
 
@@ -484,11 +485,32 @@ void UiManager::renderConsole(SDL_Renderer* renderer, TTF_Font* font, const SDL_
 
         // Render the menus
         consoleMenu->render(consoleRect);
-        dialogMenu->render(dialogRect);
+
+        if (isItemInDialog) {
+            dialogMenu->render(dialogRect, dialogItem);
+            isItemInDialog = false;
+        } else if (isCharacterInDialog) {
+            dialogMenu->render(dialogRect, dialogCharacter);
+            isCharacterInDialog = false;
+        } else {
+            dialogMenu->render(dialogRect);
+        }
         
     } else {
         throw std::runtime_error("UiManager is not initialized.");
     }
+}
+
+void UiManager::triggerRenderItemDialog(Item* item) {
+    isItemInDialog = true;
+    dialogItem = item;
+    consoleDirty = true;
+}
+
+void UiManager::triggerRenderCharacterDialog(Character* character) {
+    isCharacterInDialog = true;
+    dialogCharacter = character;
+    consoleDirty = true;
 }
 
 //==================

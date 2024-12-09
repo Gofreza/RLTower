@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <filesystem>
 
 namespace Utils {
     SDL_Texture* loadTexture(const std::string& path, SDL_Renderer* renderer) {
@@ -59,11 +60,22 @@ namespace Utils {
     /**
      * Get the current working directory of the application
      */
-    void getCWD() {
+    std::string getCWD() {
         char cwd[1024];
         if (getcwd(cwd, sizeof(cwd)) != nullptr) {
             std::cout << "Current working directory: " << cwd << std::endl;
         }
+        return std::string(cwd);
+    }
+
+    /**
+     * Get the full path of an image
+     */
+    // TODO: Change path when packaging the game
+    std::string getImagePath(const std::string& imageName) {
+        std::string cwd = std::filesystem::canonical(std::filesystem::current_path()).string();
+        std::string imagePath = cwd + "/../res/images/" + imageName;
+        return imagePath;
     }
 
     /**
@@ -80,6 +92,13 @@ namespace Utils {
         // Check if the adjusted mouse position is within the rect
         return (adjustedX >= rect.x && adjustedX < rect.x + rect.w &&
                 adjustedY >= rect.y && adjustedY < rect.y + rect.h);
+    }
+
+    /**
+     * Calculate the distance between two points
+     */
+    float distance(int x1, int y1, int x2, int y2) {
+        return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     }
 
     SDL_Color borderColor = {255, 255, 255, 255}; // White border

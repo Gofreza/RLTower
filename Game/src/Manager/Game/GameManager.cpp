@@ -146,6 +146,21 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                     SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
                     SDL_RenderFillRect(renderer, &dest);
                     SDL_RenderCopy(renderer, tileset, &src, &dest);
+                    
+                    Cell &cell = MapManager::instance().getCell(map_x, map_y);
+                    if (cell.hasItem()) {
+                        UiManager::instance().triggerRenderItemDialog(cell.getItem());
+                        if (InputManager::instance().isLeftClicked() && Utils::distance(player_x, player_y, map_x, map_y) <= 1.5) {
+                            InputManager::instance().deactivateLeftClick();
+                            player->addItemInInventory(cell.takeItem());
+                            UiManager::instance().updateMenu(true);
+                            UiManager::instance().updateGame(true);
+                        }
+                    } else if (cell.hasCharacter()) {
+                        UiManager::instance().triggerRenderCharacterDialog(cell.getCharacter());
+                    } else {
+                        UiManager::instance().updateConsole(true);
+                    }
                 }    
             }
         }

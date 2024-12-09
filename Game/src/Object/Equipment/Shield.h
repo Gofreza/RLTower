@@ -16,6 +16,7 @@ public:
         RarityType rarity, 
         int phyDefense, int magDefense,
         int parryChance,
+        std::string imagePath,
         std::vector<Effect*> effects,
         std::array<int, 5> requirements);
     ~Shield();

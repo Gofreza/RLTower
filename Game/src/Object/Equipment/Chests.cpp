@@ -3,14 +3,15 @@
 
 Chests::Chests(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity,
                int phyDefense, int magDefense,
+               std::string imagePath,
                std::vector<Effect*> effects,
                std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, effects, requirements)
+: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, imagePath, effects, requirements)
 {
 }
 
 Chests::Chests(const Chests& chests)
-: Equipment(chests.getId(), chests.getName(), chests.getDescription(), chests.getType(), chests.getWeight(), chests.getRarity(), chests.getDurability(), chests.getPhyDefense(), chests.getMagDefense(), chests.getEffects(), chests.getRequirements())
+: Equipment(chests.getId(), chests.getName(), chests.getDescription(), chests.getType(), chests.getWeight(), chests.getRarity(), chests.getDurability(), chests.getPhyDefense(), chests.getMagDefense(), chests.getImagePath(), chests.getEffects(), chests.getRequirements())
 {
 }
 

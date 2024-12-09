@@ -7,6 +7,7 @@ class Containers : public Misc
 {
 public:
     Containers(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
+            std::string imagePath,
             std::list<short> itemsIds,
             float weightReduce);
     ~Containers();

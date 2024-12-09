@@ -3,9 +3,10 @@
 
 Equipment::Equipment(short id, std::string name, const std::string& description, ItemType type, float weight, RarityType rarity, int durability,
                     int phyDefense, int magDefense,
+                    std::string imagePath,
                     std::vector<Effect*> effects,
                     std::array<int, 5> requirements)
-: Item(id, name, description, type, weight, rarity, effects, requirements), equiped(false), durability(durability), maxDurability(durability), phyDefense(phyDefense), magDefense(magDefense)
+: Item(id, name, description, type, weight, rarity, imagePath, effects, requirements), equiped(false), durability(durability), maxDurability(durability), phyDefense(phyDefense), magDefense(magDefense)
 {
 }
 

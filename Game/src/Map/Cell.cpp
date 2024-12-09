@@ -80,6 +80,11 @@ Item* Cell::takeItem() {
     this->resetCell();
     auto item = this->item;
     this->item = nullptr;
+    resetCell();
+    return item;
+}
+
+Item* Cell::getItem() const {
     return item;
 }
 

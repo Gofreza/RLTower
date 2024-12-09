@@ -17,14 +17,15 @@ Weapon::Weapon(short id,
             bool magical, 
             int phyDefense, 
             int magDefense, 
+            std::string imagePath,
             std::vector<Effect*> effects,
             std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, effects, requirements), wType(wType), phyDamage(phyDamage), magDamage(magDamage), damageType(damageType), twoHanded(twoHanded), length(length), magical(magical)
+: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, imagePath, effects, requirements), wType(wType), phyDamage(phyDamage), magDamage(magDamage), damageType(damageType), twoHanded(twoHanded), length(length), magical(magical)
 {
 }
 
 Weapon::Weapon(const Weapon& weapon)
-: Equipment(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getType(), weapon.getWeight(), weapon.getRarity(), weapon.getDurability(), weapon.getPhyDefense(), weapon.getMagDefense(), weapon.getEffects(), weapon.getRequirements()), 
+: Equipment(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getType(), weapon.getWeight(), weapon.getRarity(), weapon.getDurability(), weapon.getPhyDefense(), weapon.getMagDefense(), weapon.getImagePath(), weapon.getEffects(), weapon.getRequirements()), 
             wType(weapon.getWeaponType()), phyDamage(weapon.getPhyDamage()), magDamage(weapon.getMagDamage()), damageType(weapon.getDamageType()), twoHanded(weapon.isTwoHanded()), length(weapon.getLength()), magical(weapon.isMagical())
 {
 }

@@ -17,6 +17,7 @@
             "magical": false,
             "phyDefense": 0,
             "magDefense": 0,
+            "imagePath": "woodensword.png",
             "requirements": [1, 0, 0, 0, 0]
         },
         {
@@ -36,6 +37,7 @@
             "magical": false,
             "phyDefense": 0,
             "magDefense": 0,
+            "imagePath": "sturdyironsword.png",
             "requirements": [1, 0, 0, 0, 0]
         },
         {

@@ -26,6 +26,7 @@ public:
     bool dropItem(int x, int y, Item* item);
 
     const std::vector<std::vector<Cell>>& getAsciiMap() const;
+    Cell& getCell(int x, int y);
     void printDungeonMap();
 
 private:   

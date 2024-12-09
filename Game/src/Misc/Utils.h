@@ -11,9 +11,12 @@ namespace Utils {
     bool initSDL_TTF(TTF_Font*& font, const std::string& fontPath, int fontSize);
     SDL_Texture* loadTextTexture(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, SDL_Color color);
 
-    void getCWD();
+    std::string getCWD();
+    std::string getImagePath(const std::string& imageName);
 
     bool isMouseHovering(const SDL_Rect& rect, int renderTargetX, int renderTargetY);
+
+    float distance(int x1, int y1, int x2, int y2);
 
     // Define colors
     extern SDL_Color borderColor;

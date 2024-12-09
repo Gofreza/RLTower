@@ -307,6 +307,10 @@ const std::vector<std::vector<Cell>>& MapManager::getAsciiMap() const {
     return ascii_map;
 }
 
+Cell& MapManager::getCell(int x, int y) {
+    return ascii_map[y][x];
+}
+
 void MapManager::printDungeonMap() {
     for (const auto& row : ascii_map) {
         for (const auto& cell : row) {

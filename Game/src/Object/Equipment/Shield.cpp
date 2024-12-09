@@ -11,14 +11,15 @@ Shield::Shield(short id,
             int phyDefense, 
             int magDefense, 
             int parryChance, 
+            std::string imagePath,
             std::vector<Effect*> effects,
             std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, effects, requirements), parryChance(parryChance)
+: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, imagePath, effects, requirements), parryChance(parryChance)
 {
 }
 
 Shield::Shield(const Shield& shield)
-: Equipment(shield.getId(), shield.getName(), shield.getDescription(), shield.getType(), shield.getWeight(), shield.getRarity(), shield.getDurability(), shield.getPhyDefense(), shield.getMagDefense(), shield.getEffects(), shield.getRequirements()), 
+: Equipment(shield.getId(), shield.getName(), shield.getDescription(), shield.getType(), shield.getWeight(), shield.getRarity(), shield.getDurability(), shield.getPhyDefense(), shield.getMagDefense(), shield.getImagePath(), shield.getEffects(), shield.getRequirements()), 
             parryChance(shield.getParryChance())
 {
 }

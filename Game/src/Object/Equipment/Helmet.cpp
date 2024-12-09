@@ -3,14 +3,15 @@
 
 Helmet::Helmet(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity,
                int phyDefense, int magDefense,
+               std::string imagePath,
                std::vector<Effect*> effects,
                std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, effects, requirements)
+: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, imagePath, effects, requirements)
 {
 }
 
 Helmet::Helmet(const Helmet& helmet)
-: Equipment(helmet.getId(), helmet.getName(), helmet.getDescription(), helmet.getType(), helmet.getWeight(), helmet.getRarity(), helmet.getDurability(), helmet.getPhyDefense(), helmet.getMagDefense(), helmet.getEffects(), helmet.getRequirements())
+: Equipment(helmet.getId(), helmet.getName(), helmet.getDescription(), helmet.getType(), helmet.getWeight(), helmet.getRarity(), helmet.getDurability(), helmet.getPhyDefense(), helmet.getMagDefense(), helmet.getImagePath(), helmet.getEffects(), helmet.getRequirements())
 {
 }
 

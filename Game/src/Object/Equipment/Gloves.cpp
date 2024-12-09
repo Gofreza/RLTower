@@ -3,14 +3,15 @@
 
 Gloves::Gloves(short id, std::string name, const std::string& description, ItemType type, float weight, int durability, RarityType rarity,
                int phyDefense, int magDefense,
+               std::string imagePath,
                std::vector<Effect*> effects,
                std::array<int, 5> requirements)
-: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, effects, requirements)
+: Equipment(id, name, description, type, weight, rarity, durability, phyDefense, magDefense, imagePath, effects, requirements)
 {
 }
 
 Gloves::Gloves(const Gloves& gloves)
-: Equipment(gloves.getId(), gloves.getName(), gloves.getDescription(), gloves.getType(), gloves.getWeight(), gloves.getRarity(), gloves.getDurability(), gloves.getPhyDefense(), gloves.getMagDefense(), gloves.getEffects(), gloves.getRequirements())
+: Equipment(gloves.getId(), gloves.getName(), gloves.getDescription(), gloves.getType(), gloves.getWeight(), gloves.getRarity(), gloves.getDurability(), gloves.getPhyDefense(), gloves.getMagDefense(), gloves.getImagePath(), gloves.getEffects(), gloves.getRequirements())
 {
 }
 

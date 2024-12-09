@@ -30,7 +30,8 @@ void ItemMenu::render(const SDL_Rect& rect, Item* item) {
     };
 
     // Load the image from file
-    SDL_Surface* imgSurface = IMG_Load("../res/images/aef.png");
+    std::string imagePath = Utils::getImagePath(item->getImagePath());
+    SDL_Surface* imgSurface = IMG_Load(imagePath.c_str());
     if (!imgSurface) {
         std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
         return;

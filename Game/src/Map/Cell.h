@@ -25,6 +25,7 @@ public:
 
     void setItem(Item* item);
     Item* takeItem();
+    Item* getItem() const;
     bool hasItem() const;
 
     char getSymbol() const;

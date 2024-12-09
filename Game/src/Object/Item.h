@@ -12,6 +12,7 @@ class Item
 {
 public:
     Item(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
+        std::string imagePath = "default.png",
         std::vector<Effect*> effects = std::vector<Effect*>{},
         std::array<int, 5> requirements = {-1, -1, -1, -1, -1});
     virtual ~Item();
@@ -23,6 +24,7 @@ public:
     float getWeight() const;
     void setWeight(float weight);
     RarityType getRarity() const;
+    std::string getImagePath() const;
     const std::array<int, 5>& getRequirements() const;
 
     Item(const Item& item);
@@ -41,6 +43,7 @@ private:
     ItemType type;
     float weight;
     RarityType rarity;
+    std::string imagePath;
 
     std::array<int, 5> requirements;
 

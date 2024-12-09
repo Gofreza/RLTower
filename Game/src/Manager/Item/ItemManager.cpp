@@ -51,6 +51,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 itemJson.value("magical", false),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "Shield") {
@@ -65,6 +66,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
                                 itemJson.value("parryChance", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "Helmet") {
@@ -78,6 +80,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 getRarity(itemJson.value("rarity", "Poor")),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "Gloves") {
@@ -91,6 +94,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 getRarity(itemJson.value("rarity", "Poor")),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "ChestArmor") {
@@ -104,6 +108,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 getRarity(itemJson.value("rarity", "Poor")),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "LegArmor") {
@@ -117,6 +122,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 getRarity(itemJson.value("rarity", "Poor")),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "Ring") {
@@ -130,6 +136,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 getRarity(itemJson.value("rarity", "Poor")),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "Amulet") {
@@ -143,6 +150,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 getRarity(itemJson.value("rarity", "Poor")),
                                 itemJson.value("phyDefense", 0),
                                 itemJson.value("magDefense", 0),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})),
                                 itemJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1}));
             } else if (typeStr == "Consumable") {
@@ -153,6 +161,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 type,
                                 itemJson.value("weight", -1),
                                 getRarity(itemJson.value("rarity", "Poor")),
+                                itemJson.value("imagePath", "default.png"),
                                 EffectManager::instance().getEffect(itemJson.value("effect", std::list<std::string>{"None"})));
             } else if (typeStr == "Projectile") {
                 type = ItemType::Projectile;
@@ -162,6 +171,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                 type,
                                 itemJson.value("weight", -1),
                                 getRarity(itemJson.value("rarity", "Poor")),
+                                itemJson.value("imagePath", "default.png"),
                                 itemJson.value("damage", -1),
                                 getDamageType(itemJson.value("damageType", "None")));
             } else if (typeStr == "Container") {
@@ -172,6 +182,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
                                     type,
                                     itemJson.value("weight", -1),
                                     getRarity(itemJson.value("rarity", "Poor")),
+                                    itemJson.value("imagePath", "default.png"),
                                     itemJson.value("itemIds", std::list<short>{}),
                                     itemJson.value("weightReduce", 100));
             } else if (typeStr == "QuestItem") {

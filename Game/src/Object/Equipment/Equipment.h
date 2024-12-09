@@ -10,6 +10,7 @@ class Equipment : public Item
 public:
     Equipment(short id, std::string name, const std::string& description, ItemType type, float weight, RarityType rarity, int durability,
             int phyDefense, int magDefense,
+            std::string imagePath,
             std::vector<Effect*> effects = std::vector<Effect*>{},
             std::array<int, 5> requirement = std::array<int, 5>{-1, -1, -1, -1, -1});
     ~Equipment();

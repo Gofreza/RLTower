@@ -10,6 +10,7 @@ class Consumable : public Misc
 {
 public:
     Consumable(short id, std::string name, std::string description, ItemType type, float weight, RarityType rarity,
+            std::string imagePath,
             std::vector<Effect*> effects);
     Consumable(const Consumable& consumable);
     ~Consumable();

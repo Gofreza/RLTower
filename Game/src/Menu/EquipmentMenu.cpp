@@ -295,7 +295,6 @@ void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, i
                     // Input Listeners
                     //=================
                     
-                    // TODO: Correclty remove and drop item
                     if (InputManager::instance().isKeyPressed(SDLK_a) && isMouseHovering(equipmentRect, renderTargetX)) {
                         InputManager::instance().deactivateKey(SDLK_a);
                         bool isDrop = MapManager::instance().dropItem(player->getXPosition(), player->getYPosition(), item);
