@@ -7,6 +7,7 @@
             "color": [121, 228, 108, 255],
             "description": "A small, green creature with a big nose and pointy ears. It's not very strong, but it's quick and agile.",
             "group": "Goblinoid",
+            "imagePath": "default.png",
             "level": 1,
             "minSpawnLevel": 1,
             "maxSpawnLevel": 10,

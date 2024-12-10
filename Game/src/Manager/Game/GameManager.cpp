@@ -150,6 +150,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                     Cell &cell = MapManager::instance().getCell(map_x, map_y);
                     if (cell.hasItem()) {
                         UiManager::instance().triggerRenderItemDialog(cell.getItem());
+                        // Pickup item
                         if (InputManager::instance().isLeftClicked() && Utils::distance(player_x, player_y, map_x, map_y) <= 1.5) {
                             InputManager::instance().deactivateLeftClick();
                             player->addItemInInventory(cell.takeItem());

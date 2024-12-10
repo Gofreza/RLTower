@@ -175,7 +175,7 @@ void DialogMenu::render(const SDL_Rect& rect, const Item* item) {
             SDL_DestroyTexture(descriptionTextTexture);
 
             // Move to the next line
-            currentY += textHeight + 5;
+            descriptionY += textHeight + 5;
         }
     }
 }
@@ -183,6 +183,108 @@ void DialogMenu::render(const SDL_Rect& rect, const Item* item) {
 void DialogMenu::render(const SDL_Rect& rect, const Character* character) {
     render(rect);
     // Render the character
+    int textWidth = 0, textHeight = 0;
+    currentY += 5;
+    int descriptionY = currentY;
+
+    // Image
+    std::string imagePath = Utils::getImagePath(character->getImagePath());
+    SDL_Surface* imgSurface = IMG_Load(imagePath.c_str());
+    float ratio = static_cast<float>((rect.h - 4) / 2 - 10) / imgSurface->h;
+    int imgWidth = imgSurface->w * ratio;
+    SDL_Texture* imgTexture = SDL_CreateTextureFromSurface(renderer, imgSurface);
+    SDL_FreeSurface(imgSurface);
+    SDL_Rect imgRect = {
+        rect.x + 5,
+        currentY,
+        imgWidth,
+        (rect.h - 4) / 2 - 10
+    };
+    SDL_RenderCopy(renderer, imgTexture, nullptr, &imgRect);
+    SDL_DestroyTexture(imgTexture);
+    descriptionY += (rect.h - 4) / 2 - 10 + 5;
+
+    // Name
+    SDL_Texture* itemNameTextTexture = Utils::loadTextTexture(renderer, font, character->getName(), Utils::textColor);
+    if (itemNameTextTexture) {
+        SDL_QueryTexture(itemNameTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+        SDL_Rect itemNameRect = {
+            rect.x + 5 + imgWidth + 5,
+            currentY,
+            textWidth,
+            textHeight
+        };
+        SDL_RenderCopy(renderer, itemNameTextTexture, nullptr, &itemNameRect);
+        SDL_DestroyTexture(itemNameTextTexture);
+        currentY += textHeight + 5;
+    }
+    SDL_DestroyTexture(itemNameTextTexture);
+
+    // Group
+    std::string groupText = LocalizationManager::instance().getText("character_group") + to_string(character->getGroupType());
+    SDL_Texture* groupTextTexture = Utils::loadTextTexture(renderer, font, groupText, Utils::textColor);
+    if (groupTextTexture) {
+        SDL_QueryTexture(groupTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+        SDL_Rect groupRect = {
+            rect.x + 5 + imgWidth + 5, 
+            currentY, 
+            textWidth,
+            textHeight
+        };
+        currentY += textHeight + 5;
+        SDL_RenderCopy(renderer, groupTextTexture, nullptr, &groupRect);
+    }
+    SDL_DestroyTexture(groupTextTexture);
+
+    // Description
+    std::string descriptionText = LocalizationManager::instance().getText("item_description") + character->getDescription();
+    std::vector<std::string> lines;
+    std::string currentLine;
+    std::istringstream words(descriptionText);
+    std::string word;
+    int maxWidth = rect.w - 10;  // Adjust for padding
+    int spaceWidth;
+
+    // Measure the width of a space character (you can assume spaceWidth as needed)
+    TTF_SizeText(font, " ", &spaceWidth, nullptr);
+
+    while (words >> word) {
+        std::string testLine = currentLine.empty() ? word : currentLine + " " + word;
+        TTF_SizeText(font, testLine.c_str(), &textWidth, &textHeight);
+
+        if (textWidth > maxWidth) {
+            // Current word does not fit on the current line, push the current line and start a new one
+            lines.push_back(currentLine);
+            currentLine = word;  // Start the new line with the current word
+        } else {
+            // Word fits on the current line
+            currentLine = testLine;
+        }
+    }
+
+    // Don't forget to add the last line
+    if (!currentLine.empty()) {
+        lines.push_back(currentLine);
+    }
+
+    // Now render each line
+    for (const std::string& line : lines) {
+        SDL_Texture* descriptionTextTexture = Utils::loadTextTexture(renderer, font, line, Utils::textColor);
+        if (descriptionTextTexture) {
+            SDL_QueryTexture(descriptionTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+            SDL_Rect descriptionRect = {
+                rect.x + 5, 
+                descriptionY, 
+                textWidth,
+                textHeight
+            };
+            SDL_RenderCopy(renderer, descriptionTextTexture, nullptr, &descriptionRect);
+            SDL_DestroyTexture(descriptionTextTexture);
+
+            // Move to the next line
+            descriptionY += textHeight + 5;
+        }
+    }
 }
 
 int DialogMenu::getHeight() const {

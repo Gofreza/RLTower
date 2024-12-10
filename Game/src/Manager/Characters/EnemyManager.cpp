@@ -62,6 +62,8 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
                 enemyJson.value("name", "Unknown"),
                 sdlColor,
                 getGroupType(enemyJson.value("group", "Unknown")),
+                enemyJson.value("imagePath", "default.png"),
+                enemyJson.value("description", "No description"),
                 enemyJson.value("health", 0.0f),
                 enemyJson.value("mana", 0),
                 enemyJson.value("energy", 0),

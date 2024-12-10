@@ -59,7 +59,8 @@ int main(int argc, char* argv[]) {
     //=========
     // Player
     //=========
-    Player* player = new Player("Player", {55, 55, 160, 255}, GroupType::Player, 1000.0f, 100, 0, 100, 5, 100,
+    Player* player = new Player("Player", {55, 55, 160, 255}, GroupType::Player, "tortueachapeau.png", "Tortue à chapeau",
+                                1000.0f, 100, 0, 100, 5, 100,
                                 1, 0, 
                                 7, 3, 1, 1, 5, 1,
                                 '@',

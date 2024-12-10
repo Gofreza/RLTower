@@ -11,12 +11,12 @@ static float DODGE_SCALAR = 1.0f;
 static float DODGE_DEXTERITY_SCALAR = 0.7f;
 static float DODGE_LUCK_SCALAR = 0.3f;
 
-Character::Character(const std::string& name, SDL_Color color, GroupType group, float hp, int mana, int energy, int stamina, int fov, int speed,
+Character::Character(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description, float hp, int mana, int energy, int stamina, int fov, int speed,
                     int phyDamage, int magDamage, int strength, int dexterity,
                     int intelligence, int wisdom, int constitution, int luck,
                     const char symbol,
                     std::vector<int> desires, std::vector<int> disgusts)
-    : name(name), color(color), group(group), xPosition(0), yPosition(0), symbol(symbol),
+    : name(name), color(color), group(group), imagePath(imagePath), description(description), xPosition(0), yPosition(0), symbol(symbol),
     hp(hp), mana(mana), energy(energy), stamina(stamina), 
     maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
     // Level
@@ -887,6 +887,10 @@ void Character::setColor(const SDL_Color color) { this->color = color; }
 
 GroupType Character::getGroupType() const { return group; }
 void Character::setGroupType(GroupType group) { this->group = group; }
+
+const std::string& Character::getImagePath() const { return imagePath; }
+
+const std::string& Character::getDescription() const { return description; }
 
 char Character::getSymbol() const { return symbol; }
 void Character::setSymbol(const char symbol) { this->symbol = symbol; }

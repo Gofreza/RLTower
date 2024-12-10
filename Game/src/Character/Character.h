@@ -22,6 +22,8 @@ protected:
     std::string name;
     SDL_Color color;
     GroupType group;
+    std::string imagePath;
+    std::string description;
 
     int xPosition;
     int yPosition;
@@ -122,7 +124,7 @@ protected:
     // Struct with a name and the modified stats
 
 public:
-    Character(const std::string& name, SDL_Color color, GroupType group, float hp, int mana, int energy, int stamina, int fov, int speed,
+    Character(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description, float hp, int mana, int energy, int stamina, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
@@ -140,6 +142,12 @@ public:
     // Group
     GroupType getGroupType() const;
     void setGroupType(GroupType newGroup);
+
+    // Image
+    const std::string& getImagePath() const;
+
+    // Description
+    const std::string& getDescription() const;
 
     // Position
     int getXPosition() const;
