@@ -161,10 +161,12 @@ void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
 
 void UiManager::updateConsole(bool force) {
     consoleDirty = true;
+    forceConsoleRender = force;
 }
 
 void UiManager::updateGame(bool force) {
     gameDirty = true;
+    forceGameRender = force;
 }
 
 void UiManager::updateMenu(bool force) {
@@ -174,7 +176,7 @@ void UiManager::updateMenu(bool force) {
     statusMenu->updateSilver();
     statusMenu->updateCopper();
     menuDirty = true;
-    forceMenuRender = true;
+    forceMenuRender = force;
 }
 
 //==================

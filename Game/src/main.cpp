@@ -53,7 +53,6 @@ int main(int argc, char* argv[]) {
     }
 
     bool quit = false;
-    int mouseX, mouseY;
     SDL_Event event;
 
     //=========
@@ -130,7 +129,7 @@ int main(int argc, char* argv[]) {
 
         if (showFPS) {
             Uint32 currentTime = SDL_GetTicks();
-            Uint32 deltaTime = currentTime - lastTime; // Time elapsed since the last frame
+            // Uint32 deltaTime = currentTime - lastTime; // Time elapsed since the last frame
             lastTime = currentTime;
 
             // Calculate FPS

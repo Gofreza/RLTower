@@ -37,7 +37,7 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
 
         for (const auto& enemyJson : jsonData["enemies"]) {
             // Enemy ID
-            int id = enemyJson.value("id", -1);
+            // int id = enemyJson.value("id", -1);
 
             // Color
             std::array<int, 4> color = enemyJson.value("color", std::array<int, 4>{255, 255, 255, 255});
@@ -129,6 +129,7 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
 
 }
 
+// TODO: Implement this function
 void EnemyManager::initialize(std::vector<Enemy*>& enemies, int towerLevel, int numberOfEnemies) {
     // Add ennemies based on the tower level
     while(numberOfEnemies > 0) {

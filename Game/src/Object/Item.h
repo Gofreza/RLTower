@@ -45,8 +45,7 @@ private:
     RarityType rarity;
     std::string imagePath;
 
-    std::array<int, 5> requirements;
-
     std::vector<Effect*> effects;
+    std::array<int, 5> requirements;
 
 };

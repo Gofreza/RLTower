@@ -161,30 +161,30 @@ void EquipmentMenu::render(const SDL_Rect& rect) {
     // Draw Menu
     int currentY = rect.y + borderThickness + padding;
 
-    renderTextTexture(lhTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(lhTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(rhTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(rhTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(headTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(headTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(torsoTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(torsoTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(handTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(handTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(footTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(footTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(ringTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(ringTextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(ring2TextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(ring2TextTexture, currentY, padding, rect.x, rect.w);
 
-    renderTextTexture(amuletTextTexture, currentY, padding, rect.x, rect.y, rect.w);
+    renderTextTexture(amuletTextTexture, currentY, padding, rect.x, rect.w);
 }  
 
 int EquipmentMenu::getHeight() const {
     return menuHeight;
 }
 
-void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, int padding, int renderTargetX, int renderTargetY, int renderTargetW) {
+void EquipmentMenu::renderTextTexture(SDL_Texture* textTexture, int& currentY, int padding, int renderTargetX, int renderTargetW) {
     if (textTexture) {
         int textWidth = 0, textHeight = 0;
         SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);

@@ -1,14 +1,12 @@
 #include "Cell.h"
 
-Cell::Cell(int x, int y, char baseSymbol, SDL_Color baseColor)
-: x(x), y(y),
-  baseSymbol(baseSymbol), currentSymbol(baseSymbol),
-  character(nullptr),
-  item(nullptr),
-  isWalkable(false),
-  isExplored(false),
-  isInSight(false),
-  baseColor(baseColor), currentColor(baseColor)
+Cell::Cell(int x, int y, char baseSymbol, SDL_Color baseColor): 
+    baseColor(baseColor), currentColor(baseColor), 
+    isExplored(false), isInSight(false), isWalkable(false),
+    x(x), y(y),
+    character(nullptr),
+    item(nullptr),
+    baseSymbol(baseSymbol), currentSymbol(baseSymbol)
 {
     int ascii_value = static_cast<int>(baseSymbol);
 

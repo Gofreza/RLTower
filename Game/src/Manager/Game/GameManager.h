@@ -31,9 +31,9 @@ private:
     std::vector<NPC*> npcs;
     std::vector<Enemy*> enemies;
 
-    CharactersQueue charactersQueue;
     std::vector<Character*> characters;
 
+    // TODO: Use this to have the number of turns
     int turn;
     size_t currentCharacterIndex;
 

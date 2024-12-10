@@ -45,5 +45,5 @@ private:
 
     Player* player;
 
-    void renderTextTexture(SDL_Texture* textTexture, int& currentY, int padding, int renderTargetX, int renderTargetY, int renderTargetW);
+    void renderTextTexture(SDL_Texture* textTexture, int& currentY, int padding, int renderTargetX, int renderTargetW);
 };

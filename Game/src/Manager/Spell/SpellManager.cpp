@@ -82,10 +82,12 @@ std::string SpellManager::getEffectText(const std::string& key) const {
     throw std::runtime_error("EffectText with ID " + key + " not found. (SpellManager)");
 }
 
+// TODO: Est-ce que c'est deux fonctions sont utiles ?
 void SpellManager::createEffectsRegistry() {
     effectsRegistry = {
         {"burn_effect", [](Character* character) { 
-            // Log and apply burn to passed character          
+            // Log and apply burn to passed character   
+            (void)character;       
         }},
     };
 }

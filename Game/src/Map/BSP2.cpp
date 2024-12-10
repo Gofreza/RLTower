@@ -68,9 +68,9 @@ void BSP2::generateMap(std::vector<Room>& rooms, std::vector<Path>& paths, std::
 
     // Fill the map with paths
     for (const auto& path : paths) {
-        for (size_t i = path.y; i < path.y + path.h; ++i) {
+        for (int i = path.y; i < path.y + path.h; ++i) {
             if (i < 0 || i >= map.size()) continue; // Boundary check for rows
-            for (size_t j = path.x; j < path.x + path.w; ++j) {
+            for (int j = path.x; j < path.x + path.w; ++j) {
                 if (j < 0 || j >= map[i].size()) continue; // Boundary check for columns
                 std::pair<int, int> cellPos = {i, j};
                 if (visitedCells.find(cellPos) == visitedCells.end()) {

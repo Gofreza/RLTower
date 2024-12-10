@@ -60,4 +60,11 @@ float Containers::getWeightReduce() const {
 
 Containers::~Containers()
 {
+    for (auto& item : items) {
+        if (item) {
+            delete item;
+        }
+    }
+    items.clear();
+    acceptedItems.clear();
 }

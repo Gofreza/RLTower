@@ -5,10 +5,7 @@
 
 GameManager::GameManager()
 : player(CharactersManager::instance().getPlayer()),
-  turn(0),
-  charactersQueue([](Character* a, Character* b) {
-        return a->getSpeed() < b->getSpeed();
-    }) 
+  turn(0)
 {
 }
 
@@ -35,16 +32,13 @@ void GameManager::update()
 void GameManager::playTurn() {
 
     // Add all characters to the priority queue
-    if (characters.empty()/*charactersQueue.empty()*/) {
+    if (characters.empty()) {
         characters.reserve(1 + npcs.size() + enemies.size());
         characters.push_back(player);
-        // charactersQueue.push(player);
         for (auto& npc : npcs) {
-            // charactersQueue.push(npc);
             characters.push_back(npc);
         }
         for (auto& enemy : enemies) {
-            // charactersQueue.push(enemy);
             characters.push_back(enemy);
         }
         std::sort(characters.begin(), characters.end(), [](Character* a, Character* b) {
@@ -54,7 +48,6 @@ void GameManager::playTurn() {
     }
 
     // Check the top characters and see if he has played
-    // Character* character = charactersQueue.top();
     Character* character = characters[currentCharacterIndex];
     bool hasPlay = character->update();
 
@@ -72,7 +65,6 @@ void GameManager::playTurn() {
         delete character;
     } else {
         if (hasPlay) {
-            // charactersQueue.pop();
             currentCharacterIndex = (currentCharacterIndex + 1) % characters.size();
         }
     }

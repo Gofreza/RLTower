@@ -10,6 +10,7 @@ ItemMenu::ItemMenu(SDL_Renderer* renderer, TTF_Font* font)
  * Throw a runtime error
  */
 void ItemMenu::render(const SDL_Rect& rect) {
+    (void)rect;
     throw std::runtime_error("Error, need an item to render. Use render(const SDL_Rect& rect, Item* item) instead.");
 }
 

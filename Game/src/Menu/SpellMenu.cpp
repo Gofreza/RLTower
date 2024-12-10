@@ -122,6 +122,7 @@ SpellMenu::SpellMenu(SDL_Renderer* renderer, TTF_Font* font)
  * Throw a runtime error
  */
 void SpellMenu::render(const SDL_Rect& rect) {
+    (void)rect;
     throw std::runtime_error("Error, need a spell to render. Use render(const SDL_Rect& rect, Spell* spell) instead.");
 }
 

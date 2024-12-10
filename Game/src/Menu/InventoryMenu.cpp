@@ -9,7 +9,6 @@ InventoryMenu::InventoryMenu(SDL_Renderer* renderer, TTF_Font* font)
 }
 
 void InventoryMenu::render(const SDL_Rect& rect) {
-    const int height = rect.h;
     int textWidth = 0, textHeight = 0;
     Player* player = CharactersManager::instance().getPlayer();
 

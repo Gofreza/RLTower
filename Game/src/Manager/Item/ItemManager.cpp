@@ -29,7 +29,7 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
 
         for (const auto& itemJson : jsonData["items"]) {
             std::string typeStr = itemJson.value("type", "Miscellaneous");
-            Item* item;
+            Item* item = nullptr;
             ItemType type;
             // std::cout << "Name: " << itemJson.value("name", "Unknown") << std::endl;
             if (typeStr == "Weapon") {
@@ -190,8 +190,10 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
             } else {
                 type = ItemType::Miscellaneous;
             }
-
-            items.emplace(item->getId(), item);            
+            
+            if (item) {
+                items.emplace(item->getId(), item);       
+            }
         }
 
         isInitialize = true;
