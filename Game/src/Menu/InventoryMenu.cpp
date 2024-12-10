@@ -302,17 +302,23 @@ void InventoryMenu::render(const SDL_Rect& rect) {
 
                 SDL_Rect itemNameRect = {
                     inventoryRect.x + 5, 
-                    currentY,
+                    currentY + 2,
                     spellNameWidth,
                     spellNameHeight
                 };
 
-                // Update color modulation based on mouse hover
-                if (isMouseHovering(itemNameRect, rect.x)) {
-                    SDL_SetTextureColorMod(spellNameTexture, Utils::hoverColor.r, Utils::hoverColor.g, Utils::hoverColor.b);
+                // Define the full item rectangle (itemRect)
+                SDL_Rect itemRect = {
+                    inventoryRect.x + 5,
+                    currentY,
+                    inventoryRect.w - 10,
+                    spellNameHeight + 5
+                };
+
+                if (isMouseHovering(itemRect, rect.x)) {
+                    SDL_SetRenderDrawColor(renderer, Utils::hoverBackColor.r, Utils::hoverBackColor.g, Utils::hoverBackColor.b, 255);
+                    SDL_RenderFillRect(renderer, &itemRect);
                     UiManager::instance().triggerRenderSpellMenu(spell);
-                } else {
-                    SDL_SetTextureColorMod(spellNameTexture, Utils::textColor.r, Utils::textColor.g, Utils::textColor.b);
                 }
 
                 SDL_RenderCopy(renderer, spellNameTexture, nullptr, &itemNameRect);
