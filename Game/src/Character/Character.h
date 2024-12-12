@@ -154,7 +154,7 @@ public:
     void setXPosition(int newXPosition);
     int getYPosition() const;
     void setYPosition(int newYPosition);
-    void move(int x, int y);
+    virtual void move(int x, int y);
 
     // Symbol
     char getSymbol() const;

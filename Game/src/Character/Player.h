@@ -14,6 +14,7 @@ public:
     ~Player();
 
     bool update() override;
+    void move(int x, int y) override;
 
 private:
 };

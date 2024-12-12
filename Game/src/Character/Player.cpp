@@ -25,7 +25,6 @@ bool Player::update()
 
         if (MapManager::instance().canPlayerMove(this, 0, -1)) {
             this->move(0, -1);
-            MapManager::instance().movePlayerInMap(this, 0, -1);  
             moved = true;
         }
     }
@@ -34,7 +33,6 @@ bool Player::update()
 
         if (MapManager::instance().canPlayerMove(this, 0, 1)) {
             this->move(0, 1);
-            MapManager::instance().movePlayerInMap(this, 0, 1);
             moved = true;
         }
     }
@@ -43,7 +41,6 @@ bool Player::update()
 
         if (MapManager::instance().canPlayerMove(this, -1, 0)) {
             this->move(-1, 0);
-            MapManager::instance().movePlayerInMap(this, -1, 0);
             moved = true;
         }
     }
@@ -52,7 +49,6 @@ bool Player::update()
 
         if (MapManager::instance().canPlayerMove(this, 1, 0)) {
             this->move(1, 0);
-            MapManager::instance().movePlayerInMap(this, 1, 0);
             moved = true;
         }
     }
@@ -60,4 +56,11 @@ bool Player::update()
         UiManager::instance().updateGame(true);
     }
     return moved;
+}
+
+void Player::move(int x, int y) {
+    if (speed > 0) {
+        Character::move(x, y);
+        MapManager::instance().movePlayerInMap(this, x, y);
+    }   
 }
