@@ -1,5 +1,6 @@
 #include "Character.h"
 #include <cmath>
+#include "../Manager/Item/ItemManager.h"
 
 static float SPEED_SCALAR = 10.0f;
 
@@ -263,7 +264,8 @@ void Character::removeItemFromInventory(Item* item, bool drop) {
         updateStatsDependants();
     }
     if (!drop) {
-        delete (item);
+        ItemManager::instance().addItemToDeferredDeletions(item);
+        //delete (item);
     }
 }
 
@@ -804,7 +806,7 @@ bool Character::useConsumable(Item* item) {
     c->use(this);
     // Remove item from inventory
     removeItemFromInventory(item, false);
-    return true;
+    return false;
 }
 
 void Character::setStat(EffectStat stat, bool resultType, int value) {

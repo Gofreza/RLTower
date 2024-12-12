@@ -170,6 +170,9 @@ int main(int argc, char* argv[]) {
         // Update the screen
         SDL_RenderPresent(renderer);
 
+        // Delete deferred items
+        ItemManager::instance().deleteDeferredItems();
+
         // Calculate frame time and adjust delay
         frameTime = SDL_GetTicks() - frameStart;
         if (frameTime < FRAME_DELAY) {

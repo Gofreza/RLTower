@@ -33,12 +33,16 @@ public:
 
     void loadItemsFromFile(const std::string& ItemsFilePath);
 
+    void addItemToDeferredDeletions(Item* item);
+    void deleteDeferredItems();
+
     Item* getItem(short id) const;
 private:
     bool isInitialize;
     Player* player;
 
     std::unordered_map<short, Item*> items;
+    std::vector<Item*> deferredDeletions;
 
     ItemManager();
     ~ItemManager();

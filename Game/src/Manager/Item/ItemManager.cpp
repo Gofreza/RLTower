@@ -201,6 +201,19 @@ void ItemManager::loadItemsFromFile(const std::string& ItemsFilePath) {
     }
 }
 
+void ItemManager::addItemToDeferredDeletions(Item* item) {
+    deferredDeletions.push_back(item);
+}
+
+void ItemManager::deleteDeferredItems() {
+    for (auto& item : deferredDeletions) {
+        if (item) {
+            delete item;
+        }
+    }
+    deferredDeletions.clear();
+}
+
 /**
  * @brief Get an item by ID
  * @return A copy of the item
