@@ -3,9 +3,10 @@
 #include "../../Misc/RandomUtils.h"
 #include <queue>
 
-GameManager::GameManager()
-: player(CharactersManager::instance().getPlayer()),
-  turn(0)
+GameManager::GameManager():   
+    player(CharactersManager::instance().getPlayer()),
+    turn(0),
+    combatMode(false)
 {
 }
 
@@ -16,7 +17,7 @@ void GameManager::initialize()
     MapManager::instance().addPlayer(player);
 
     // Add enemies
-    EnemyManager::instance().initialize(this->enemies, 1, 10);
+    EnemyManager::instance().initialize(this->enemies, 1, 1);
     
     // Put enemies in the map
     MapManager::instance().addEnemies(this->enemies);
@@ -27,6 +28,8 @@ void GameManager::initialize()
 void GameManager::update()
 {   
     playTurn();
+
+    // TODO: When changing floor, clear the deferred deletions vector
 }
 
 void GameManager::playTurn() {
@@ -62,7 +65,7 @@ void GameManager::playTurn() {
             currentCharacterIndex = 0; // Wrap back to start if necessary
         }
         // Free the character
-        delete character;
+        this->addCharacterToDefferedDeletions(character);
     } else {
         if (hasPlay) {
             currentCharacterIndex = (currentCharacterIndex + 1) % characters.size();
@@ -79,6 +82,18 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
     int player_x = player->getXPosition(); 
     int player_y = player->getYPosition();
+
+    Item* weapon = player->getWeapon();
+    int player_attack_range = 0;
+    if (weapon) {
+        Weapon* w = static_cast<Weapon*>(weapon);
+        player_attack_range = w->getLength();
+    }
+    // Obtenez le temps actuel
+    Uint32 current_time = SDL_GetTicks();
+
+    // Déterminez si la couleur doit être inversée
+    bool is_flashing = (current_time / 500) % 2 == 0;
 
     const int tile_size = 20;
 
@@ -110,6 +125,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderFillRect(renderer, &dest);
                 } else {
+                    // TODO: Swich from char to int to access directly the tile
                     char tile_char = ascii_map[map_y][map_x].getSymbol();
                     int ascii_value = static_cast<int>(tile_char);
 
@@ -129,15 +145,43 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
                     // Render the background
                     SDL_RenderFillRect(renderer, &dest);
+
+                    // Highlight cells in combat mode
+                    // TODO: Maybe switch with something else
+                    if (combatMode) {
+                        int dx = map_x - player_x;
+                        int dy = map_y - player_y;
+                        int distance = sqrt(dx * dx + dy * dy);
+
+                        if (distance <= player_attack_range) {
+                            SDL_SetRenderDrawBlendMode(renderer, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+
+                            // Calculate pulsing alpha value
+                            Uint32 time = SDL_GetTicks();
+                            Uint8 alpha = static_cast<Uint8>((sin(time * 0.003) + 1) * 127.5); // Pulses between 0 and 255
+
+                            SDL_SetRenderDrawColor(renderer, 100, 10, 10, alpha);
+                            SDL_RenderFillRect(renderer, &dest);
+                            SDL_SetRenderDrawBlendMode(renderer, SDL_BlendMode::SDL_BLENDMODE_NONE);
+                        }
+                    }
+
                     // Render the tile
                     SDL_RenderCopy(renderer, tileset, &src, &dest);
                 } 
 
+                // ============
                 // Listeners
+                // ============
+                
                 if (Utils::isMouseHovering(dest, rect.x, rect.y)) {
-                    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
-                    SDL_RenderFillRect(renderer, &dest);
-                    SDL_RenderCopy(renderer, tileset, &src, &dest);
+                    if (combatMode) {
+                        UiManager::instance().drawBorder(renderer, dest, Utils::borderColor);
+                    } else {
+                        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+                        SDL_RenderFillRect(renderer, &dest);
+                        SDL_RenderCopy(renderer, tileset, &src, &dest);
+                    }
                     
                     Cell &cell = MapManager::instance().getCell(map_x, map_y);
                     if (cell.hasItem()) {
@@ -151,6 +195,16 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                         }
                     } else if (cell.hasCharacter()) {
                         UiManager::instance().triggerRenderCharacterDialog(cell.getCharacter());
+                        // Attack
+                        if (combatMode) {
+                            // Add 0.5 to the range to allow diagonal attacks
+                            float diag = player_attack_range + 0.5;
+                            if (InputManager::instance().isLeftClicked() && Utils::distance(player_x, player_y, map_x, map_y) <= diag) {
+                                InputManager::instance().deactivateLeftClick();
+                                player->attack(cell.getCharacter());
+                                // UiManager::instance().updateGame(true);
+                            }
+                        }
                     } else {
                         UiManager::instance().updateConsole(true);
                     }
@@ -211,6 +265,25 @@ void GameManager::moveCharacter(Character* character, int dx, int dy) {
     }
 }
 
+void GameManager::toggleCombatMode() {
+    combatMode = !combatMode;
+}
+
+void GameManager::addCharacterToDefferedDeletions(Character* character) {
+    deferredDeletions.push_back(character);
+}
+
+void GameManager::deleteDeferredCharacters() {
+    for (auto& character : deferredDeletions) {
+        delete character;
+    }
+    deferredDeletions.clear();
+}
+
 GameManager::~GameManager()
 {
+    for (auto& character : deferredDeletions) {
+        std::cout << "Deleting character: " << character << std::endl;
+        delete character;
+    }
 }

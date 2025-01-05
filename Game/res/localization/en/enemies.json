@@ -12,7 +12,7 @@
             "minSpawnLevel": 1,
             "maxSpawnLevel": 10,
             "value": 1,
-            "health": 100,
+            "health": 20,
             "mana": 0,
             "energy": 0,
             "stamina": 10,

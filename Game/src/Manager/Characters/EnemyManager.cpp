@@ -37,7 +37,7 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
 
         for (const auto& enemyJson : jsonData["enemies"]) {
             // Enemy ID
-            // int id = enemyJson.value("id", -1);
+            int id = enemyJson.value("id", enemyCount);
 
             // Color
             std::array<int, 4> color = enemyJson.value("color", std::array<int, 4>{255, 255, 255, 255});
@@ -123,20 +123,23 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
             }
 
             // Add the enemy to the list
-            addEnemy(enemy);
+            if (enemy) {
+                enemies.emplace(id, enemy);
+                enemyCount++;
+            }
         }
     }
-
+    isInitialized = true;
 }
 
 // TODO: Implement this function
-void EnemyManager::initialize(std::vector<Enemy*>& enemies, int towerLevel, int numberOfEnemies) {
+void EnemyManager::initialize(std::vector<Enemy*>& enemiesVector, int towerLevel, int numberOfEnemies) {
     // Add ennemies based on the tower level
     while(numberOfEnemies > 0) {
         // Get a random enemy
         int randomEnemy = rand() % enemyCount;
         Enemy* enemy = getEnemy(randomEnemy);
-        enemies.push_back(enemy);
+        enemiesVector.push_back(enemy);
         numberOfEnemies -= enemy->getValue();
     }
 }
@@ -151,5 +154,14 @@ std::map<int, Enemy*>& EnemyManager::getEnemies() {
 }
 
 Enemy* EnemyManager::getEnemy(int id) {
-    return enemies[id]->clone();
+    if (!isInitialized) {
+        throw std::runtime_error("EnemyManager is not initialized. (getEnemy)");
+    }
+
+    auto it = enemies.find(id);
+    if (it != enemies.end()) {
+        return it->second->clone();
+    }
+
+    throw std::runtime_error("Item with ID " + std::to_string(id) + " not found.");
 }

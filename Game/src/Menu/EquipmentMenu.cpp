@@ -156,7 +156,7 @@ void EquipmentMenu::render(const SDL_Rect& rect) {
     SDL_RenderFillRect(renderer, &equipmentRect);
 
     // Draw the border
-    drawBorder(renderer, equipmentRect, Utils::borderColor, borderThickness);
+    UiManager::instance().drawBorder(renderer, equipmentRect, Utils::borderColor, borderThickness);
 
     // Draw Menu
     int currentY = rect.y + borderThickness + padding;

@@ -1,6 +1,7 @@
 #include "Character.h"
 #include <cmath>
 #include "../Manager/Item/ItemManager.h"
+#include "../Manager/Spell/SpellManager.h"
 
 static float SPEED_SCALAR = 10.0f;
 
@@ -27,7 +28,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     // Speed
     baseSpeed(speed), speed(0), 
     // Progress
-    characterProgress(new CharacterProgress(this)), overweight(false), hasDodge(false), hasCastSpell(false), hasFoundAncientSite(false), hasHealDamage(false),
+    characterProgress(new CharacterProgress(this)), hasWaited(false), overweight(false), hasDodge(false), hasCastSpell(false), hasFoundAncientSite(false), hasHealDamage(false),
     fatigue(0), exhausted(false), hasMoved(false), hasAttack(false),
     // Stats
     phyDamage(phyDamage), magDamage(magDamage), strength(strength),
@@ -55,6 +56,54 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     ring2 = nullptr;
     amulet = nullptr;
     updateStatsDependants();
+}
+
+Character::Character(const Character& other)
+    : name(other.name), color(other.color), group(other.group), imagePath(other.imagePath), description(other.description), xPosition(other.xPosition), yPosition(other.yPosition), symbol(other.symbol),
+    hp(other.hp), mana(other.mana), energy(other.energy), stamina(other.stamina), 
+    maxHp(other.maxHp), maxMana(other.maxMana), maxEnergy(other.maxEnergy), maxStamina(other.maxStamina), gold(other.gold), silver(other.silver), copper(other.copper),
+    // Level
+    level(other.level), experience(other.experience),
+    // Fov
+    fov(other.fov),
+    // Speed
+    baseSpeed(other.baseSpeed), speed(other.speed), 
+    // Progress
+    characterProgress(new CharacterProgress(*other.characterProgress)), hasWaited(other.hasWaited), overweight(other.overweight), hasDodge(other.hasDodge), hasCastSpell(other.hasCastSpell), hasFoundAncientSite(other.hasFoundAncientSite), hasHealDamage(other.hasHealDamage),
+    fatigue(other.fatigue), exhausted(other.exhausted), hasMoved(other.hasMoved), hasAttack(other.hasAttack),
+    // Stats
+    phyDamage(other.phyDamage), magDamage(other.magDamage), strength(other.strength),
+    dexterity(other.dexterity), intelligence(other.intelligence), wisdom(other.wisdom), constitution(other.constitution), luck(other.luck),
+    // Stats Dependants
+    physicalDefense(other.physicalDefense), magicalDefense(other.magicalDefense), weight(other.weight), maxWeight(other.maxWeight), dodge(other.dodge),
+    // Bonus
+    magicalDefenseBonus(other.magicalDefenseBonus), physicalDefenseBonus(other.physicalDefenseBonus), speedBonus(other.speedBonus), dodgeBonus(other.dodgeBonus),
+    // Resistances
+    fireResistance(other.fireResistance), waterResistance(other.waterResistance), earthResistance(other.earthResistance), airResistance(other.airResistance),
+    lightningResistance(other.lightningResistance), iceResistance(other.iceResistance), natureResistance(other.natureResistance),
+    lightResistance(other.lightResistance), darknessResistance(other.darknessResistance), arcaneResistance(other.arcaneResistance),
+    poisonResistance(other.poisonResistance), metalResistance(other.metalResistance), soundResistance(other.soundResistance),
+    illusionResistance(other.illusionResistance),
+    // Desire
+    desires(other.desires), disgusts(other.disgusts)
+{
+    leftHand = other.leftHand ? ItemManager::instance().getItem(other.leftHand->getId()) : nullptr;
+    rightHand = other.rightHand ? ItemManager::instance().getItem(other.rightHand->getId()) : nullptr;
+    head = other.head ? ItemManager::instance().getItem(other.head->getId()) : nullptr;
+    torso = other.torso ? ItemManager::instance().getItem(other.torso->getId()) : nullptr;
+    hands = other.hands ? ItemManager::instance().getItem(other.hands->getId()) : nullptr;
+    boots = other.boots ? ItemManager::instance().getItem(other.boots->getId()) : nullptr;
+    ring1 = other.ring1 ? ItemManager::instance().getItem(other.ring1->getId()) : nullptr;
+    ring2 = other.ring2 ? ItemManager::instance().getItem(other.ring2->getId()) : nullptr;
+    amulet = other.amulet ? ItemManager::instance().getItem(other.amulet->getId()) : nullptr;
+
+    for (const auto& item : other.inventory) {
+        inventory.push_back(ItemManager::instance().getItem(item->getId()));
+    }
+
+    for (const auto& spell : other.spells) {
+        spells.push_back(SpellManager::instance().getSpell(spell->getId()));
+    }
 }
 
 Character::~Character()
@@ -94,7 +143,9 @@ Character::~Character()
 
 void Character::updateStatsDependants() {
     // Speed
-    if (overweight) {
+    if (exhausted) {
+        speed = 0;
+    } else if (overweight) {
         // Check for 175% weight 
         if (weight > maxWeight + maxWeight / 4 * 3) {
             speed = 0;
@@ -124,10 +175,10 @@ void Character::updateStatsDependants() {
 }
 
 void Character::updateProgress() {
+    // TODO: Check that everything is done
     // Fatigue
-    if (fatigue > 100) {
+    if (fatigue >= 100) {
         exhausted = true;
-        speed = 0;
     }
     
     // Level
@@ -138,13 +189,20 @@ void Character::updateProgress() {
         characterProgress->progress();
         hasMoved = false;
     } else {
-        if (!hasAttack) {
-            fatigue--;
-            if (fatigue <= 100) {
+        if (hasWaited) {
+            if (fatigue > 0) {
+                fatigue--;
+            }
+            if (fatigue < 100) {
                 exhausted = false;
             }
+        } 
+
+        if (hasAttack) {
+            hasAttack = false;
         }
     }
+
     updateStatsDependants();
 }
 
@@ -279,6 +337,67 @@ void Character::addSpellInSpellBook(Spell* spell) {
 
 std::vector<Spell*> Character::getSpells() const {
     return spells;
+}
+
+//===============
+// COMBAT
+//===============
+
+void Character::attack(Character* target) {
+    Logger::instance().info(this->name + " attacks " + target->name + ".");
+    this->hasAttack = true;
+    target->defend(this);
+}
+
+void Character::defend(Character* attacker) {
+    Logger::instance().info(this->name + " defends against " + attacker->name + ".");
+    // Before applying the damage, check if the attacker can parry, if can't try dodging
+    Item* shield = this->getShield();
+    if (shield) {
+        Shield* s = static_cast<Shield*>(shield);
+        if (s->block()) {
+            Logger::instance().info(this->name + " parries the attack.");
+            return;
+        }
+    }
+    // Try dodging
+    if (this->canDodge()) {
+        Logger::instance().info(this->name + " dodges the attack.");
+        this->hasDodge = true;
+        return;
+    }
+
+    // Check the attacker weapon
+    Item* weapon = attacker->getWeapon();
+    if (weapon) {
+        Weapon* w = static_cast<Weapon*>(weapon);
+        WeaponType wType = w->getWeaponType();
+        
+        // TODO: Implement this correctly
+        // Also need to add effects from weapons and spells
+        if (is_weapon_magical(wType)) {
+            // If the attacker has a magical weapon, use magDamage
+            this->hasCastSpell = true;
+        } else {
+            // If the attacker has a physical weapon, use phyDamage
+            this->hp -= attacker->getPhyDamage();
+        }
+    } else {
+        // If the attacker has no weapon, use fists (base phyDamage)
+        this->hp -= attacker->getPhyDamage();
+    }
+
+    this->hasAttack = true;
+}
+
+bool Character::canDodge() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(0, 100);
+
+    int random_number = distr(gen);
+
+    return random_number <= this->dodge;
 }
 
 //===============
@@ -530,8 +649,17 @@ Item* Character::getRightHand() const {
     return this->rightHand;
 }
 
-// Shield
+Item* Character::getWeapon() const {
+    if (leftHand && leftHand->getType() == ItemType::Weapon) {
+        return leftHand;
+    } else if (rightHand && rightHand->getType() == ItemType::Weapon) {
+        return rightHand;
+    } else {
+        return nullptr;
+    }
+}
 
+// Shield
 bool Character::equipShield(Item* shield) {
     Shield* s = static_cast<Shield*>(shield);
     if (!leftHand) {
@@ -573,6 +701,16 @@ bool Character::equipShield(Item* shield) {
             } 
         }
         return false;
+    }
+}
+
+Item* Character::getShield() const {
+    if (leftHand && leftHand->getType() == ItemType::Shield) {
+        return leftHand;
+    } else if (rightHand && rightHand->getType() == ItemType::Shield) {
+        return rightHand;
+    } else {
+        return nullptr;
     }
 }
 
@@ -877,9 +1015,9 @@ void Character::setStat(EffectStat stat, bool resultType, int value) {
     }
 }
 
-//=========
-// Getters
-//=========
+//=====================
+// Getters and Setters
+//=====================
 
 const std::string& Character::getName() const { return name; }
 void Character::setName(const std::string& name) { this->name = name; }
@@ -1015,10 +1153,16 @@ void Character::setDodgeBonus(float bonus) {
 //=======
 
 bool Character::isOverweight() const { return overweight; }
+bool Character::hasCharacterMoved() const { return hasMoved; }
+void Character::resetCharacterMoved() { hasMoved = false; }
 bool Character::hasCharacterDodge() const { return hasDodge; }
+void Character::resetCharacterDodge() { hasDodge = false; }
 bool Character::hasCharacterCastSpell() const { return hasCastSpell; }
+void Character::resetCharacterCastSpell() { hasCastSpell = false; }
 bool Character::hasCharacterFoundAncientSite() const { return hasFoundAncientSite; }
+void Character::resetCharacterFoundAncientSite() { hasFoundAncientSite = false; }
 bool Character::hasCharacterHealDamage() const { return hasHealDamage; }
+void Character::resetCharacterHealDamage() { hasHealDamage = false; }
 
 //=========
 // Fatigue

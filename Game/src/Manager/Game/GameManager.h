@@ -26,16 +26,24 @@ public:
 
     bool movePlayer();
     void moveCharacter(Character* character, int dx, int dy);
+
+    void toggleCombatMode();
+
+    void addCharacterToDefferedDeletions(Character* character);
+    void deleteDeferredCharacters();
 private:
     Player* player;
     std::vector<NPC*> npcs;
     std::vector<Enemy*> enemies;
 
     std::vector<Character*> characters;
+    std::vector<Character*> deferredDeletions;
 
     // TODO: Use this to have the number of turns
     int turn;
     size_t currentCharacterIndex;
+
+    bool combatMode;
 
     void playTurn();
 

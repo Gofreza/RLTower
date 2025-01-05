@@ -68,6 +68,9 @@ public:
     bool isRenderingSpellBook() const;
 
     void renderFps(float fps);
+    void drawBorder(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Color borderColor, int thickness = 2);
+
+    bool isMouseHoveringGame() const;
 private:
     SDL_Renderer* renderer;
     TTF_Font* font;

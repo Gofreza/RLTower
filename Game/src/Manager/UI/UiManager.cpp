@@ -604,6 +604,22 @@ void UiManager::renderFps(float fps) {
 }
 
 //==================
+// MISCELLANEOUS
+//==================
+
+void UiManager::drawBorder(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Color borderColor, int thickness) {
+    SDL_SetRenderDrawColor(renderer, borderColor.r, borderColor.g, borderColor.b, borderColor.a);
+    for (int i = 0; i < thickness; ++i) {
+        SDL_Rect borderRect = { rect.x + i, rect.y + i, rect.w - 2 * i, rect.h - 2 * i };
+        SDL_RenderDrawRect(renderer, &borderRect);
+    }
+}
+
+bool UiManager::isMouseHoveringGame() const {
+    return isMouseHovering(gameRect);
+}
+
+//==================
 // DESTRUCTOR
 //==================
 

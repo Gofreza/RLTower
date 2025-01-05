@@ -66,6 +66,7 @@ protected:
 
     // Progress
     CharacterProgress* characterProgress;
+    bool hasWaited;
     bool overweight;
     bool hasDodge; // Tell if the character has dodge this turn, use for progress
     bool hasCastSpell; // Tell if the character has cast a spell this turn, use for progress
@@ -129,7 +130,36 @@ public:
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
             std::vector<int> desires, std::vector<int> disgusts);
+    Character(const Character& other);
     virtual ~Character();
+
+    // Next turn
+    void updateStatsDependants();
+    void updateProgress();
+    virtual bool update() = 0;
+
+    void addItemInInventory(Item* item);
+    void addBackItemInInventory(Item* item);
+    std::vector<Item*>& getInventory();
+    void removeItemFromInventory(Item* item, bool drop);
+    
+    void addSpellInSpellBook(Spell* spell);
+    std::vector<Spell*> getSpells() const;
+
+    void equipItem(Item* item);
+    void unequipItem(Item* item);
+    std::vector<Item*> getEquipEquipments();
+    bool isEquipedItem(Item* item);
+
+    virtual void move(int x, int y);
+
+    void attack(Character* target);
+    void defend(Character* attacker);
+    bool canDodge();
+
+    //=====================
+    // Getters and Setters
+    //=====================
 
     // Name
     const std::string& getName() const;
@@ -154,17 +184,12 @@ public:
     void setXPosition(int newXPosition);
     int getYPosition() const;
     void setYPosition(int newYPosition);
-    virtual void move(int x, int y);
 
     // Symbol
     char getSymbol() const;
     void setSymbol(const char newSymbol);
 
-    // Next
-    void updateStatsDependants();
-    void updateProgress();
-    virtual bool update() = 0;
-
+    // Money
     int getGold() const;
     void setGold(int gold);
     int getSilver() const;
@@ -172,21 +197,10 @@ public:
     int getCopper() const;
     void setCopper(int copper);
 
-    void addItemInInventory(Item* item);
-    void addBackItemInInventory(Item* item);
-    std::vector<Item*>& getInventory();
-    void removeItemFromInventory(Item* item, bool drop);
-    
-    void addSpellInSpellBook(Spell* spell);
-    std::vector<Spell*> getSpells() const;
-
-    void equipItem(Item* item);
-    void unequipItem(Item* item);
-    std::vector<Item*> getEquipEquipments();
-    bool isEquipedItem(Item* item);
-
     Item* getLeftHand() const;
     Item* getRightHand() const;
+    Item* getWeapon() const;
+    Item* getShield() const;
 
     Item* getHead() const;
 
@@ -224,10 +238,16 @@ public:
     void setFov(int newFov);
 
     bool isOverweight() const;
+    bool hasCharacterMoved() const;
+    void resetCharacterMoved();
     bool hasCharacterDodge() const;
+    void resetCharacterDodge();
     bool hasCharacterCastSpell() const;
+    void resetCharacterCastSpell();
     bool hasCharacterFoundAncientSite() const;
+    void resetCharacterFoundAncientSite();
     bool hasCharacterHealDamage() const;
+    void resetCharacterHealDamage();
 
     void setMaxHp(float maxHp);
     float getMaxHp() const;
@@ -269,9 +289,11 @@ public:
     void setSpeedBonus(int bonus);
     void setDodgeBonus(float bonus);
 
+    // Fatigue
     int getFatigue() const;
     void setFatigue(int newFatigue);
 
+    // Resistances
     float getFireResistance() const;
     void setFireResistance(float newFireResistance);
     float getWaterResistance() const;

@@ -9,6 +9,7 @@ class CharacterProgress
 {
 public:
     CharacterProgress(Character* character);
+    CharacterProgress(const CharacterProgress& other);
     ~CharacterProgress();
 
     void progress();

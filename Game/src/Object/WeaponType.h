@@ -20,3 +20,12 @@ inline std::string to_string(WeaponType rarityType) {
         default:                    return "Unknown";
     }
 }
+
+inline bool is_weapon_magical(WeaponType weaponType) {
+    switch (weaponType) {
+        case WeaponType::Staff:
+            return true;
+        default:
+            return false;
+    }
+}

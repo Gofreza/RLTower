@@ -142,7 +142,7 @@ void InventoryMenu::render(const SDL_Rect& rect) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
     SDL_RenderFillRect(renderer, &inventoryRect);
     
-    drawBorder(renderer, inventoryRect, Utils::borderColor);
+    UiManager::instance().drawBorder(renderer, inventoryRect, Utils::borderColor);
 
     // Start rendering from the top of rect
     int currentY = inventoryRect.y + 5;

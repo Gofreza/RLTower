@@ -20,8 +20,16 @@ public:
     void deactivateLeftClick();
     void deactivateRightClick();
 
+    bool isWheelUp() const;
+    bool isWheelDown() const;
+    void deactivateWheelUp();
+    void deactivateWheelDown();
+
 private:
     std::unordered_map<SDL_Keycode, bool> keys;
     bool isLeftClick;
     bool isRightClick;
+
+    bool wheelUp = false;
+    bool wheelDown = false;
 };

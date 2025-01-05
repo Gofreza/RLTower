@@ -19,7 +19,9 @@ Player::~Player()
 
 bool Player::update()
 {
+    this->hasWaited = false;
     bool moved = false;
+    bool attacked = false;
     if (InputManager::instance().isKeyPressed(SDLK_UP)) {
         InputManager::instance().deactivateKey(SDLK_UP);
 
@@ -52,10 +54,28 @@ bool Player::update()
             moved = true;
         }
     }
-    if (moved) {
+
+    if (InputManager::instance().isKeyPressed(SDLK_SPACE)) {
+        InputManager::instance().deactivateKey(SDLK_SPACE);
+        // Toggle combat mode
+        GameManager::instance().toggleCombatMode();
+    }
+
+    if (UiManager::instance().isMouseHoveringGame() && InputManager::instance().isWheelUp()) {
+        InputManager::instance().deactivateWheelUp();
+        this->hasWaited = true;
+    }
+
+    if (hasAttack) {
+        attacked = true;
+    }
+
+    if (moved || attacked) {
         UiManager::instance().updateGame(true);
     }
-    return moved;
+
+    Character::updateProgress();
+    return moved || attacked || hasWaited;
 }
 
 void Player::move(int x, int y) {

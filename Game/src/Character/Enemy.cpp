@@ -22,6 +22,10 @@ Enemy::Enemy(const Enemy& enemy)
 {
 }
 
+Enemy* Enemy::clone() const {
+    return new Enemy(*this);
+}
+
 Enemy::~Enemy()
 {
 }
@@ -52,10 +56,6 @@ bool Enemy::update()
 
 int Enemy::getValue() const {
     return value;
-}
-
-Enemy* Enemy::clone() const {
-    return new Enemy(*this);
 }
 
 std::ostream& operator<<(std::ostream& os, const Enemy& enemy)

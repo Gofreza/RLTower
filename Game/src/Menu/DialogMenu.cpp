@@ -3,6 +3,7 @@
 #include "../Misc/Utils.h"
 
 #include "../Manager/Localization/LocalizationManager.h"
+#include "../Manager/UI/UiManager.h"
 
 DialogMenu::DialogMenu (SDL_Renderer* renderer, TTF_Font* font)
 : Menu(renderer, font)
@@ -34,7 +35,7 @@ void DialogMenu::render(const SDL_Rect& rect) {
 
     currentY = rect.y + textHeight + 5 + 5;
     
-    drawBorder(renderer, dialogRect, Utils::borderColor);
+    UiManager::instance().drawBorder(renderer, dialogRect, Utils::borderColor);
 }
 
 void DialogMenu::render(const SDL_Rect& rect, const Item* item) {

@@ -28,6 +28,7 @@ void MapManager::generateMap(int width, int height, int iterations, float wRatio
 
 void MapManager::removeCharacter(int dx, int dy) {
     this->ascii_map[dy][dx].removeCharacter();
+    this->ascii_map[dy][dx].resetCell();
 }
 
 //=========

@@ -3,6 +3,7 @@
 #include "../Misc/Logger.h"
 
 #include "../Manager/Localization/LocalizationManager.h"
+#include "../Manager/UI/UiManager.h"
 
 ConsoleMenu::ConsoleMenu (SDL_Renderer* renderer, TTF_Font* font)
 : Menu(renderer, font)
@@ -32,7 +33,7 @@ void ConsoleMenu::render(const SDL_Rect& rect) {
         rect.h - textHeight - 5 - 5
     };
     
-    drawBorder(renderer, logsRect, Utils::borderColor);
+    UiManager::instance().drawBorder(renderer, logsRect, Utils::borderColor);
     
     // Start rendering from the bottom of logsRect
     int currentY = logsRect.y + logsRect.h - 5;

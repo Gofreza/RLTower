@@ -84,7 +84,7 @@ void StatusMenu::render(const SDL_Rect& rect) {
     int currentY = rect.y + 10;
 
     // Draw the border
-    // drawBorder(renderer, menuRect, borderColor);
+    // UiManager::instance().drawBorder(renderer, menuRect, borderColor);
 
     // Render HP bar
     SDL_Rect hpBarRect = { 0, currentY, rect.w , 30 };

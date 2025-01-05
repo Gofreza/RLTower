@@ -19,7 +19,7 @@ public:
 
     void loadEnemiesFromFile(const std::string& filePath);
 
-    void initialize(std::vector<Enemy*>& enemies, int towerLevel, int numberOfEnemies);
+    void initialize(std::vector<Enemy*>& enemiesVector, int towerLevel, int numberOfEnemies);
     void addEnemy(Enemy* enemy);
 
     std::map<int, Enemy*>& getEnemies();
