@@ -22,6 +22,8 @@ public:
     void updateCopper();
 
 private:
+    int lastHpTextWidth;
+
     SDL_Texture* hpTextTexture;
     SDL_Texture* manaTextTexture;
     SDL_Texture* staminaTextTexture;

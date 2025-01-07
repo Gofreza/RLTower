@@ -16,5 +16,6 @@ public:
     bool update() override;
     void move(int x, int y) override;
 
+    void defend(Character* attacker) override;
 private:
 };

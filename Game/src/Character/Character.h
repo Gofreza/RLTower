@@ -81,6 +81,7 @@ protected:
     // Stats
     int phyDamage;
     int magDamage;
+    int range;
     int strength;
     int dexterity;
     int intelligence;
@@ -157,7 +158,7 @@ public:
     virtual void move(int x, int y);
 
     void attack(Character* target);
-    void defend(Character* attacker);
+    virtual void defend(Character* attacker);
     bool canDodge();
 
     //=====================
@@ -265,6 +266,8 @@ public:
     void setPhyDamage(int newDamage);
     int getMagDamage() const;
     void setMagDamage(int newDamage);
+    int getRange() const;
+    void setRange(int newRange);
     int getStrength() const;
     void setStrength(int newStrength);
     int getDexterity() const;

@@ -41,6 +41,7 @@ void Weapon::use(Character* character) {
         character->setMagDamage(character->getMagDamage() + this->magDamage);
         character->setPhysicalDefenseBonus(this->getPhyDefense());
         character->setMagicalDefenseBonus(this->getMagDefense());
+        character->setRange(character->getRange() + this->length);
         for (const auto& effect : this->getEffects()) {
             effect->trigger(character);
         }
@@ -50,6 +51,7 @@ void Weapon::use(Character* character) {
         character->setMagDamage(character->getMagDamage() - this->magDamage);
         character->setPhysicalDefenseBonus(-this->getPhyDefense());
         character->setMagicalDefenseBonus(-this->getMagDefense());
+        character->setRange(character->getRange() - this->length);
         for (const auto& effect : this->getEffects()) {
             effect->trigger(character, true);
         }

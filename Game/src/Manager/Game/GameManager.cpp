@@ -83,12 +83,8 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     int player_x = player->getXPosition(); 
     int player_y = player->getYPosition();
 
-    Item* weapon = player->getWeapon();
-    int player_attack_range = 0;
-    if (weapon) {
-        Weapon* w = static_cast<Weapon*>(weapon);
-        player_attack_range = w->getLength();
-    }
+    int player_attack_range = player->getRange();
+
     // Obtenez le temps actuel
     Uint32 current_time = SDL_GetTicks();
 

@@ -31,8 +31,8 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     characterProgress(new CharacterProgress(this)), hasWaited(false), overweight(false), hasDodge(false), hasCastSpell(false), hasFoundAncientSite(false), hasHealDamage(false),
     fatigue(0), exhausted(false), hasMoved(false), hasAttack(false),
     // Stats
-    phyDamage(phyDamage), magDamage(magDamage), strength(strength),
-    dexterity(dexterity), intelligence(intelligence), wisdom(wisdom), constitution(constitution), luck(luck),
+    phyDamage(phyDamage), magDamage(magDamage), range(1),
+    strength(strength), dexterity(dexterity), intelligence(intelligence), wisdom(wisdom), constitution(constitution), luck(luck),
     // Stats Dependants
     physicalDefense(0), magicalDefense(0), weight(0.f), maxWeight(0), dodge(0.0f),
     // Bonus
@@ -1097,6 +1097,9 @@ void Character::setPhyDamage(int newDamage) { phyDamage = newDamage; }
 
 int Character::getMagDamage() const { return magDamage; }
 void Character::setMagDamage(int newDamage) { magDamage = newDamage; }
+
+int Character::getRange() const { return range; }
+void Character::setRange(int newRange) { range = newRange; }
 
 int Character::getStrength() const { return strength; }
 void Character::setStrength(int newStrength) { strength = newStrength; }

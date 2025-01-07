@@ -5,7 +5,9 @@
 #include "../Manager/UI/UiManager.h"
 
 StatusMenu::StatusMenu(SDL_Renderer* renderer, TTF_Font* font)
-: Menu(renderer, font), player(CharactersManager::instance().getPlayer())
+: Menu(renderer, font), 
+lastHpTextWidth(0),
+player(CharactersManager::instance().getPlayer())
 {
     int hp = player->getHp();
     int mana = player->getMana();
@@ -88,6 +90,9 @@ void StatusMenu::render(const SDL_Rect& rect) {
 
     // Render HP bar
     SDL_Rect hpBarRect = { 0, currentY, rect.w , 30 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &hpBarRect);
+
     SDL_SetRenderDrawColor(renderer, Utils::hpFillColor.r, Utils::hpFillColor.g, Utils::hpFillColor.b, Utils::hpFillColor.a);
     SDL_Rect hpFillRect = { hpBarRect.x, hpBarRect.y, static_cast<int>(hpBarRect.w * (hp / maxhp)), hpBarRect.h };
     SDL_RenderFillRect(renderer, &hpFillRect);
@@ -103,10 +108,14 @@ void StatusMenu::render(const SDL_Rect& rect) {
     if (hpTextTexture) {
         int textWidth = 0, textHeight = 0;
         SDL_QueryTexture(hpTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+        if (lastHpTextWidth < textWidth) {
+            lastHpTextWidth = textWidth;
+        }
+
         SDL_Rect textRect = {
-            hpBarRect.x + (hpBarRect.w - textWidth) / 2, 
+            hpBarRect.x + (hpBarRect.w - lastHpTextWidth) / 2, 
             hpBarRect.y + (hpBarRect.h - textHeight) / 2, 
-            textWidth,
+            lastHpTextWidth,
             textHeight
         };
         currentY += 30;
@@ -115,6 +124,8 @@ void StatusMenu::render(const SDL_Rect& rect) {
 
     // Render Mana bar or Energy bar
     SDL_Rect manaBarRect = { 0, currentY, rect.w, 30 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &manaBarRect);
     if (hasMana) {
         SDL_SetRenderDrawColor(renderer, Utils::manaFillColor.r, Utils::manaFillColor.g, Utils::manaFillColor.b, Utils::manaFillColor.a);
         SDL_Rect manaFillRect = { manaBarRect.x, manaBarRect.y, static_cast<int>(manaBarRect.w * (mana / maxMana)), manaBarRect.h };
@@ -149,6 +160,9 @@ void StatusMenu::render(const SDL_Rect& rect) {
 
     // Render stamina bar
     SDL_Rect staminaBarRect = { 0, currentY, rect.w , 30 };
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &staminaBarRect);
+
     SDL_SetRenderDrawColor(renderer, Utils::staminaFillColor.r, Utils::staminaFillColor.g, Utils::staminaFillColor.b, Utils::staminaFillColor.a);
     SDL_Rect staminaFillRect = { staminaBarRect.x, staminaBarRect.y, static_cast<int>(staminaBarRect.w * (stamina / maxStamina)), staminaBarRect.h };
     SDL_RenderFillRect(renderer, &staminaFillRect);

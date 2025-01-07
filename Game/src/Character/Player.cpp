@@ -84,3 +84,9 @@ void Player::move(int x, int y) {
         MapManager::instance().movePlayerInMap(this, x, y);
     }   
 }
+
+void Player::defend(Character* attacker)
+{
+    Character::defend(attacker);
+    UiManager::instance().updateMenu(false);
+}
