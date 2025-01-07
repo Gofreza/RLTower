@@ -37,7 +37,6 @@ The goal here is to roam inside a tower and try to get to the top.
 
 ### 🚧 In-Progress Features
 
-- Spell rework
 - Combat system
 - Enemy AI ([RogueBasin](https://roguebasin.com/index.php/A_Better_Monster_AI))
 
@@ -45,6 +44,7 @@ The goal here is to roam inside a tower and try to get to the top.
 
 - Add sound and musics
 - Better map generation (Tunneling algorithm)
+- Code refactor (Menus ...)
 
 ## 🔮 Future Modifications
 
