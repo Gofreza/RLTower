@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include "../Effect/Effect.h"
 #include "SpellEnergy.h"
 #include "SpellType.h"
 #include "SpellElement.h"
@@ -19,9 +20,9 @@ public:
         int damage,
         int range,
         int consumption,
-        std::string effectText,
-        std::function<void(Character*)> effect,
-        std::array<int, 5> requirements);
+        std::vector<Effect*> effects = std::vector<Effect*>{},
+        std::array<int, 5> requirements = {-1, -1, -1, -1, -1});
+    Spell(const Spell& spell);
     ~Spell();
 
     short getId() const;
@@ -33,8 +34,7 @@ public:
     int getDamage() const;
     int getRange() const;
     int getConsumption() const;
-    std::string getEffectText() const;
-    std::function<void(Character*)> getEffect() const;
+    const std::vector<Effect*>& getEffects() const;
     const std::array<int, 5>& getRequirements() const; 
 
 private:
@@ -49,8 +49,7 @@ private:
     int consumption;
 
     // Effect
-    std::string effectText;
-    std::function<void(Character*)> effect;
+    std::vector<Effect*> effects;
 
     std::array<int, 5> requirements;
 

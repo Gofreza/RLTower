@@ -3,8 +3,6 @@
 SpellManager::SpellManager()
 : isInitialize(false)
 {
-    createEffectsRegistry();
-    createEffectsTextRegistry();
 }
 
 void SpellManager::loadSpellsFromFile(const std::string& spellsFilePath) {
@@ -38,8 +36,7 @@ void SpellManager::loadSpellsFromFile(const std::string& spellsFilePath) {
                                     spellJson.value("damage", 0),
                                     spellJson.value("range", 0),
                                     spellJson.value("consumption", -1),
-                                    spellJson.value("effect", "Error"),
-                                    getEffect(spellJson.value("effect", "Error")),
+                                    EffectManager::instance().getEffect(spellJson.value("effect", std::list<std::string>{"None"})),
                                     spellJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1, -1}));
 
             spells.emplace(spell->getId(), spell);
@@ -62,40 +59,6 @@ Spell* SpellManager::getSpell(short id) const {
 
     throw std::runtime_error("Spell with ID " + std::to_string(id) + " not found.");
 
-}
-
-std::function<void(Character*)> SpellManager::getEffect(const std::string& key) const {
-    auto it = effectsRegistry.find(key);
-    if (it != effectsRegistry.end()) {
-        return it->second;
-    }
-
-    throw std::runtime_error("Effect with ID " + key + " not found. (SpellManager)");
-}
-
-std::string SpellManager::getEffectText(const std::string& key) const {
-    auto it = effectsTextRegistry.find(key);
-    if (it != effectsTextRegistry.end()) {
-        return it->second;
-    }
-    
-    throw std::runtime_error("EffectText with ID " + key + " not found. (SpellManager)");
-}
-
-// TODO: Est-ce que c'est deux fonctions sont utiles ?
-void SpellManager::createEffectsRegistry() {
-    effectsRegistry = {
-        {"burn_effect", [](Character* character) { 
-            // Log and apply burn to passed character   
-            (void)character;       
-        }},
-    };
-}
-
-void SpellManager::createEffectsTextRegistry() {
-    effectsTextRegistry = {
-        {"burn_effect", LocalizationManager::instance().getText("burn_effect")}
-    };
 }
 
 SpellManager::~SpellManager()

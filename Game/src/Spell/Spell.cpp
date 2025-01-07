@@ -11,11 +11,16 @@ Spell::Spell(short id,
             int damage, 
             int range,
             int consumption,
-            std::string effectText,
-            std::function<void(Character*)> effect,
+            std::vector<Effect*> effects,
             std::array<int, 5> requirements)
 : id(id), name(name), description(description), energyType(energyType), type(type), element(element), damage(damage), range(range), consumption(consumption),
-  effectText(effectText), effect(effect), requirements(requirements)
+  effects(effects), requirements(requirements)
+{
+}
+
+Spell::Spell(const Spell& spell) 
+: id(spell.id), name(spell.name), description(spell.description), energyType(spell.energyType), type(spell.type), element(spell.element), damage(spell.damage), range(spell.range), consumption(spell.consumption),
+  effects(spell.effects), requirements(spell.requirements)
 {
 }
 
@@ -55,12 +60,8 @@ int Spell::getConsumption() const {
     return consumption;
 }
 
-std::string Spell::getEffectText() const {
-    return effectText;
-}
-
-std::function<void(Character*)> Spell::getEffect() const {
-    return effect;
+const std::vector<Effect*>& Spell::getEffects() const {
+    return effects;
 }
 
 const std::array<int, 5>& Spell::getRequirements() const {

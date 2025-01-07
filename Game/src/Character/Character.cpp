@@ -44,7 +44,9 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     poisonResistance(0.0f), metalResistance(0.0f), soundResistance(0.0f),
     illusionResistance(0.0f),
     // Desire
-    desires(desires), disgusts(disgusts)
+    desires(desires), disgusts(disgusts),
+    // Spells
+    currentActiveSpell(nullptr)
 {
     leftHand = nullptr;
     rightHand = nullptr;
@@ -85,7 +87,9 @@ Character::Character(const Character& other)
     poisonResistance(other.poisonResistance), metalResistance(other.metalResistance), soundResistance(other.soundResistance),
     illusionResistance(other.illusionResistance),
     // Desire
-    desires(other.desires), disgusts(other.disgusts)
+    desires(other.desires), disgusts(other.disgusts),
+    // Spells
+    currentActiveSpell(other.currentActiveSpell)
 {
     leftHand = other.leftHand ? ItemManager::instance().getItem(other.leftHand->getId()) : nullptr;
     rightHand = other.rightHand ? ItemManager::instance().getItem(other.rightHand->getId()) : nullptr;

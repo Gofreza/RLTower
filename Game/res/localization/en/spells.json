@@ -3,14 +3,14 @@
         {
             "id": 0,
             "name": "Fireball",
-            "description": "Throw a fireball. And burn the ground if possible.",
+            "description": "Throw a fireball. And burn the enemy and ground if possible.",
             "energyType": "Mana",
             "type": "Attack",
             "element": "Fire",
             "damage": 5,
             "range": 4,
             "consumption": 10,
-            "effect": "burn_effect",
+            "effect": ["burn"],
             "requirements": [0, 0, 3, 0, 0]
         }
     ]

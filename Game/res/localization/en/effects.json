@@ -219,6 +219,17 @@
             "stats": ["MagDefense"],
             "resultType": false,
             "value": 1
+        },
+        {
+            "id": 20,
+            "name": "burn",
+            "description" : "Burn 1HP each turn.",
+            "log": "You are burning!",
+            "type": "Dot",
+            "duration": 5,
+            "stats": ["Hp"],
+            "resultType": false,
+            "value": 1
         }
     ]
 }

@@ -270,7 +270,14 @@ void SpellMenu::render(const SDL_Rect& rect, Spell* spell) {
     }
 
     // Effect
-    renderLongText(currentY, LocalizationManager::instance().getText("item_effect"), SpellManager::instance().getEffectText(spell->getEffectText()));
+    std::vector<Effect*> effectsVector = spell->getEffects();
+    if (!effectsVector.empty()) {
+        std::string text = "";
+        for (const auto& s : effectsVector) {
+            text += s->getDescription();
+        }
+        renderWithoutColor(currentY, LocalizationManager::instance().getText("item_effect"), text);
+    }
 }
 
 int SpellMenu::getHeight() const {

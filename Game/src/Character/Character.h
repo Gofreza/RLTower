@@ -121,6 +121,9 @@ protected:
     std::vector<int> desires;
     std::vector<int> disgusts;
 
+    // Spells
+    Spell* currentActiveSpell;
+
     // Insert status effect here
     // Struct with a name and the modified stats
 
