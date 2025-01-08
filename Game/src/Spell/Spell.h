@@ -19,6 +19,7 @@ public:
         SpellElement element,
         int damage,
         int range,
+        int radius,
         int consumption,
         std::vector<Effect*> effects = std::vector<Effect*>{},
         std::array<int, 5> requirements = {-1, -1, -1, -1, -1});
@@ -33,7 +34,10 @@ public:
     SpellElement getElement() const;
     int getDamage() const;
     int getRange() const;
+    int getRadius() const;
     int getConsumption() const;
+    void toggleActive();
+    bool isActive() const;
     const std::vector<Effect*>& getEffects() const;
     const std::array<int, 5>& getRequirements() const; 
 
@@ -46,7 +50,10 @@ private:
     SpellElement element;
     int damage;
     int range;
+    int radius;
     int consumption;
+
+    bool active;
 
     // Effect
     std::vector<Effect*> effects;

@@ -31,4 +31,7 @@ namespace Utils {
     extern SDL_Color energyFillColor;
     extern SDL_Color staminaBarBorderColor;
     extern SDL_Color staminaFillColor;
+
+    extern SDL_Color phyCombatColor;
+    extern SDL_Color magCombatColor;
 };

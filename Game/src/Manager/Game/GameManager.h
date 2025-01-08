@@ -44,6 +44,8 @@ private:
     size_t currentCharacterIndex;
 
     bool combatMode;
+    bool spellMode;
+    bool cacMode;
 
     void playTurn();
 

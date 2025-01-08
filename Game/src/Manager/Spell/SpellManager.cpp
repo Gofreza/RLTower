@@ -35,6 +35,7 @@ void SpellManager::loadSpellsFromFile(const std::string& spellsFilePath) {
                                     getSpellElement(spellJson.value("element", "None")),
                                     spellJson.value("damage", 0),
                                     spellJson.value("range", 0),
+                                    spellJson.value("radius", 0),
                                     spellJson.value("consumption", -1),
                                     EffectManager::instance().getEffect(spellJson.value("effect", std::list<std::string>{"None"})),
                                     spellJson.value("requirements", std::array<int, 5>{-1, -1, -1, -1, -1}));

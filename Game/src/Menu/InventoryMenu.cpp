@@ -315,6 +315,10 @@ void InventoryMenu::render(const SDL_Rect& rect) {
                     spellNameHeight + 5
                 };
 
+                if (spell->isActive()) {
+                    UiManager::instance().drawBorder(renderer, itemRect, Utils::borderColor);
+                }
+
                 if (isMouseHovering(itemRect, rect.x)) {
                     SDL_SetRenderDrawColor(renderer, Utils::hoverBackColor.r, Utils::hoverBackColor.g, Utils::hoverBackColor.b, 255);
                     SDL_RenderFillRect(renderer, &itemRect);
@@ -323,9 +327,19 @@ void InventoryMenu::render(const SDL_Rect& rect) {
 
                 SDL_RenderCopy(renderer, spellNameTexture, nullptr, &itemNameRect);
 
-            }
+                currentY += spellNameHeight + 5;
 
-            SDL_DestroyTexture(spellNameTexture);
+                SDL_DestroyTexture(spellNameTexture);
+
+                //=================
+                // Input Listeners
+                //=================
+
+                if (InputManager::instance().isLeftClicked() && isMouseHovering(itemRect, rect.x)) {
+                    InputManager::instance().deactivateLeftClick();
+                    player->setCurrentActiveSpell(spell);
+                }
+            }
         }
     }
      

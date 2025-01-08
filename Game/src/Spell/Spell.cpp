@@ -10,17 +10,18 @@ Spell::Spell(short id,
             SpellElement element,
             int damage, 
             int range,
+            int radius,
             int consumption,
             std::vector<Effect*> effects,
             std::array<int, 5> requirements)
-: id(id), name(name), description(description), energyType(energyType), type(type), element(element), damage(damage), range(range), consumption(consumption),
-  effects(effects), requirements(requirements)
+: id(id), name(name), description(description), energyType(energyType), type(type), element(element), damage(damage), range(range), radius(radius), consumption(consumption),
+  active(false), effects(effects), requirements(requirements)
 {
 }
 
 Spell::Spell(const Spell& spell) 
-: id(spell.id), name(spell.name), description(spell.description), energyType(spell.energyType), type(spell.type), element(spell.element), damage(spell.damage), range(spell.range), consumption(spell.consumption),
-  effects(spell.effects), requirements(spell.requirements)
+: id(spell.id), name(spell.name), description(spell.description), energyType(spell.energyType), type(spell.type), element(spell.element), damage(spell.damage), range(spell.range), radius(spell.radius), consumption(spell.consumption),
+  active(spell.active), effects(spell.effects), requirements(spell.requirements)
 {
 }
 
@@ -56,8 +57,20 @@ int Spell::getRange() const {
     return range;
 }
 
+int Spell::getRadius() const {
+    return radius;
+}
+
 int Spell::getConsumption() const {
     return consumption;
+}
+
+void Spell::toggleActive() {
+    active = !active;
+}
+
+bool Spell::isActive() const {
+    return active;
 }
 
 const std::vector<Effect*>& Spell::getEffects() const {

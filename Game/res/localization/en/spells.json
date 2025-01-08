@@ -9,9 +9,24 @@
             "element": "Fire",
             "damage": 5,
             "range": 4,
+            "radius": 1,
             "consumption": 10,
             "effect": ["burn"],
             "requirements": [0, 0, 3, 0, 0]
+        },
+        {
+            "id": 2,
+            "name": "Mana Arrow",
+            "description": "Fire a simple arrow made of mana.",
+            "energyType": "Mana",
+            "type": "Attack",
+            "element": "Arcane",
+            "damage": 3,
+            "range": 6,
+            "radius": 0,
+            "consumption": 7,
+            "effect": [],
+            "requirements": [0, 0, 2, 0, 0]
         }
     ]
 }

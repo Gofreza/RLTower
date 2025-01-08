@@ -113,4 +113,7 @@ namespace Utils {
     SDL_Color energyFillColor = {255, 195, 0, 255};    // Yellow for Energy fill
     SDL_Color staminaBarBorderColor = {255, 255, 255, 255}; // White border
     SDL_Color staminaFillColor = {50, 200, 50, 255}; // Green
+
+    SDL_Color phyCombatColor = {255, 0, 0, 255}; // Red
+    SDL_Color magCombatColor = {0, 0, 255, 255}; // Blue
 }

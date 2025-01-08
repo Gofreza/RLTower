@@ -81,6 +81,7 @@ protected:
     // Stats
     int phyDamage;
     int magDamage;
+    int baseRange;
     int range;
     int strength;
     int dexterity;
@@ -268,6 +269,9 @@ public:
     void setMagDamage(int newDamage);
     int getRange() const;
     void setRange(int newRange);
+    int getBaseRange() const;
+    void setBaseRange(int newBaseRange);
+    void resetRange();
     int getStrength() const;
     void setStrength(int newStrength);
     int getDexterity() const;
@@ -333,6 +337,9 @@ public:
     std::vector<int> getDesire() const;
     void setDisgust(std::vector<int> newDisgust);
     std::vector<int> getDisgust() const;
+
+    void setCurrentActiveSpell(Spell* spell);
+    Spell* getCurrentActiveSpell() const;
 private:
     bool equipWeapons(Item* weapon);
     void unequipLeftWeapon();
@@ -353,5 +360,4 @@ private:
     void unequipAmulet();
 
     bool useConsumable(Item* item);
-
 };

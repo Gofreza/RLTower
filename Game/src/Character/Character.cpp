@@ -31,7 +31,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     characterProgress(new CharacterProgress(this)), hasWaited(false), overweight(false), hasDodge(false), hasCastSpell(false), hasFoundAncientSite(false), hasHealDamage(false),
     fatigue(0), exhausted(false), hasMoved(false), hasAttack(false),
     // Stats
-    phyDamage(phyDamage), magDamage(magDamage), range(1),
+    phyDamage(phyDamage), magDamage(magDamage), baseRange(1), range(1),
     strength(strength), dexterity(dexterity), intelligence(intelligence), wisdom(wisdom), constitution(constitution), luck(luck),
     // Stats Dependants
     physicalDefense(0), magicalDefense(0), weight(0.f), maxWeight(0), dodge(0.0f),
@@ -1101,6 +1101,10 @@ void Character::setMagDamage(int newDamage) { magDamage = newDamage; }
 int Character::getRange() const { return range; }
 void Character::setRange(int newRange) { range = newRange; }
 
+int Character::getBaseRange() const { return baseRange; }
+void Character::setBaseRange(int newBaseRange) { baseRange = newBaseRange; }
+void Character::resetRange() { range = baseRange; }
+
 int Character::getStrength() const { return strength; }
 void Character::setStrength(int newStrength) { strength = newStrength; }
 
@@ -1233,3 +1237,62 @@ std::vector<int> Character::getDesire() const { return desires; }
 
 void Character::setDisgust(std::vector<int> disgusts) { this->disgusts = disgusts; }
 std::vector<int> Character::getDisgust() const { return disgusts; }
+
+//==========
+// Spells
+//==========
+
+void Character::setCurrentActiveSpell(Spell* spell) {
+    std::array<int, 5> requirements = spell->getRequirements();
+
+    // Check for requirements
+    if (!(requirements.at(0) == -1)) {
+        if (this->strength < requirements.at(0)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_strength"));
+            }
+            return;
+        }
+
+        if (this->dexterity < requirements.at(1)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_dexterity"));
+            }
+            return;
+        }
+        
+        if (this->intelligence < requirements.at(2)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_intelligence"));
+            }
+            return;
+        }
+        
+        if (this->wisdom < requirements.at(3)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_wisdom"));
+            }
+            return;
+        } 
+        
+        if (this->constitution < requirements.at(4)) {
+            if (this->group == GroupType::Player) {
+                Logger::instance().info(LocalizationManager::instance().getText("not_enough_constitution"));
+            }
+            return;
+        }
+    }
+
+    if (currentActiveSpell) {
+        // If there is a current active spell, deactivate it
+        currentActiveSpell->toggleActive();
+    }
+    // Set the new active spell
+    currentActiveSpell = spell;
+    // Activate the new spell
+    currentActiveSpell->toggleActive();
+}
+
+Spell* Character::getCurrentActiveSpell() const {
+    return currentActiveSpell;
+}

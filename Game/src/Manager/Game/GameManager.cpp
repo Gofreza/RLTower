@@ -6,7 +6,7 @@
 GameManager::GameManager():   
     player(CharactersManager::instance().getPlayer()),
     turn(0),
-    combatMode(false)
+    combatMode(false), spellMode(false), cacMode(false)
 {
 }
 
@@ -172,7 +172,13 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                 
                 if (Utils::isMouseHovering(dest, rect.x, rect.y)) {
                     if (combatMode) {
-                        UiManager::instance().drawBorder(renderer, dest, Utils::borderColor);
+                        SDL_Color color = Utils::borderColor;
+                        if (spellMode) {
+                            color = Utils::magCombatColor;
+                        } else {
+                            color = Utils::phyCombatColor;
+                        }
+                        UiManager::instance().drawBorder(renderer, dest, color);
                     } else {
                         SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
                         SDL_RenderFillRect(renderer, &dest);
@@ -262,7 +268,29 @@ void GameManager::moveCharacter(Character* character, int dx, int dy) {
 }
 
 void GameManager::toggleCombatMode() {
-    combatMode = !combatMode;
+    if (spellMode) {
+        spellMode = false;
+        cacMode = true;
+    } else {
+        if (cacMode) {
+            cacMode = false;
+            combatMode = false;
+        } else {
+            combatMode = true;
+            Item* w = player->getWeapon();
+            if (w) {
+                Weapon* weapon = static_cast<Weapon*>(w);
+                WeaponType weaponType = weapon->getWeaponType();
+                if (weaponType == WeaponType::Staff) {
+                    spellMode = true;
+                } else {
+                    cacMode = true;
+                }
+            } else {
+                cacMode = true;
+            }
+        }   
+    }    
 }
 
 void GameManager::addCharacterToDefferedDeletions(Character* character) {
