@@ -11,6 +11,8 @@ This is a rogue-like game built in C++, inspired by classic and modern dungeon c
 
 The goal here is to roam inside a tower and try to get to the top.
 
+This is the first step of this project. I aim to build a working version of the game with a lot of what I want to implement. Then I will review what I have done and rebuild everything, with a better architecture.
+
 ## 🛠️ Technologies Used
 
 - **Programming Language**: C++
