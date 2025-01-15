@@ -90,6 +90,7 @@
     "spell_element": "Element: ",
     "spell_damage": "Damage: ",
     "spell_energytype": "Energy Type: ",
+    "spell_radius": "Radius: ",
     "character_level": "Level: ",
     "character_experience": "Experience: ",
     "character_fatigue": "Fatigue: ",
@@ -125,5 +126,10 @@
     "not_enough_wisdom": "You don't have enough wisdom.",
     "not_enough_constitution": "You don't have enough constitution.",
     "no_empty_cell_found": "No place to drop the item.",
-    "character_group": "Group: "
+    "character_group": "Group: ",
+    "not_enough_energy": "Not enough energy.",
+    "not_enough_mana": "Not enough mana.",
+    "not_enough_stamina": "Not enough stamina.",
+    "aura_user_spell": "Can't equip this spell. You are an aura user.",
+    "mana_user_spell": "Can't equip this spell. You are a mana user."
 }

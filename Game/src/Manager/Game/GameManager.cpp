@@ -84,6 +84,9 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     int player_y = player->getYPosition();
 
     int player_attack_range = player->getRange();
+    if (spellMode && player->getCurrentActiveSpell() != nullptr) {
+        player_attack_range = player->getCurrentActiveSpell()->getRange();
+    } 
 
     // Obtenez le temps actuel
     Uint32 current_time = SDL_GetTicks();
@@ -204,7 +207,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                             if (InputManager::instance().isLeftClicked() && Utils::distance(player_x, player_y, map_x, map_y) <= diag) {
                                 InputManager::instance().deactivateLeftClick();
                                 player->attack(cell.getCharacter());
-                                // UiManager::instance().updateGame(true);
+                                UiManager::instance().updateMenu(true);
                             }
                         }
                     } else {
@@ -281,7 +284,8 @@ void GameManager::toggleCombatMode() {
             if (w) {
                 Weapon* weapon = static_cast<Weapon*>(w);
                 WeaponType weaponType = weapon->getWeaponType();
-                if (weaponType == WeaponType::Staff) {
+                if ((weaponType == WeaponType::Staff && player->getCurrentActiveSpell() != nullptr) ||
+                    (player->getCurrentActiveSpell() != nullptr && player->getCurrentActiveSpell()->getSpellEnergyType() == SpellEnergy::Energy)) {
                     spellMode = true;
                 } else {
                     cacMode = true;
@@ -291,6 +295,12 @@ void GameManager::toggleCombatMode() {
             }
         }   
     }    
+}
+
+void GameManager::stopCombatMode() {
+    combatMode = false;
+    spellMode = false;
+    cacMode = false;
 }
 
 void GameManager::addCharacterToDefferedDeletions(Character* character) {

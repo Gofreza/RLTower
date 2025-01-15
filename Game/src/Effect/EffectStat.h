@@ -39,9 +39,40 @@ enum class EffectStat {
 
 inline std::string to_string(EffectStat effectStat) {
     switch (effectStat) {
-        case EffectStat::MagDefense:        return "MagDefense";
+        case EffectStat::Hp:                  return "Hp";
+        case EffectStat::Mana:                return "Mana";
+        case EffectStat::Energy:              return "Energy";
+        case EffectStat::Stamina:             return "Stamina";
+        case EffectStat::Speed:               return "Speed";
+        case EffectStat::Fatigue:             return "Fatigue";
+        case EffectStat::PhyDamage:           return "PhyDamage";
+        case EffectStat::MagDamage:           return "MagDamage";
+        case EffectStat::Strength:            return "Strength";
+        case EffectStat::Dexterity:           return "Dexterity";
+        case EffectStat::Intelligence:        return "Intelligence";
+        case EffectStat::Wisdom:              return "Wisdom";
+        case EffectStat::Constitution:        return "Constitution";
+        case EffectStat::Luck:                return "Luck";
+        case EffectStat::PhyDefense:          return "PhyDefense";
+        case EffectStat::MagDefense:          return "MagDefense";
+        case EffectStat::Weight:              return "Weight";
+        case EffectStat::FireResistance:      return "FireResistance";
+        case EffectStat::WaterResistance:     return "WaterResistance";
+        case EffectStat::EarthResistance:     return "EarthResistance";
+        case EffectStat::AirResistance:       return "AirResistance";
+        case EffectStat::LightningResistance: return "LightningResistance";
+        case EffectStat::IceResistance:       return "IceResistance";
+        case EffectStat::NatureResistance:    return "NatureResistance";
+        case EffectStat::LightResistance:     return "LightResistance";
+        case EffectStat::DarknessResistance:  return "DarknessResistance";
+        case EffectStat::ArcaneResistance:    return "ArcaneResistance";
+        case EffectStat::PoisonResistance:    return "PoisonResistance";
+        case EffectStat::MetalResistance:     return "MetalResistance";
+        case EffectStat::SoundResistance:     return "SoundResistance";
+        case EffectStat::IllusionResistance:  return "IllusionResistance";
         default:                            return "None";
     }
+
 }
 
 const std::unordered_map<std::string, EffectStat> effectStatMap = {

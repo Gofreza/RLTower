@@ -4,12 +4,12 @@
 #include "../Manager/UI/UiManager.h"
 
 Player::Player(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description,
-            float hp, int mana, int energy, int stamina, int fov, int speed,
+            float hp, int mana, int energy, int stamina, bool isAuraUser, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
             std::vector<int> desires, std::vector<int> disgusts)
- : Character(name, color, group, imagePath, description, hp, mana, energy, stamina, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desires, disgusts)
+ : Character(name, color, group, imagePath, description, hp, mana, energy, stamina, isAuraUser, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desires, disgusts)
 {
 }
 
@@ -18,7 +18,7 @@ Player::~Player()
 }
 
 bool Player::update()
-{
+{   
     this->hasWaited = false;
     bool moved = false;
     bool attacked = false;
@@ -70,11 +70,24 @@ bool Player::update()
         attacked = true;
     }
 
+    if (moved || hasWaited) {
+        if (!overweight && this->stamina < this->maxStamina) {
+            this->stamina += 1;
+        } else if (overweight && this->stamina > 0) {
+            this->stamina -= 1;
+        }
+        UiManager::instance().updateMenu(false);
+    }
+
     if (moved || attacked) {
         UiManager::instance().updateGame(true);
     }
 
     Character::updateProgress();
+    if (moved || attacked || hasWaited) {
+        Character::update();
+    }
+
     return moved || attacked || hasWaited;
 }
 

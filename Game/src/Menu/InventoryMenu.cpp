@@ -337,6 +337,7 @@ void InventoryMenu::render(const SDL_Rect& rect) {
 
                 if (InputManager::instance().isLeftClicked() && isMouseHovering(itemRect, rect.x)) {
                     InputManager::instance().deactivateLeftClick();
+                    GameManager::instance().stopCombatMode();
                     player->setCurrentActiveSpell(spell);
                 }
             }

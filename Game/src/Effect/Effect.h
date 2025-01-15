@@ -19,16 +19,19 @@ public:
            int duration,
            std::vector<EffectStat> effectStats,
            bool resultType,
-           int value);
+           std::vector<int> value);
     ~Effect();
 
+    Effect* clone() const;
     void trigger(Character* character, bool isReversed = false);
 
     short getEffectId() const;
     const std::string& getEffectName() const;
     const std::string& getLogText() const;
     const std::string& getDescription() const;
+    EffectType getEffectType() const;
     int getDuration() const;
+    void reduceDuration();
 
 private:
     short id;
@@ -40,6 +43,5 @@ private:
     std::vector<EffectStat> effectStats;
     // Positive = true, negative = false
     bool resultType;
-    int value;
-
+    std::vector<int> value;
 };

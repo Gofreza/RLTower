@@ -185,6 +185,9 @@ void SpellMenu::render(const SDL_Rect& rect, Spell* spell) {
     // Range
     renderWithoutColor(currentY, LocalizationManager::instance().getText("item_range"), std::to_string(spell->getRange()));
 
+    // Radius
+    renderWithoutColor(currentY, LocalizationManager::instance().getText("spell_radius"), std::to_string(spell->getRadius()));
+
     //===========
     // Separator
     //===========

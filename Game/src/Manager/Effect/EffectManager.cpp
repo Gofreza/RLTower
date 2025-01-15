@@ -37,7 +37,7 @@ void EffectManager::loadEffectsFromFile(const std::string& effectsFilePath) {
                                         effectJson.value("duration", 0),
                                         getEffectStatVector(effectJson.value("stats", std::list<std::string>{})),
                                         effectJson.value("resultType", false),
-                                        effectJson.value("value", 0));
+                                        effectJson.value("value", std::vector<int>{}));
 
             effects.emplace(effect->getEffectId(), effect);
         }

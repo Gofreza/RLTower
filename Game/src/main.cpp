@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     // Player
     //=========
     Player* player = new Player("Player", {55, 55, 160, 255}, GroupType::Player, "tortueachapeau.png", "Tortue à chapeau",
-                                1000.0f, 100, 0, 100, 5, 100,
+                                1000.0f, 100, 0, 100, false, 5, 100,
                                 1, 0, 
                                 7, 3, 5, 1, 5, 1,
                                 '@',
@@ -100,17 +100,22 @@ int main(int argc, char* argv[]) {
     player->addItemInInventory(ItemManager::instance().getItem(12));
     player->addItemInInventory(ItemManager::instance().getItem(12));
     player->addItemInInventory(ItemManager::instance().getItem(12));
-    player->addItemInInventory(ItemManager::instance().getItem(10));
-    player->addItemInInventory(ItemManager::instance().getItem(10));
-    player->addItemInInventory(ItemManager::instance().getItem(10));
-    player->addItemInInventory(ItemManager::instance().getItem(10));
-    player->addItemInInventory(ItemManager::instance().getItem(11));
-    player->addItemInInventory(ItemManager::instance().getItem(11));
-    player->addItemInInventory(ItemManager::instance().getItem(11));
+    // player->addItemInInventory(ItemManager::instance().getItem(10));
+    // player->addItemInInventory(ItemManager::instance().getItem(10));
+    // player->addItemInInventory(ItemManager::instance().getItem(10));
+    // player->addItemInInventory(ItemManager::instance().getItem(10));
+    // player->addItemInInventory(ItemManager::instance().getItem(11));
+    // player->addItemInInventory(ItemManager::instance().getItem(11));
+    // player->addItemInInventory(ItemManager::instance().getItem(11));
+    player->addItemInInventory(ItemManager::instance().getItem(26));
     player->addItemInInventory(ItemManager::instance().getItem(24));
     // Give spells
     player->addSpellInSpellBook(SpellManager::instance().getSpell(0));
+    player->addSpellInSpellBook(SpellManager::instance().getSpell(1));
     player->addSpellInSpellBook(SpellManager::instance().getSpell(2));
+    player->addSpellInSpellBook(SpellManager::instance().getSpell(3));
+    player->addSpellInSpellBook(SpellManager::instance().getSpell(4));
+    player->addSpellInSpellBook(SpellManager::instance().getSpell(5));
 
     //=========
     // FPS
@@ -154,9 +159,21 @@ int main(int argc, char* argv[]) {
             // DEBUG Click
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    // MouseManager::instance().handleLeftClick(event.button.x, event.button.y);
                 } else if (event.button.button == SDL_BUTTON_RIGHT) {
-                    player->addItemInInventory(ItemManager::instance().getItem(26));
+                    if (player->isCharacterAuraUser()) {
+                        player->setCharacterAuraUser(false);
+                        player->setMana(100);
+                        player->setMaxMana(100);
+                        player->setEnergy(0);
+                        player->setMaxEnergy(0);
+                    } else {
+                        player->setCharacterAuraUser(true);
+                        player->setMana(0);
+                        player->setMaxMana(0);
+                        player->setEnergy(100);
+                        player->setMaxEnergy(100);
+                    }
+                    player->addItemInInventory(ItemManager::instance().getItem(10));
                     UiManager::instance().updateMenu(true);
                 }
             } 

@@ -23,6 +23,8 @@ public:
 
 private:
     int lastHpTextWidth;
+    int lastManaTextWidth;
+    int lastStaminaTextWidth;
 
     SDL_Texture* hpTextTexture;
     SDL_Texture* manaTextTexture;

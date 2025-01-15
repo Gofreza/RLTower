@@ -28,6 +28,7 @@ public:
     void moveCharacter(Character* character, int dx, int dy);
 
     void toggleCombatMode();
+    void stopCombatMode();
 
     void addCharacterToDefferedDeletions(Character* character);
     void deleteDeferredCharacters();

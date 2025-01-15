@@ -57,6 +57,8 @@ protected:
     int level;
     int experience;
 
+    bool isAuraUser;
+
     // Field of vision
     int fov; // Define the radius of the circle of vision around the character
 
@@ -126,11 +128,11 @@ protected:
     // Spells
     Spell* currentActiveSpell;
 
-    // Insert status effect here
-    // Struct with a name and the modified stats
+    // Effects
+    std::vector<Effect*> effects;
 
 public:
-    Character(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description, float hp, int mana, int energy, int stamina, int fov, int speed,
+    Character(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description, float hp, int mana, int energy, int stamina, bool isAuraUser, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
@@ -141,7 +143,7 @@ public:
     // Next turn
     void updateStatsDependants();
     void updateProgress();
-    virtual bool update() = 0;
+    virtual bool update();
 
     void addItemInInventory(Item* item);
     void addBackItemInInventory(Item* item);
@@ -160,6 +162,7 @@ public:
 
     void attack(Character* target);
     virtual void defend(Character* attacker);
+    virtual void support(Character* target);
     bool canDodge();
 
     //=====================
@@ -238,6 +241,9 @@ public:
     void setExperience(int newExperience);
     int getSpeed() const;
     // void setSpeed(int newSpeed); // Use bonus
+
+    bool isCharacterAuraUser() const;
+    void setCharacterAuraUser(bool isAuraUser);
 
     int getFov() const;
     void setFov(int newFov);
@@ -340,6 +346,11 @@ public:
 
     void setCurrentActiveSpell(Spell* spell);
     Spell* getCurrentActiveSpell() const;
+
+    // Effects
+    void addEffect(Effect* effect);
+    void removeEffect(Effect* effect);
+    std::vector<Effect*> getEffects() const;
 private:
     bool equipWeapons(Item* weapon);
     void unequipLeftWeapon();

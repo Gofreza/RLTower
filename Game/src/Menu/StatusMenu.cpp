@@ -6,7 +6,7 @@
 
 StatusMenu::StatusMenu(SDL_Renderer* renderer, TTF_Font* font)
 : Menu(renderer, font), 
-lastHpTextWidth(0),
+lastHpTextWidth(0), lastManaTextWidth(0), lastStaminaTextWidth(0),
 player(CharactersManager::instance().getPlayer())
 {
     int hp = player->getHp();
@@ -17,9 +17,6 @@ player(CharactersManager::instance().getPlayer())
     int gold = player->getGold();
     int silver = player->getSilver();
     int copper = player->getCopper();
-
-    // Check if player has mana or energy
-    hasMana = player->getMana() > 0;
 
     // Margin top and bottom
     // + 11 for header of equipment menu
@@ -83,6 +80,9 @@ void StatusMenu::render(const SDL_Rect& rect) {
     int silver = player->getSilver();
     int copper = player->getCopper();
 
+    // Check if player has mana or energy
+    hasMana = !player->isCharacterAuraUser();
+
     int currentY = rect.y + 10;
 
     // Draw the border
@@ -128,7 +128,8 @@ void StatusMenu::render(const SDL_Rect& rect) {
     SDL_RenderFillRect(renderer, &manaBarRect);
     if (hasMana) {
         SDL_SetRenderDrawColor(renderer, Utils::manaFillColor.r, Utils::manaFillColor.g, Utils::manaFillColor.b, Utils::manaFillColor.a);
-        SDL_Rect manaFillRect = { manaBarRect.x, manaBarRect.y, static_cast<int>(manaBarRect.w * (mana / maxMana)), manaBarRect.h };
+        float fMana = mana, fMaxMana = maxMana;
+        SDL_Rect manaFillRect = { manaBarRect.x, manaBarRect.y, static_cast<int>(manaBarRect.w * (fMana / fMaxMana)), manaBarRect.h };
         SDL_RenderFillRect(renderer, &manaFillRect);
         
         std::string manaText = LocalizationManager::instance().getText("mana_title") + std::to_string(mana);
@@ -136,7 +137,8 @@ void StatusMenu::render(const SDL_Rect& rect) {
         manaTextTexture = Utils::loadTextTexture(renderer, font, manaText, Utils::textColor);
     } else {
         SDL_SetRenderDrawColor(renderer, Utils::energyFillColor.r, Utils::energyFillColor.g, Utils::energyFillColor.b, Utils::energyFillColor.a);
-        SDL_Rect manaFillRect = { manaBarRect.x, manaBarRect.y, static_cast<int>(manaBarRect.w * (energy / maxEnergy)), manaBarRect.h };
+        float fEnergy = energy, fMaxEnergy = maxEnergy;
+        SDL_Rect manaFillRect = { manaBarRect.x, manaBarRect.y, static_cast<int>(manaBarRect.w * (fEnergy / fMaxEnergy)), manaBarRect.h };
         SDL_RenderFillRect(renderer, &manaFillRect);
 
         std::string energyText = LocalizationManager::instance().getText("energy_title") + std::to_string(energy);
@@ -148,10 +150,14 @@ void StatusMenu::render(const SDL_Rect& rect) {
     if (manaTextTexture) {
         int textWidth = 0, textHeight = 0;
         SDL_QueryTexture(manaTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+        if (lastManaTextWidth < textWidth) {
+            lastManaTextWidth = textWidth;
+        }
+
         SDL_Rect textRect = {
-            manaBarRect.x + (manaBarRect.w - textWidth) / 2, 
+            manaBarRect.x + (manaBarRect.w - lastManaTextWidth) / 2, 
             manaBarRect.y + (manaBarRect.h - textHeight) / 2, 
-            textWidth,
+            lastManaTextWidth,
             textHeight
         };
         currentY += 30;
@@ -164,7 +170,8 @@ void StatusMenu::render(const SDL_Rect& rect) {
     SDL_RenderFillRect(renderer, &staminaBarRect);
 
     SDL_SetRenderDrawColor(renderer, Utils::staminaFillColor.r, Utils::staminaFillColor.g, Utils::staminaFillColor.b, Utils::staminaFillColor.a);
-    SDL_Rect staminaFillRect = { staminaBarRect.x, staminaBarRect.y, static_cast<int>(staminaBarRect.w * (stamina / maxStamina)), staminaBarRect.h };
+    float fStamina = stamina, fMaxStamina = maxStamina;
+    SDL_Rect staminaFillRect = { staminaBarRect.x, staminaBarRect.y, static_cast<int>(staminaBarRect.w * (fStamina / fMaxStamina)), staminaBarRect.h };
     SDL_RenderFillRect(renderer, &staminaFillRect);
     
     // Render Stamina text inside the bar
@@ -174,10 +181,14 @@ void StatusMenu::render(const SDL_Rect& rect) {
     if (staminaTextTexture) {
         int textWidth = 0, textHeight = 0;
         SDL_QueryTexture(staminaTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+        if (lastStaminaTextWidth < textWidth) {
+            lastStaminaTextWidth = textWidth;
+        }
+
         SDL_Rect textRect = {
-            staminaBarRect.x + (staminaBarRect.w - textWidth) / 2, 
+            staminaBarRect.x + (staminaBarRect.w - lastStaminaTextWidth) / 2, 
             staminaBarRect.y + (staminaBarRect.h - textHeight) / 2, 
-            textWidth,
+            lastStaminaTextWidth,
             textHeight
         };
         currentY += 30;

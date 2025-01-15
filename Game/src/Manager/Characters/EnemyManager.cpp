@@ -68,6 +68,7 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
                 enemyJson.value("mana", 0),
                 enemyJson.value("energy", 0),
                 enemyJson.value("stamina", 0),
+                enemyJson.value("auraUser", false),
                 enemyJson.value("fov", 0),
                 enemyJson.value("speed", 0),
                 enemyJson.value("phyDamage", 0),

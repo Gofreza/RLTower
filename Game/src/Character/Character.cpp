@@ -2,6 +2,7 @@
 #include <cmath>
 #include "../Manager/Item/ItemManager.h"
 #include "../Manager/Spell/SpellManager.h"
+#include "../Manager/Game/GameManager.h"
 
 static float SPEED_SCALAR = 10.0f;
 
@@ -13,7 +14,7 @@ static float DODGE_SCALAR = 1.0f;
 static float DODGE_DEXTERITY_SCALAR = 0.7f;
 static float DODGE_LUCK_SCALAR = 0.3f;
 
-Character::Character(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description, float hp, int mana, int energy, int stamina, int fov, int speed,
+Character::Character(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description, float hp, int mana, int energy, int stamina, bool isAuraUser, int fov, int speed,
                     int phyDamage, int magDamage, int strength, int dexterity,
                     int intelligence, int wisdom, int constitution, int luck,
                     const char symbol,
@@ -22,7 +23,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     hp(hp), mana(mana), energy(energy), stamina(stamina), 
     maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
     // Level
-    level(0), experience(0),
+    level(0), experience(0), isAuraUser(isAuraUser),
     // Fov
     fov(fov),
     // Speed
@@ -65,7 +66,7 @@ Character::Character(const Character& other)
     hp(other.hp), mana(other.mana), energy(other.energy), stamina(other.stamina), 
     maxHp(other.maxHp), maxMana(other.maxMana), maxEnergy(other.maxEnergy), maxStamina(other.maxStamina), gold(other.gold), silver(other.silver), copper(other.copper),
     // Level
-    level(other.level), experience(other.experience),
+    level(other.level), experience(other.experience), isAuraUser(other.isAuraUser),
     // Fov
     fov(other.fov),
     // Speed
@@ -143,6 +144,10 @@ Character::~Character()
         delete ring2;
     if (amulet)
         delete amulet;
+
+    for (Effect* effect : effects) {
+        delete effect;
+    }
 }
 
 void Character::updateStatsDependants() {
@@ -208,6 +213,28 @@ void Character::updateProgress() {
     }
 
     updateStatsDependants();
+}
+
+bool Character::update() {
+    // Process Effects
+    for (auto it = effects.begin(); it != effects.end(); ) {
+        Effect* effect = *it;
+        if (effect->getEffectType() != EffectType::Temporary) {
+            effect->trigger(this);
+        }
+        effect->reduceDuration();
+        if (effect->getDuration() <= 0) {
+            if (effect->getEffectType() == EffectType::Temporary) {
+                effect->trigger(this, true);
+            }
+            delete effect;
+            it = effects.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    return true;
 }
 
 //===============
@@ -278,21 +305,25 @@ void Character::addItemInInventory(Item* item) {
         Containers* c = static_cast<Containers*>(newItem);
         c->use(this);
     }
-
-    inventory.push_back(newItem);
-
-    if (this->weight > this->maxWeight) {        
-        Logger::instance().info(LocalizationManager::instance().getText("too_heavy_message"));
-        overweight = true;
-        updateStatsDependants();
-    }
+    
+    this->inventory.push_back(newItem);
 
     // If there is a container, use it in case the new object can be added in
-    for (auto& item : this->inventory) {
+    // Beware, using for loop here break because we reduce the size of the inventory when a Container 
+    // is used, so we need to use an iterator
+    for (auto it = inventory.begin(); it != inventory.end(); ++it) {
+        Item* item = *it;
         if (item->getType() == ItemType::Container) {
             Containers* c = static_cast<Containers*>(item);
             c->use(this);
         }
+    }
+
+    float fmaxWeight = this->maxWeight;
+    if (this->weight > fmaxWeight) {        
+        Logger::instance().info(LocalizationManager::instance().getText("too_heavy_message"));
+        overweight = true;
+        updateStatsDependants();
     }
 }
 
@@ -348,9 +379,46 @@ std::vector<Spell*> Character::getSpells() const {
 //===============
 
 void Character::attack(Character* target) {
-    Logger::instance().info(this->name + " attacks " + target->name + ".");
-    this->hasAttack = true;
-    target->defend(this);
+    bool isAttacking = false;
+    // Check if the attacker can attack
+    // Check for mana/energy for spells or stamina for physical attacks
+    if (isAuraUser) {
+        Logger::instance().info(this->name + " is an aura user.");
+    } else {
+        Item* weapon = this->getWeapon();
+        if (weapon) {
+            Weapon* w = static_cast<Weapon*>(weapon);
+            if (is_weapon_magical(w->getWeaponType()) && this->getCurrentActiveSpell() != nullptr) {
+                if (this->mana < this->getCurrentActiveSpell()->getConsumption()) {
+                    Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
+                    return;
+                }
+
+                // Check spell type
+                SpellType sType = this->getCurrentActiveSpell()->getType();
+                isAttacking = sType == SpellType::Attack;
+            } else {
+                if (this->stamina < w->getWeight()) {
+                    Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                    return;
+                }
+                isAttacking = true;
+            }
+        } else {
+            if (this->stamina < 1) {
+                Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                return;
+            }
+            isAttacking = true;
+        } 
+        Logger::instance().info(this->name + " attacks " + target->name + ".");
+        this->hasAttack = true;
+        if (isAttacking) {
+            target->defend(this);
+        } else {
+            target->support(this);
+        }
+    }
 }
 
 void Character::defend(Character* attacker) {
@@ -379,19 +447,43 @@ void Character::defend(Character* attacker) {
         
         // TODO: Implement this correctly
         // Also need to add effects from weapons and spells
-        if (is_weapon_magical(wType)) {
-            // If the attacker has a magical weapon, use magDamage
-            this->hasCastSpell = true;
+        // Also reduce the damage taken by the defense of the character (phy and mag)
+
+        if (isAuraUser) {
+            Logger::instance().info(this->name + " is an aura user.");
         } else {
-            // If the attacker has a physical weapon, use phyDamage
-            this->hp -= attacker->getPhyDamage();
+            if (is_weapon_magical(wType) && attacker->getCurrentActiveSpell() != nullptr) {
+                // Use magical weapon
+                this->hasCastSpell = true;
+                int damage = attacker->getMagDamage() + attacker->getCurrentActiveSpell()->getDamage() - this->magicalDefense;
+                this->hp -= damage < 0 ? 0 : damage;
+                attacker->mana -= attacker->getCurrentActiveSpell()->getConsumption();
+            } else {
+                // Use physical weapon
+                int damage = attacker->getPhyDamage() - this->physicalDefense;
+                this->hp -= damage < 0 ? 0 : damage;
+                attacker->stamina -= w->getWeight();
+            }
         }
     } else {
         // If the attacker has no weapon, use fists (base phyDamage)
-        this->hp -= attacker->getPhyDamage();
+        int damage = attacker->getPhyDamage() - this->physicalDefense;
+        this->hp -= damage < 0 ? 0 : damage;
+        attacker->stamina -= 1;
     }
+}
 
-    this->hasAttack = true;
+void Character::support(Character* target) {
+    // We're sure we have a spell here
+    Spell* spell = this->getCurrentActiveSpell();
+    // Apply the effects of the spell
+    for (Effect* effect : spell->getEffects()) {
+        if (effect->getEffectType() != EffectType::Burst) {
+            this->addEffect(effect->clone());
+        }
+        effect->trigger(target);
+    }
+    this->mana -= spell->getConsumption();
 }
 
 bool Character::canDodge() {
@@ -623,6 +715,7 @@ bool Character::equipWeapons(Item* weapon) {
 
 void Character::unequipLeftWeapon() {
     Equipment* e = static_cast<Equipment*>(leftHand);
+    GameManager::instance().stopCombatMode();
     e->use(this);
     if (leftHand == rightHand)
     {
@@ -635,6 +728,7 @@ void Character::unequipLeftWeapon() {
 
 void Character::unequipRightWeapon() {
     Equipment* e = static_cast<Equipment*>(rightHand);
+    GameManager::instance().stopCombatMode();
     e->use(this);
     if (rightHand == leftHand)
     {
@@ -1089,6 +1183,9 @@ void Character::setExperience(int newExperience) { experience = newExperience; }
 int Character::getSpeed() const { return speed; }
 // void Character::setSpeed(int newSpeed) { speed = newSpeed; }
 
+bool Character::isCharacterAuraUser() const { return isAuraUser; }
+void Character::setCharacterAuraUser(bool auraUser) { isAuraUser = auraUser; }
+
 int Character::getFov() const { return fov; }
 void Character::setFov(int newFov) { fov = newFov; }
 
@@ -1283,9 +1380,24 @@ void Character::setCurrentActiveSpell(Spell* spell) {
         }
     }
 
+    // Check for the spell type
+    SpellEnergy spellEnergy = spell->getSpellEnergyType();
+    if (spellEnergy == SpellEnergy::Mana && this->isAuraUser) {
+        Logger::instance().info(LocalizationManager::instance().getText("aura_user_spell"));
+        return;
+    } else if (spellEnergy == SpellEnergy::Energy && !this->isAuraUser) {
+        Logger::instance().info(LocalizationManager::instance().getText("mana_user_spell"));
+        return;
+    }
+
     if (currentActiveSpell) {
         // If there is a current active spell, deactivate it
         currentActiveSpell->toggleActive();
+        if (currentActiveSpell == spell) {
+            // If the current active spell is the same as the new spell, return
+            currentActiveSpell = nullptr;
+            return;
+        }
     }
     // Set the new active spell
     currentActiveSpell = spell;
@@ -1295,4 +1407,23 @@ void Character::setCurrentActiveSpell(Spell* spell) {
 
 Spell* Character::getCurrentActiveSpell() const {
     return currentActiveSpell;
+}
+
+//==========
+// Effects
+//==========
+
+void Character::addEffect(Effect* effect) {
+    effects.push_back(effect);
+}
+
+void Character::removeEffect(Effect* effect) {
+    auto it = std::find(effects.begin(), effects.end(), effect);
+    if (it != effects.end()) {
+        effects.erase(it);
+    }
+}
+
+std::vector<Effect*> Character::getEffects() const {
+    return effects;
 }

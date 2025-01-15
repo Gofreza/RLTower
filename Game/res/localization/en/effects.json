@@ -9,7 +9,7 @@
             "duration": 1,
             "stats": ["Hp"],
             "resultType": true,
-            "value": 25
+            "value": [25]
         },
         {
             "id": 1,
@@ -20,7 +20,7 @@
             "duration": 1,
             "stats": ["Mana"],
             "resultType": true,
-            "value": 25
+            "value": [25]
         },
         {
             "id": 2,
@@ -31,7 +31,7 @@
             "duration": 1,
             "stats": ["Stamina"],
             "resultType": true,
-            "value": 25
+            "value": [25]
         },
         {
             "id": 3,
@@ -42,7 +42,7 @@
             "duration": 1,
             "stats": ["Energy"],
             "resultType": true,
-            "value": 25
+            "value": [25]
         },
         {
             "id": 4,
@@ -53,7 +53,7 @@
             "duration": 1,
             "stats": ["Strength"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 5,
@@ -64,7 +64,7 @@
             "duration": 1,
             "stats": ["Strength"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 6,
@@ -75,7 +75,7 @@
             "duration": 1,
             "stats": ["Dexterity"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 7,
@@ -86,7 +86,7 @@
             "duration": 1,
             "stats": ["Dexterity"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 8,
@@ -97,7 +97,7 @@
             "duration": 1,
             "stats": ["Intelligence"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 9,
@@ -108,7 +108,7 @@
             "duration": 1,
             "stats": ["Intelligence"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 10,
@@ -119,7 +119,7 @@
             "duration": 1,
             "stats": ["Wisdom"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 11,
@@ -130,7 +130,7 @@
             "duration": 1,
             "stats": ["Wisdom"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 12,
@@ -141,7 +141,7 @@
             "duration": 1,
             "stats": ["Constitution"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 13,
@@ -152,7 +152,7 @@
             "duration": 1,
             "stats": ["Constitution"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 14,
@@ -163,7 +163,7 @@
             "duration": 1,
             "stats": ["Luck"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 15,
@@ -174,7 +174,7 @@
             "duration": 1,
             "stats": ["Luck"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 16,
@@ -185,7 +185,7 @@
             "duration": 1,
             "stats": ["PhyDefense"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 17,
@@ -196,7 +196,7 @@
             "duration": 1,
             "stats": ["PhyDefense"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 18,
@@ -207,7 +207,7 @@
             "duration": 1,
             "stats": ["MagDefense"],
             "resultType": true,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 19,
@@ -218,7 +218,7 @@
             "duration": 1,
             "stats": ["MagDefense"],
             "resultType": false,
-            "value": 1
+            "value": [1]
         },
         {
             "id": 20,
@@ -229,7 +229,40 @@
             "duration": 5,
             "stats": ["Hp"],
             "resultType": false,
-            "value": 1
+            "value": [1]
+        },
+        {
+            "id": 21,
+            "name": "heal_10_hp",
+            "description" : "Heal 10 HP.",
+            "log": "You are healed 10 HP!",
+            "type": "Burst",
+            "duration": 1,
+            "stats": ["Hp"],
+            "resultType": true,
+            "value": [10]
+        },
+        {
+            "id": 22,
+            "name": "restore_10_energy",
+            "description" : "Restore 10 Energy.",
+            "log": "You restore 10 Energy!",
+            "type": "Burst",
+            "duration": 1,
+            "stats": ["Energy"],
+            "resultType": true,
+            "value": [10]
+        },
+        {
+            "id": 23,
+            "name": "magic_shield",
+            "description" : "Physical Defense +2, Magical Defense +2.",
+            "log": "Hail the magical shield!",
+            "type": "Temporary",
+            "duration": 4,
+            "stats": ["PhyDefense", "MagDefense"],
+            "resultType": true,
+            "value": [2, 2]
         }
     ]
 }

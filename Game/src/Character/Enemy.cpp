@@ -2,14 +2,14 @@
 #include "../Manager/Game/MapManager.h"
 
 Enemy::Enemy(const std::string& name, SDL_Color color, GroupType group, const std::string& imagePath, const std::string& description,
-            float hp, int mana, int energy, int stamina, int fov, int speed,
+            float hp, int mana, int energy, int stamina, bool isAuraUser, int fov, int speed,
             int phyDamage, int magDamage, int strength, int dexterity,
             int intelligence, int wisdom, int constitution, int luck,
             const char symbol,
             std::vector<int> desire, std::vector<int> disgust,
             int minSpawnLevel, int maxSpawnLevel, int value,
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc)
- : Character(name, color, group, imagePath, description, hp, mana, energy, stamina, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desire, disgust),
+ : Character(name, color, group, imagePath, description, hp, mana, energy, stamina, isAuraUser, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desire, disgust),
     minSpawnLevel(minSpawnLevel), maxSpawnLevel(maxSpawnLevel), value(value),
     basicAggression(basicAggression), basicFear(basicFear), bascDesire(bascDesire), basicWander(basicWander), basicMisc(basicMisc)
 {
@@ -37,7 +37,8 @@ AIDecision Enemy::check()
 }
 
 bool Enemy::update()
-{
+{   
+    Character::update();
     AIDecision decision = this->check();
     // Move, attack, etc
     int dx = RandomUtils::getRandomNumber(-1, 1);

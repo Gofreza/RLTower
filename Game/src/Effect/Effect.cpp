@@ -9,18 +9,20 @@ Effect::Effect(short id,
             int duration,
             std::vector<EffectStat> effectStats,
             bool resultType,
-            int value)
+            std::vector<int> value)
 : id(id), effectName(effectName), description(description),
   logText(logText), effectType(effectType), duration(duration),
   effectStats(effectStats), resultType(resultType), value(value)
 {
 }
 
+Effect* Effect::clone() const {
+    return new Effect(*this);
+}
+
 void Effect::trigger(Character* character, bool isReversed) {
-    if (duration > 0) {
-        for (auto& stat : effectStats) {
-            character->setStat(stat,  isReversed ? !this->resultType : this->resultType, this->value);
-        }
+    for (size_t i = 0; i < effectStats.size(); ++i) {
+        character->setStat(effectStats[i], isReversed ? !this->resultType : this->resultType, this->value[i]);
     }
 }
 
@@ -36,8 +38,11 @@ const std::string& Effect::getDescription() const { return description; }
 
 const std::string& Effect::getLogText() const { return logText; }
 
+EffectType Effect::getEffectType() const { return effectType; }
+
 int Effect::getDuration() const { return duration; }
 
+void Effect::reduceDuration() { duration--; }
 
 
 Effect::~Effect()

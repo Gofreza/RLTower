@@ -16,6 +16,7 @@
             "mana": 0,
             "energy": 0,
             "stamina": 10,
+            "auraUser": false,
             "fov": 5,
             "speed": 70,
             "phyDamage": 1,

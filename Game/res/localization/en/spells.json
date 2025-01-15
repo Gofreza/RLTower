@@ -15,6 +15,20 @@
             "requirements": [0, 0, 3, 0, 0]
         },
         {
+            "id": 1,
+            "name": "Aura Blade",
+            "description": "Create a blade of energy around you're weapon.",
+            "energyType": "Energy",
+            "type": "Attack",
+            "element": "Arcane",
+            "damage": 4,
+            "range": 2,
+            "radius": 0,
+            "consumption": 10,
+            "effect": [],
+            "requirements": [2, 0, 0, 0, 2]
+        },
+        {
             "id": 2,
             "name": "Mana Arrow",
             "description": "Fire a simple arrow made of mana.",
@@ -26,6 +40,48 @@
             "radius": 0,
             "consumption": 7,
             "effect": [],
+            "requirements": [0, 0, 2, 0, 0]
+        },
+        {
+            "id": 3,
+            "name": "Meditation",
+            "description": "Meditate to restore Health and Energy.",
+            "energyType": "Energy",
+            "type": "Support",
+            "element": "Light",
+            "damage": 0,
+            "range": 0,
+            "radius": 0,
+            "consumption": 0,
+            "effect": ["heal_10_hp", "restore_10_energy"],
+            "requirements": [0, 0, 0, 2, 2]
+        },
+        {
+            "id": 4,
+            "name": "Basic Shield",
+            "description": "Create a mana shield around you.",
+            "energyType": "Mana",
+            "type": "Defense",
+            "element": "Arcane",
+            "damage": 0,
+            "range": 0,
+            "radius": 0,
+            "consumption": 10,
+            "effect": ["magic_shield"],
+            "requirements": [0, 0, 5, 0, 0]
+        },
+        {
+            "id": 5,
+            "name": "Heal",
+            "description": "Heal yourself.",
+            "energyType": "Mana",
+            "type": "Support",
+            "element": "Light",
+            "damage": 0,
+            "range": 0,
+            "radius": 0,
+            "consumption": 20,
+            "effect": ["heal_25_hp"],
             "requirements": [0, 0, 2, 0, 0]
         }
     ]
