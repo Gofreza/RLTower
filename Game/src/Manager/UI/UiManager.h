@@ -13,6 +13,7 @@
 #include "../../Menu/ItemMenu.h"
 #include "../../Menu/CharacterMenu.h"
 #include "../../Menu/SpellMenu.h"
+#include "../../Menu/EffectMenu.h"
 
 class UiManager
 {   
@@ -57,6 +58,7 @@ public:
     void triggerRenderCharacterDialog(Character* character);
 
     void renderGame(SDL_Renderer* renderer, const SDL_Rect& rect);
+    void renderEffectMenu(SDL_Renderer* renderer, const SDL_Rect& rect);
 
     void updateUI(SDL_Renderer* renderer, TTF_Font* font);
 
@@ -80,6 +82,7 @@ private:
     bool areMenusInitialize;
     bool isConsoleInitialize;
     bool isSpellsRendering;
+    bool isEffectMenuInitialize;
 
     // Render Targets
     SDL_Texture* consoleTexture;
@@ -115,6 +118,7 @@ private:
     SDL_Rect gameRect;
     SDL_Rect menuRect;
     SDL_Rect itemRect;
+    SDL_Rect effectRect;
 
     // Sub Menus Rect
     SDL_Rect statusRect;
@@ -128,6 +132,7 @@ private:
 
     ConsoleMenu* consoleMenu;
     DialogMenu* dialogMenu;
+    EffectMenu* effectMenu;
 
     ItemMenu* itemMenu;
     bool isItemMenuOpen;

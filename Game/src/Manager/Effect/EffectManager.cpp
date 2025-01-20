@@ -34,6 +34,7 @@ void EffectManager::loadEffectsFromFile(const std::string& effectsFilePath) {
                                         effectJson.value("description", "Unknown"),
                                         effectJson.value("log", "Unknown"),
                                         getEffectType(effectJson.value("type", "None")),
+                                        getSpellElement(effectJson.value("element", "None")),
                                         effectJson.value("duration", 0),
                                         getEffectStatVector(effectJson.value("stats", std::list<std::string>{})),
                                         effectJson.value("resultType", false),

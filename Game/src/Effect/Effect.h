@@ -5,6 +5,7 @@
 
 #include "EffectStat.h"
 #include "EffectType.h"
+#include "../Spell/SpellElement.h"
 
 class Character;
 
@@ -16,6 +17,7 @@ public:
            const std::string& description,
            const std::string& logText, 
            EffectType effectType,
+           SpellElement element,
            int duration,
            std::vector<EffectStat> effectStats,
            bool resultType,
@@ -30,6 +32,7 @@ public:
     const std::string& getLogText() const;
     const std::string& getDescription() const;
     EffectType getEffectType() const;
+    SpellElement getElement() const;
     int getDuration() const;
     void reduceDuration();
 
@@ -39,6 +42,7 @@ private:
     const std::string description;
     const std::string logText;
     EffectType effectType;
+    SpellElement element;
     int duration;
     std::vector<EffectStat> effectStats;
     // Positive = true, negative = false

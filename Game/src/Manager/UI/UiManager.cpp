@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 UiManager::UiManager() 
-: isInitialize(false), areMenusInitialize(false), isConsoleInitialize(false), isSpellsRendering(false),
+: isInitialize(false), areMenusInitialize(false), isConsoleInitialize(false), isSpellsRendering(false), isEffectMenuInitialize(false),
   consoleDirty(true), gameDirty(true), menuDirty(true),
   isInConsole(false), isInGame(false), isInMenu(false), isInMenuStatus(false), isInMenuEquipment(false), isInMenuInventory(false),
   forceConsoleRender(false), forceGameRender(false), forceMenuRender(false),
@@ -63,11 +63,19 @@ void UiManager::updateRects(int windowWidth, int windowHeight) {
         windowHeight                          // 100% of window height
     };
 
+    // Triggered menu
     itemRect = {
         static_cast<int>(windowWidth * 0.35), // consoleRect.w / 2
         0,
         static_cast<int>(windowWidth * 0.35), // consoleRect.w / 2
         windowHeight
+    };
+
+    effectRect = {
+        0,
+        0,
+        static_cast<int>(windowWidth * 0.70),
+        50
     };
 }
 
@@ -110,6 +118,24 @@ void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
         consoleDirty = false; // Mark as clean
     }
 
+    // Update menu area if dirty
+    if (menuDirty || isMouseHovering(menuRect)) {
+        //std::cout << "Menu is behin updated" << std::endl;
+        
+        SDL_ClearError();
+        SDL_SetRenderTarget(renderer, menuTexture);
+        if (SDL_GetError()[0] != '\0') {
+            std::cerr << "Failed to set menu render target! SDL_Error: " << SDL_GetError() << std::endl;
+        }
+        // Do not clear renderer only update what is necessary
+        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Clear with black or any background color
+        // SDL_RenderClear(renderer); // Clear the previous content
+
+        renderAllMenus(renderer, font, menuRect, isMouseHovering(menuRect), forceMenuRender); // Render all menus into this texture
+        SDL_SetRenderTarget(renderer, nullptr);
+        menuDirty = false; // Mark as clean
+    }
+
     // Update game area if dirty
     if (gameDirty || isMouseHovering(gameRect)) {
         //std::cout << "Game is behin updated" << std::endl;
@@ -127,24 +153,6 @@ void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
 
         SDL_SetRenderTarget(renderer, nullptr);
         gameDirty = false; // Mark as clean
-    }
-
-    // Update menu area if dirty
-    if (menuDirty || isMouseHovering(menuRect)) {
-        //std::cout << "Menu is behin updated" << std::endl;
-        
-        SDL_ClearError();
-        SDL_SetRenderTarget(renderer, menuTexture);
-        if (SDL_GetError()[0] != '\0') {
-            std::cerr << "Failed to set menu render target! SDL_Error: " << SDL_GetError() << std::endl;
-        }
-        // Do not clear renderer only update what is necessary
-        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Clear with black or any background color
-        // SDL_RenderClear(renderer); // Clear the previous content
-
-        renderAllMenus(renderer, font, menuRect, isMouseHovering(menuRect), forceMenuRender); // Render all menus into this texture
-        SDL_SetRenderTarget(renderer, nullptr);
-        menuDirty = false; // Mark as clean
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
@@ -527,10 +535,28 @@ void UiManager::renderGame(SDL_Renderer* renderer, const SDL_Rect& rect) {
 
         // Render the map
         GameManager::instance().renderMap(renderer, rect, tileset, tiles);
+
+        // Render status rect
+        this->renderEffectMenu(renderer, effectRect);
     } else {
         throw std::runtime_error("UiManager is not initialized.");
     }
 }
+
+void UiManager::renderEffectMenu(SDL_Renderer* renderer, const SDL_Rect& rect) {    
+    if (isInitialize) {
+        if (!isEffectMenuInitialize) {
+            effectMenu = new EffectMenu(renderer, font);
+            std::cout << "Effect Menu initialized" << std::endl;
+            isEffectMenuInitialize = true;
+        }
+
+        effectMenu->render(effectRect);
+    } else {
+        throw std::runtime_error("UiManager is not initialized.");
+    }
+}
+
 
 //==================
 // TILESET

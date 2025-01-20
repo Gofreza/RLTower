@@ -6,12 +6,13 @@ Effect::Effect(short id,
             const std::string& description,
             const std::string& logText, 
             EffectType effectType,
+            SpellElement element,
             int duration,
             std::vector<EffectStat> effectStats,
             bool resultType,
             std::vector<int> value)
 : id(id), effectName(effectName), description(description),
-  logText(logText), effectType(effectType), duration(duration),
+  logText(logText), effectType(effectType), element(element), duration(duration),
   effectStats(effectStats), resultType(resultType), value(value)
 {
 }
@@ -39,6 +40,8 @@ const std::string& Effect::getDescription() const { return description; }
 const std::string& Effect::getLogText() const { return logText; }
 
 EffectType Effect::getEffectType() const { return effectType; }
+
+SpellElement Effect::getElement() const { return element; }
 
 int Effect::getDuration() const { return duration; }
 

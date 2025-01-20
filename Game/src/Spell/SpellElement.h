@@ -40,7 +40,7 @@ inline std::string to_string(SpellElement spellElement) {
         case SpellElement::Illusion:    return "Illusion";
         case SpellElement::Time:        return "Time";
         case SpellElement::Gravity:     return "Gravity";
-        default:                        return "Unknown";
+        default:                        return "None";
     }
 }
 
