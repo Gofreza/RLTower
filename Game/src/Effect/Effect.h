@@ -16,6 +16,7 @@ public:
            const std::string& effectName, 
            const std::string& description,
            const std::string& logText, 
+           const std::string& imagePath,
            EffectType effectType,
            SpellElement element,
            int duration,
@@ -29,8 +30,9 @@ public:
 
     short getEffectId() const;
     const std::string& getEffectName() const;
-    const std::string& getLogText() const;
     const std::string& getDescription() const;
+    const std::string& getLogText() const;
+    const std::string& getImagePath() const;
     EffectType getEffectType() const;
     SpellElement getElement() const;
     int getDuration() const;
@@ -41,6 +43,7 @@ private:
     const std::string effectName;
     const std::string description;
     const std::string logText;
+    const std::string imagePath;
     EffectType effectType;
     SpellElement element;
     int duration;

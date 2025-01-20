@@ -24,7 +24,7 @@ void EffectMenu::render(const SDL_Rect& rect) {
         };
 
         // Image
-        std::string imagePath = Utils::getImagePath("spell_skill_icons/red_shield.png");
+        std::string imagePath = Utils::getImagePath("spell_skill_icons/" + effect->getImagePath());
         SDL_Surface* imgSurface = IMG_Load(imagePath.c_str());
         SDL_Texture* imgTexture = SDL_CreateTextureFromSurface(renderer, imgSurface);
         SDL_FreeSurface(imgSurface);

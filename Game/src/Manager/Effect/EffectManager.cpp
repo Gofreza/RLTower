@@ -33,6 +33,7 @@ void EffectManager::loadEffectsFromFile(const std::string& effectsFilePath) {
                                         effectJson.value("name", "Unknown"),
                                         effectJson.value("description", "Unknown"),
                                         effectJson.value("log", "Unknown"),
+                                        effectJson.value("imagePath", "default.png"),
                                         getEffectType(effectJson.value("type", "None")),
                                         getSpellElement(effectJson.value("element", "None")),
                                         effectJson.value("duration", 0),

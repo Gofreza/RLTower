@@ -5,6 +5,7 @@ Effect::Effect(short id,
             const std::string& effectName, 
             const std::string& description,
             const std::string& logText, 
+            const std::string& imagePath,
             EffectType effectType,
             SpellElement element,
             int duration,
@@ -12,7 +13,7 @@ Effect::Effect(short id,
             bool resultType,
             std::vector<int> value)
 : id(id), effectName(effectName), description(description),
-  logText(logText), effectType(effectType), element(element), duration(duration),
+  logText(logText), imagePath(imagePath), effectType(effectType), element(element), duration(duration),
   effectStats(effectStats), resultType(resultType), value(value)
 {
 }
@@ -38,6 +39,8 @@ const std::string& Effect::getEffectName() const { return effectName; }
 const std::string& Effect::getDescription() const { return description; }
 
 const std::string& Effect::getLogText() const { return logText; }
+
+const std::string& Effect::getImagePath() const { return imagePath; }
 
 EffectType Effect::getEffectType() const { return effectType; }
 
