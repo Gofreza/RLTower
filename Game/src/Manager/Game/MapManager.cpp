@@ -1,11 +1,14 @@
 #include "MapManager.h"
 #include "../../Misc/RandomUtils.h"
 
-static bool DEBUG = true;
-
 MapManager::MapManager()
 : bsp2(), c(0, 0, 0, 0), root(nullptr), rooms(), paths(), ascii_map()
 {
+}
+
+void MapManager::initialize(Config* config)
+{
+    this->config = config;
 }
 
 void MapManager::generateMap(int width, int height, int iterations, float wRatio, float hRatio, bool discardByRatio)
@@ -65,7 +68,7 @@ void MapManager::addPlayer(Player* player)
         }
     }
 
-    if (!DEBUG) {
+    if (!config->isDebugMode()) {
         for (const auto& [i, j] : circle_extremes) {
             size_t map_x = x + i;
             size_t map_y = y + j;
@@ -116,7 +119,7 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     }
     visibleCells.clear();
 
-    if (!DEBUG) {
+    if (!config->isDebugMode()) {
         for (const auto& [i, j] : circle_extremes) {
             size_t map_x = x + i;
             size_t map_y = y + j;

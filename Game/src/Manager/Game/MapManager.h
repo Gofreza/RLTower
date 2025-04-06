@@ -3,6 +3,7 @@
 #include "../../Map/BSP2.h"
 #include "../Characters/CharactersManager.h"
 #include "../../Character/Enemy.h"
+#include "../../Misc/Config.h"
 
 class MapManager
 {
@@ -11,6 +12,8 @@ public:
         static MapManager instance;
         return instance;
     }
+
+    void initialize(Config* config);
 
     void generateMap(int width, int height, int iterations, float wRatio = 0.45f, float hRatio = 0.45f, bool discardByRatio = true);
     void removeCharacter(int dx, int dy);
@@ -32,6 +35,8 @@ public:
 private:   
     MapManager();
     ~MapManager();
+
+    Config* config;
     
     int width, height;
 

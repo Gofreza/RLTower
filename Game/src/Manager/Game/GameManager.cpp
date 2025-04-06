@@ -16,6 +16,7 @@ void GameManager::initialize(Config* config)
     this->config = config;
 
     // Initialize the map
+    MapManager::instance().initialize(config);
     MapManager::instance().generateMap(100, 100, 5);
     MapManager::instance().addPlayer(player);
 
