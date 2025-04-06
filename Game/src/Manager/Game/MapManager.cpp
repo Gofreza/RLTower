@@ -298,6 +298,7 @@ void MapManager::bresenham(int x1,
 
             ascii_map[y1][x1].isInSight = true;
             ascii_map[y1][x1].isExplored = true;
+            ascii_map[y1][x1].setLastSeenSymbol(ascii_map[y1][x1].getSymbol());
             this->visibleCells.push_back(&ascii_map[y1][x1]);
  
             // Check if there is a wall
