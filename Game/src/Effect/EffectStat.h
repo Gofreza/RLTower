@@ -8,6 +8,7 @@ enum class EffectStat {
     Energy,
     Stamina,
     Speed,
+    Fov,
     Fatigue,
     PhyDamage,
     MagDamage,
@@ -43,6 +44,7 @@ inline std::string to_string(EffectStat effectStat) {
         case EffectStat::Mana:                return "Mana";
         case EffectStat::Energy:              return "Energy";
         case EffectStat::Stamina:             return "Stamina";
+        case EffectStat::Fov:                 return "Fov";
         case EffectStat::Speed:               return "Speed";
         case EffectStat::Fatigue:             return "Fatigue";
         case EffectStat::PhyDamage:           return "PhyDamage";
@@ -80,6 +82,7 @@ const std::unordered_map<std::string, EffectStat> effectStatMap = {
     {"Mana", EffectStat::Mana},
     {"Energy", EffectStat::Energy},
     {"Stamina", EffectStat::Stamina},
+    {"Fov", EffectStat::Fov},
     {"Speed", EffectStat::Speed},
     {"Fatigue", EffectStat::Fatigue},
     {"PhyDamage", EffectStat::PhyDamage},

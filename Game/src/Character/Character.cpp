@@ -38,7 +38,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     // Stats Dependants
     physicalDefense(0), magicalDefense(0), weight(0.f), maxWeight(0), dodge(0.0f),
     // Bonus
-    magicalDefenseBonus(0), physicalDefenseBonus(0), speedBonus(0), dodgeBonus(0.f),
+    magicalDefenseBonus(0), physicalDefenseBonus(0), speedBonus(0), dodgeBonus(0.f), fovBonus(0),
     // Resistances
     fireResistance(0.0f), waterResistance(0.0f), earthResistance(0.0f), airResistance(0.0f),
     lightningResistance(0.0f), iceResistance(0.0f), natureResistance(0.0f),
@@ -182,6 +182,12 @@ void Character::updateStatsDependants() {
 
     // Dodge
     dodge = DODGE_SCALAR * (DODGE_DEXTERITY_SCALAR * this->dexterity + DODGE_LUCK_SCALAR * this->luck) + dodgeBonus;
+
+    // Fov
+    fov = std::round(std::sqrt(this->intelligence) * 2) + fovBonus;
+    if (fov < 1) {
+        fov = 1;
+    }
 }
 
 void Character::updateProgress() {
@@ -384,7 +390,7 @@ void Character::attack(Character* target) {
     // Check if the attacker can attack
     // Check for mana/energy for spells or stamina for physical attacks
     if (isAuraUser) {
-        Logger::instance().info(this->name + " is an aura user.");
+        Logger::instance().info(this->name + " is an aura user. Implement this in Character.cpp.");
     } else {
         Item* weapon = this->getWeapon();
         if (weapon) {
@@ -485,6 +491,7 @@ void Character::support(Character* target) {
         effect->trigger(target);
     }
     this->mana -= spell->getConsumption();
+    this->hasCastSpell = true;
 }
 
 bool Character::canDodge() {
@@ -1056,6 +1063,8 @@ void Character::setStat(EffectStat stat, bool resultType, int value) {
             resultType ? this->setEnergy(this->getEnergy() + value) : this->setEnergy(this->getEnergy() - value); break;
         case EffectStat::Stamina:
             resultType ? this->setStamina(this->getStamina() + value) : this->setStamina(this->getStamina() - value); break;
+        case EffectStat::Fov:
+            resultType ? this->setFovBonus(value) : this->setFovBonus(-value); break;  
         case EffectStat::Speed:
             resultType ? this->setSpeedBonus(value) : this->setSpeedBonus(-value); break;
         case EffectStat::Fatigue:
@@ -1255,6 +1264,10 @@ void Character::setSpeedBonus(int bonus) {
 
 void Character::setDodgeBonus(float bonus) {
     dodgeBonus += bonus;
+}
+
+void Character::setFovBonus(int bonus) {
+    fovBonus += bonus;
 }
 
 //=======

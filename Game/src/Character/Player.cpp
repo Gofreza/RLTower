@@ -79,13 +79,13 @@ bool Player::update()
         UiManager::instance().updateMenu(false);
     }
 
-    if (moved || attacked) {
-        UiManager::instance().updateGame(true);
-    }
-
     Character::updateProgress();
     if (moved || attacked || hasWaited) {
         Character::update();
+    }
+
+    if (moved || attacked) {
+        UiManager::instance().updateGame(true);
     }
 
     return moved || attacked || hasWaited;

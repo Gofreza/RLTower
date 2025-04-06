@@ -104,6 +104,7 @@ protected:
     int physicalDefenseBonus;
     int speedBonus;
     float dodgeBonus;
+    int fovBonus;
 
     // Resistance
     float fireResistance;
@@ -304,6 +305,7 @@ public:
     void setPhysicalDefenseBonus(int bonus);
     void setSpeedBonus(int bonus);
     void setDodgeBonus(float bonus);
+    void setFovBonus(int bonus);
 
     // Fatigue
     int getFatigue() const;

@@ -83,6 +83,20 @@
             "consumption": 20,
             "effect": ["heal_25_hp"],
             "requirements": [0, 0, 2, 0, 0]
+        }, 
+        {
+            "id": 6,
+            "name": "Hawk's Eye",
+            "description": "Increase Field of View.",
+            "energyType": "Mana",
+            "type": "Support",
+            "element": "Arcane",
+            "damage": 0,
+            "range": 0,
+            "radius": 0,
+            "consumption": 30,
+            "effect": ["increase_fov"],
+            "requirements": [0, 0, 2, 0, 0]
         }
     ]
 }

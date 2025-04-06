@@ -309,6 +309,40 @@ void MapManager::bresenham(int x1,
     }
 }
 
+void MapManager::calculateFov(Player* player) {
+    // Move player
+    int x = player->getXPosition();
+    int y = player->getYPosition();
+
+    // Check cells visibility
+    int fov = player->getFov();
+
+    // Get all circle extremes
+    std::vector<std::pair<int, int>> circle_extremes;
+    for (int i = -fov; i <= fov; i++) {
+        for (int j = -fov; j <= fov; j++) {
+            if (i * i + j * j <= fov * fov) {
+                circle_extremes.push_back(std::make_pair(i, j));
+            }
+        }
+    }
+    
+    for (auto& cell : visibleCells) {
+        cell->isInSight = false;
+    }
+    visibleCells.clear();
+
+    for (const auto& [i, j] : circle_extremes) {
+        size_t map_x = x + i;
+        size_t map_y = y + j;
+
+        if (map_x >= 0 && map_x < ascii_map[0].size() && map_y >= 0 && map_y < ascii_map.size()) {
+            bresenham(x, y, map_x, map_y);
+        }
+    }
+
+}
+
 const std::vector<std::vector<Cell>>& MapManager::getAsciiMap() const {
     return ascii_map;
 }

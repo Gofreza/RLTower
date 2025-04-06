@@ -123,6 +123,7 @@ int main(int argc, char* argv[]) {
     player->addSpellInSpellBook(SpellManager::instance().getSpell(3));
     player->addSpellInSpellBook(SpellManager::instance().getSpell(4));
     player->addSpellInSpellBook(SpellManager::instance().getSpell(5));
+    player->addSpellInSpellBook(SpellManager::instance().getSpell(6));
 
     //=========
     // FPS

@@ -311,6 +311,19 @@
             "stats": ["PhyDefense", "MagDefense"],
             "resultType": true,
             "value": [2, 2]
+        },
+        {
+            "id": 24,
+            "name": "increase_fov",
+            "description" : "Increase Field of View.",
+            "log": "You can see better!",
+            "imagePath": "brown_eye.png",
+            "type": "Temporary",
+            "element": "None",
+            "duration": 10,
+            "stats": ["Fov"],
+            "resultType": true,
+            "value": [2]
         }
     ]
 }

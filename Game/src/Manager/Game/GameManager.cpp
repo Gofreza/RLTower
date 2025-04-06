@@ -84,6 +84,9 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     const int map_width = ascii_map[0].size();
     const int map_height = ascii_map.size();
 
+    // Calculate the field of view here to update the visibility if change in fov happened
+    MapManager::instance().calculateFov(player);
+
     int player_x = player->getXPosition(); 
     int player_y = player->getYPosition();
 
