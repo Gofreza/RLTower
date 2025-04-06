@@ -4,6 +4,7 @@
 #include "../Controls/InputManager.h"
 #include "../UI/UiManager.h"
 #include "../Characters/EnemyManager.h"
+#include "../../Misc/Config.h"
 #include <SDL2/SDL.h>
 
 using CharactersQueue = std::priority_queue<
@@ -20,7 +21,7 @@ public:
         return instance;
     }
 
-    void initialize();
+    void initialize(Config* config);
     void update();
     void renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Texture* tileset, const std::vector<SDL_Rect>& tiles);
 
@@ -33,6 +34,8 @@ public:
     void addCharacterToDefferedDeletions(Character* character);
     void deleteDeferredCharacters();
 private:
+    Config* config;
+
     Player* player;
     std::vector<NPC*> npcs;
     std::vector<Enemy*> enemies;

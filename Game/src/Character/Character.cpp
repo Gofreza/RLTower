@@ -3,6 +3,7 @@
 #include "../Manager/Item/ItemManager.h"
 #include "../Manager/Spell/SpellManager.h"
 #include "../Manager/Game/GameManager.h"
+#include "../Manager/Game/MapManager.h"
 
 static float SPEED_SCALAR = 10.0f;
 

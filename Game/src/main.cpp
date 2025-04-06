@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
+#include "Misc/Config.h"
 #include "Manager/UI/UiManager.h"
 #include "Manager/Characters/CharactersManager.h"
 #include "Manager/Localization/LocalizationManager.h"
@@ -54,6 +55,12 @@ int main(int argc, char* argv[]) {
 
     bool quit = false;
     SDL_Event event;
+    //=========
+    // Config
+    //=========
+    Config* config = new Config();
+    config->setDebugMode(true);
+    config->setShowFps(true);
 
     //=========
     // Player
@@ -78,7 +85,7 @@ int main(int argc, char* argv[]) {
     ItemManager::instance().loadItemsFromFile("../res/localization/" + LANGUAGE + "/items.json");
     SpellManager::instance().loadSpellsFromFile("../res/localization/" + LANGUAGE + "/spells.json");
     EnemyManager::instance().loadEnemiesFromFile("../res/localization/" + LANGUAGE + "/enemies.json");
-    GameManager::instance().initialize();
+    GameManager::instance().initialize(config);
     UiManager::instance().initialize(window, renderer, font);
 
     //=========
@@ -120,7 +127,6 @@ int main(int argc, char* argv[]) {
     //=========
     // FPS
     //=========
-    bool showFPS = true;
     Uint32 lastTime = SDL_GetTicks(); // Time of the last frame
     Uint32 fpsCounterLastUpdate = lastTime;
     int frameCount = 0; // Count frames
@@ -134,7 +140,7 @@ int main(int argc, char* argv[]) {
     while (!quit) {
         frameStart = SDL_GetTicks();
 
-        if (showFPS) {
+        if (config->isShowFps()) {
             Uint32 currentTime = SDL_GetTicks();
             // Uint32 deltaTime = currentTime - lastTime; // Time elapsed since the last frame
             lastTime = currentTime;
@@ -182,7 +188,7 @@ int main(int argc, char* argv[]) {
 
         UiManager::instance().updateUI(renderer, font);
         GameManager::instance().update();
-        if (showFPS) {
+        if (config->isShowFps()) {
             UiManager::instance().renderFps(currentFPS);
         }
 

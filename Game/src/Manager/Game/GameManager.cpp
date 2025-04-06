@@ -10,8 +10,11 @@ GameManager::GameManager():
 {
 }
 
-void GameManager::initialize()
+void GameManager::initialize(Config* config)
 {   
+    // Set config
+    this->config = config;
+
     // Initialize the map
     MapManager::instance().generateMap(100, 100, 5);
     MapManager::instance().addPlayer(player);
@@ -221,8 +224,8 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
 bool GameManager::movePlayer() {
     bool moved = false;
-    if (InputManager::instance().isKeyPressed(SDLK_UP)) {
-        InputManager::instance().deactivateKey(SDLK_UP);
+    if (InputManager::instance().isKeyPressed(this->config->getUpKey())) {
+        InputManager::instance().deactivateKey(this->config->getUpKey());
 
         if (MapManager::instance().canPlayerMove(player, 0, -1)) {
             player->move(0, -1);
@@ -230,8 +233,8 @@ bool GameManager::movePlayer() {
             moved = true;
         }
     }
-    if (InputManager::instance().isKeyPressed(SDLK_DOWN)) {
-        InputManager::instance().deactivateKey(SDLK_DOWN);
+    if (InputManager::instance().isKeyPressed(this->config->getDownKey())) {
+        InputManager::instance().deactivateKey(this->config->getDownKey());
 
         if (MapManager::instance().canPlayerMove(player, 0, 1)) {
             player->move(0, 1);
@@ -239,8 +242,8 @@ bool GameManager::movePlayer() {
             moved = true;
         }
     }
-    if (InputManager::instance().isKeyPressed(SDLK_LEFT)) {
-        InputManager::instance().deactivateKey(SDLK_LEFT);
+    if (InputManager::instance().isKeyPressed(this->config->getLeftKey())) {
+        InputManager::instance().deactivateKey(this->config->getLeftKey());
 
         if (MapManager::instance().canPlayerMove(player, -1, 0)) {
             player->move(-1, 0);
@@ -248,8 +251,8 @@ bool GameManager::movePlayer() {
             moved = true;
         }
     }
-    if (InputManager::instance().isKeyPressed(SDLK_RIGHT)) {
-        InputManager::instance().deactivateKey(SDLK_RIGHT);
+    if (InputManager::instance().isKeyPressed(this->config->getRightKey())) {
+        InputManager::instance().deactivateKey(this->config->getRightKey());
 
         if (MapManager::instance().canPlayerMove(player, 1, 0)) {
             player->move(1, 0);
