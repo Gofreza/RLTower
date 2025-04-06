@@ -122,28 +122,33 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                 dest.h = tile_size;
 
                 SDL_Rect src = tiles[0];
+                Cell cell = ascii_map[map_y][map_x];
 
-                if (!ascii_map[map_y][map_x].isExplored) {
+                if (!cell.isExplored) {
                     // Render a dark cell
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderFillRect(renderer, &dest);
                 } else {
                     // TODO: Swich from char to int to access directly the tile
-                    char tile_char = ascii_map[map_y][map_x].getSymbol();
-                    int ascii_value = static_cast<int>(tile_char);
+                    // char tile_char = cell.getSymbol();
+                    // int ascii_value = static_cast<int>(tile_char);
 
-                    src = tiles[ascii_value];
+                    // src = tiles[ascii_value];
 
-                    if (ascii_map[map_y][map_x].isInSight) {
+                    if (cell.isInSight) {
                         // Change the color of the src
-                        SDL_SetTextureColorMod(tileset, ascii_map[map_y][map_x].currentColor.r, ascii_map[map_y][map_x].currentColor.g, ascii_map[map_y][map_x].currentColor.b); 
+                        SDL_SetTextureColorMod(tileset, cell.currentColor.r, cell.currentColor.g, cell.currentColor.b); 
                         // Set background color to light gray
                         SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
+
+                        src = tiles[static_cast<int>(cell.getSymbol())];
                     } else {
                         // Change the color of the src
                         SDL_SetTextureColorMod(tileset, 100, 100, 100);
                         // Set background color to default
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+                        src = tiles[static_cast<int>(cell.getLastSeenSymbol())];
                     }
 
                     // Render the background

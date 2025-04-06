@@ -17,6 +17,7 @@ public:
     Character* getCharacter() const;
 
     void setSymbol(char symbol);
+    void setLastSeenSymbol(char symbol);
     void resetCell();
 
     void addEffect(Effect* effect);
@@ -29,6 +30,7 @@ public:
     bool hasItem() const;
 
     char getSymbol() const;
+    char getLastSeenSymbol() const;
 
     void setX(int x);
     int getX() const;
@@ -56,6 +58,7 @@ private:
 
     char baseSymbol;
     char currentSymbol;
+    char lastSeenSymbol;
 
 };
 

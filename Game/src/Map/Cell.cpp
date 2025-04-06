@@ -1,12 +1,12 @@
 #include "Cell.h"
 
 Cell::Cell(int x, int y, char baseSymbol, SDL_Color baseColor): 
-    baseColor(baseColor), currentColor(baseColor), 
+    baseColor(baseColor), currentColor(baseColor),
     isExplored(false), isInSight(false), isWalkable(false),
     x(x), y(y),
     character(nullptr),
     item(nullptr),
-    baseSymbol(baseSymbol), currentSymbol(baseSymbol)
+    baseSymbol(baseSymbol), currentSymbol(baseSymbol), lastSeenSymbol(baseSymbol)
 {
     int ascii_value = static_cast<int>(baseSymbol);
 
@@ -40,6 +40,11 @@ Character* Cell::getCharacter() const
 void Cell::setSymbol(char symbol)
 {
     this->currentSymbol = symbol;
+}
+
+void Cell::setLastSeenSymbol(char symbol)
+{
+    this->lastSeenSymbol = symbol;
 }
 
 void Cell::resetCell()
@@ -92,6 +97,10 @@ bool Cell::hasItem() const {
 
 char Cell::getSymbol() const {
     return currentSymbol;
+}
+
+char Cell::getLastSeenSymbol() const {
+    return lastSeenSymbol;
 }
 
 void Cell::setX(int x)

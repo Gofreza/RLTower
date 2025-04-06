@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     // Config
     //=========
     Config* config = new Config();
-    config->setDebugMode(true);
+    config->setDebugMode(false);
     config->setShowFps(true);
 
     //=========
