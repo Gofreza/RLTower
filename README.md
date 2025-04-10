@@ -26,6 +26,17 @@ This is the first step of this project. I aim to build a working version of the 
   - Git: for version control
   - IDE: Visual Studio Code
 
+## 🖥️ How to Build
+
+To build the project, you have a **CMakeLists.txt** file. You just have to update the path to the given dependencies. <br>
+Then just, inside a build folder:
+```
+cmake ..
+make
+./game
+```
+Or if you're in VSCode, you can use the CMakeTools extension.
+
 ## 📜 Roadmap
 
 ### ✅ Completed Features
