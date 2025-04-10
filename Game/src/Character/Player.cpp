@@ -98,8 +98,8 @@ void Player::move(int x, int y) {
     }   
 }
 
-void Player::defend(Character* attacker)
+void Player::defend(Cell& cell, Character* attacker)
 {
-    Character::defend(attacker);
+    Character::defend(cell, attacker);
     UiManager::instance().updateMenu(false);
 }

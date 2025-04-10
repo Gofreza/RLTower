@@ -16,6 +16,8 @@
 #include "../Object/Misc/Containers.h"
 #include "../Enum/GroupType.h"
 
+class Cell;
+
 class Character
 {
 protected:
@@ -161,9 +163,9 @@ public:
 
     virtual void move(int x, int y);
 
-    void attack(Character* target);
-    virtual void defend(Character* attacker);
-    virtual void support(Character* target);
+    void attack(Cell& cell);
+    virtual void defend(Cell& cell, Character* attacker);
+    virtual void support(Cell& cell);
     bool canDodge();
 
     //=====================

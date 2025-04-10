@@ -3,7 +3,7 @@
 #include "../../Map/BSP2.h"
 #include "../Characters/CharactersManager.h"
 #include "../../Character/Enemy.h"
-#include "../../Misc/Config.h"
+#include "../Config/Config.h"
 
 class MapManager
 {
@@ -13,7 +13,7 @@ public:
         return instance;
     }
 
-    void initialize(Config* config);
+    void initialize();
 
     void generateMap(int width, int height, int iterations, float wRatio = 0.45f, float hRatio = 0.45f, bool discardByRatio = true);
     void removeCharacter(int dx, int dy);
@@ -30,6 +30,8 @@ public:
 
     void calculateFov(Player* player);
 
+    void getAffectedCells(int x, int y, int radius, std::vector<std::pair<int, int>>& affectedCells);
+
     const std::vector<std::vector<Cell>>& getAsciiMap() const;
     Cell& getCell(int x, int y);
     void printDungeonMap();
@@ -37,8 +39,6 @@ public:
 private:   
     MapManager();
     ~MapManager();
-
-    Config* config;
     
     int width, height;
 

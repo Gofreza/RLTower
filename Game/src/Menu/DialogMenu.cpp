@@ -4,6 +4,7 @@
 
 #include "../Manager/Localization/LocalizationManager.h"
 #include "../Manager/UI/UiManager.h"
+#include "../Manager/Config/Config.h"
 
 DialogMenu::DialogMenu (SDL_Renderer* renderer, TTF_Font* font)
 : Menu(renderer, font)
@@ -237,6 +238,28 @@ void DialogMenu::render(const SDL_Rect& rect, const Character* character) {
     }
     SDL_DestroyTexture(groupTextTexture);
 
+    // Health in DebugMode
+    if (Config::instance().isDebugMode()) {
+        std::stringstream stream;
+        stream << std::fixed << std::setprecision(1) << character->getHp();
+        std::string hpStr = stream.str();
+
+        std::string healthText = LocalizationManager::instance().getText("hp_title") + hpStr;
+        SDL_Texture* healthTextTexture = Utils::loadTextTexture(renderer, font, healthText, Utils::textColor);
+        if (healthTextTexture) {
+            SDL_QueryTexture(healthTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+            SDL_Rect healthRect = {
+                rect.x + 5 + imgWidth + 5, 
+                currentY, 
+                textWidth,
+                textHeight
+            };
+            SDL_RenderCopy(renderer, healthTextTexture, nullptr, &healthRect);
+            SDL_DestroyTexture(healthTextTexture);
+        }
+        currentY += textHeight + 5;
+    }
+
     // Description
     std::string descriptionText = LocalizationManager::instance().getText("item_description") + character->getDescription();
     std::vector<std::string> lines;
@@ -246,7 +269,7 @@ void DialogMenu::render(const SDL_Rect& rect, const Character* character) {
     int maxWidth = rect.w - 10;  // Adjust for padding
     int spaceWidth;
 
-    // Measure the width of a space character (you can assume spaceWidth as needed)
+    // Measure the width of a space character
     TTF_SizeText(font, " ", &spaceWidth, nullptr);
 
     while (words >> word) {

@@ -2,11 +2,12 @@
 
 #include <SDL2/SDL.h>
 
-class Config
-{
+class Config {
 public:
-    Config();
-    ~Config();
+    static Config& instance() {
+        static Config instance;
+        return instance;
+    }
 
     // Getters
     bool isDebugMode() const;
@@ -24,8 +25,14 @@ public:
     void setRightKey(SDL_Keycode key);
 
 private:
-    bool debugMode;
-    bool showFps;
+    Config();
+    ~Config();
+
+    Config(const Config&) = delete;
+    Config& operator=(const Config&) = delete; 
+
+    bool debugMode = false;
+    bool showFps = false;
 
     SDL_Keycode upKey;
     SDL_Keycode downKey;

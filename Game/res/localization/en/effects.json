@@ -307,7 +307,7 @@
             "imagePath": "blue_shield.png",
             "type": "Temporary",
             "element": "Arcane",
-            "duration": 4,
+            "duration": 6,
             "stats": ["PhyDefense", "MagDefense"],
             "resultType": true,
             "value": [2, 2]

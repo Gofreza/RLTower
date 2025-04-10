@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
-#include "Misc/Config.h"
+#include "Manager/Config/Config.h"
 #include "Manager/UI/UiManager.h"
 #include "Manager/Characters/CharactersManager.h"
 #include "Manager/Localization/LocalizationManager.h"
@@ -58,15 +58,16 @@ int main(int argc, char* argv[]) {
     //=========
     // Config
     //=========
-    Config* config = new Config();
-    config->setDebugMode(false);
-    config->setShowFps(true);
+    Config& config = Config::instance();
+    config.setDebugMode(true);
+    config.setShowFps(true);
 
     //=========
     // Player
     //=========
     Player* player = new Player("Player", {55, 55, 160, 255}, GroupType::Player, "tortueachapeau.png", "Tortue à chapeau",
                                 1000.0f, 100, 0, 100, false, 5, 100,
+                                // Physical damage && Magical damage
                                 1, 0, 
                                 7, 3, 5, 1, 5, 1,
                                 '@',
@@ -85,7 +86,7 @@ int main(int argc, char* argv[]) {
     ItemManager::instance().loadItemsFromFile("../res/localization/" + LANGUAGE + "/items.json");
     SpellManager::instance().loadSpellsFromFile("../res/localization/" + LANGUAGE + "/spells.json");
     EnemyManager::instance().loadEnemiesFromFile("../res/localization/" + LANGUAGE + "/enemies.json");
-    GameManager::instance().initialize(config);
+    GameManager::instance().initialize();
     UiManager::instance().initialize(window, renderer, font);
 
     //=========
@@ -141,7 +142,7 @@ int main(int argc, char* argv[]) {
     while (!quit) {
         frameStart = SDL_GetTicks();
 
-        if (config->isShowFps()) {
+        if (config.isShowFps()) {
             Uint32 currentTime = SDL_GetTicks();
             // Uint32 deltaTime = currentTime - lastTime; // Time elapsed since the last frame
             lastTime = currentTime;
@@ -189,7 +190,7 @@ int main(int argc, char* argv[]) {
 
         UiManager::instance().updateUI(renderer, font);
         GameManager::instance().update();
-        if (config->isShowFps()) {
+        if (config.isShowFps()) {
             UiManager::instance().renderFps(currentFPS);
         }
 

@@ -4,6 +4,7 @@
 #include "../Manager/Spell/SpellManager.h"
 #include "../Manager/Game/GameManager.h"
 #include "../Manager/Game/MapManager.h"
+#include "../Map/Cell.h"
 
 static float SPEED_SCALAR = 10.0f;
 
@@ -385,7 +386,7 @@ std::vector<Spell*> Character::getSpells() const {
 // COMBAT
 //===============
 
-void Character::attack(Character* target) {
+void Character::attack(Cell& cell) {
     bool isAttacking = false;
     // Check if the attacker can attack
     // Check for mana/energy for spells or stamina for physical attacks
@@ -417,18 +418,43 @@ void Character::attack(Character* target) {
                 return;
             }
             isAttacking = true;
-        } 
-        Logger::instance().info(this->name + " attacks " + target->name + ".");
-        this->hasAttack = true;
-        if (isAttacking) {
-            target->defend(this);
-        } else {
-            target->support(this);
         }
+        this->hasAttack = true;
+        if (cell.getCharacter() != nullptr) {
+            Character* target = cell.getCharacter();
+            Logger::instance().info(this->name + " attacks " + target->name + ".");
+            if (isAttacking) {
+                target->defend(cell, this);
+            } else {
+                target->support(cell);
+            }
+        } else {
+            // Attack the cell
+            // TODO: Add effects
+            if (this->getCurrentActiveSpell() == nullptr) {
+                return;
+            }
+            std::vector<std::pair<int, int>> affectedCells;
+            MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), 2, affectedCells);
+            for (const auto& affectedCell : affectedCells) {
+                // Attack all the cells
+                int x = affectedCell.first;
+                int y = affectedCell.second;
+                Cell& targetCell = MapManager::instance().getCell(x, y);
+                Character* targetCharacter = targetCell.getCharacter();
+                if (targetCharacter != nullptr) {
+                    int distance = Utils::distance(cell.getX(), cell.getY(), targetCharacter->getXPosition(), targetCharacter->getYPosition());
+                    int damage = this->magDamage + this->getCurrentActiveSpell()->getDamage() - targetCharacter->magicalDefense - distance;
+                    targetCharacter->hp -= damage < 0 ? 0 : damage;
+                    targetCharacter->mana -= this->getCurrentActiveSpell()->getConsumption();
+                }
+            }
+        }
+        
     }
 }
 
-void Character::defend(Character* attacker) {
+void Character::defend(Cell& cell, Character* attacker) {
     Logger::instance().info(this->name + " defends against " + attacker->name + ".");
     // Before applying the damage, check if the attacker can parry, if can't try dodging
     Item* shield = this->getShield();
@@ -454,7 +480,6 @@ void Character::defend(Character* attacker) {
         
         // TODO: Implement this correctly
         // Also need to add effects from weapons and spells
-        // Also reduce the damage taken by the defense of the character (phy and mag)
 
         if (isAuraUser) {
             Logger::instance().info(this->name + " is an aura user.");
@@ -465,6 +490,31 @@ void Character::defend(Character* attacker) {
                 int damage = attacker->getMagDamage() + attacker->getCurrentActiveSpell()->getDamage() - this->magicalDefense;
                 this->hp -= damage < 0 ? 0 : damage;
                 attacker->mana -= attacker->getCurrentActiveSpell()->getConsumption();
+
+                // Check spell radius
+                if (attacker->getCurrentActiveSpell()->getRadius() > 0) {
+                    Logger::instance().info(this->name + " is affected by the spell " + attacker->getCurrentActiveSpell()->getName() + ".");
+                    // Apply the damage on the cells around the target minus the distance and apply effects
+                    // TODO: Don't work
+                    std::vector<std::pair<int, int>> affectedCells;
+                    MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), attacker->getCurrentActiveSpell()->getRadius(), affectedCells);
+                    for (const auto& affectedCell : affectedCells) {
+                        // Attack all cell except the one where the defender is (because it as already been attacked)
+                        if (affectedCell.first == cell.getX() && affectedCell.second == cell.getY()) {
+                            continue;
+                        }
+                        int x = affectedCell.first;
+                        int y = affectedCell.second;
+                        Cell& targetCell = MapManager::instance().getCell(x, y);
+                        Character* targetCharacter = targetCell.getCharacter();
+                        if (targetCharacter != nullptr && targetCharacter != this) {
+                            int distance = std::sqrt(std::pow(targetCharacter->getXPosition() - x, 2) + std::pow(targetCharacter->getYPosition() - y, 2));
+                            int damage = attacker->getMagDamage() + attacker->getCurrentActiveSpell()->getDamage() - targetCharacter->magicalDefense - distance;
+                            targetCharacter->hp -= damage < 0 ? 0 : damage;
+                            targetCharacter->mana -= attacker->getCurrentActiveSpell()->getConsumption();
+                        }
+                    }
+                }
             } else {
                 // Use physical weapon
                 int damage = attacker->getPhyDamage() - this->physicalDefense;
@@ -480,7 +530,8 @@ void Character::defend(Character* attacker) {
     }
 }
 
-void Character::support(Character* target) {
+void Character::support(Cell& cell) {
+    Character* target = cell.getCharacter();
     // We're sure we have a spell here
     Spell* spell = this->getCurrentActiveSpell();
     // Apply the effects of the spell

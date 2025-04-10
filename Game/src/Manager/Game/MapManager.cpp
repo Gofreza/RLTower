@@ -6,9 +6,8 @@ MapManager::MapManager()
 {
 }
 
-void MapManager::initialize(Config* config)
+void MapManager::initialize()
 {
-    this->config = config;
 }
 
 void MapManager::generateMap(int width, int height, int iterations, float wRatio, float hRatio, bool discardByRatio)
@@ -68,7 +67,7 @@ void MapManager::addPlayer(Player* player)
         }
     }
 
-    if (!config->isDebugMode()) {
+    if (!Config::instance().isDebugMode()) {
         for (const auto& [i, j] : circle_extremes) {
             size_t map_x = x + i;
             size_t map_y = y + j;
@@ -119,7 +118,7 @@ void MapManager::movePlayerInMap(Player* player, int dx, int dy)
     }
     visibleCells.clear();
 
-    if (!config->isDebugMode()) {
+    if (!Config::instance().isDebugMode()) {
         for (const auto& [i, j] : circle_extremes) {
             size_t map_x = x + i;
             size_t map_y = y + j;
@@ -341,6 +340,21 @@ void MapManager::calculateFov(Player* player) {
         }
     }
 
+}
+
+void MapManager::getAffectedCells(int x, int y, int radius, std::vector<std::pair<int, int>>& affectedCells) {
+    for (int i = -radius; i <= radius; ++i) {
+        for (int j = -radius; j <= radius; ++j) {
+            if (i * i + j * j <= radius * radius) {
+                int target_x = x + i;
+                int target_y = y + j;
+
+                if (target_x >= 0 && target_x < width && target_y >= 0 && target_y < height) {
+                    affectedCells.push_back(std::make_pair(target_x, target_y));
+                }
+            }
+        }
+    }
 }
 
 const std::vector<std::vector<Cell>>& MapManager::getAsciiMap() const {

@@ -10,13 +10,10 @@ GameManager::GameManager():
 {
 }
 
-void GameManager::initialize(Config* config)
+void GameManager::initialize()
 {   
-    // Set config
-    this->config = config;
-
     // Initialize the map
-    MapManager::instance().initialize(config);
+    MapManager::instance().initialize();
     MapManager::instance().generateMap(100, 100, 5);
     MapManager::instance().addPlayer(player);
 
@@ -212,18 +209,22 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                         }
                     } else if (cell.hasCharacter()) {
                         UiManager::instance().triggerRenderCharacterDialog(cell.getCharacter());
-                        // Attack
-                        if (combatMode) {
-                            // Add 0.5 to the range to allow diagonal attacks
-                            float diag = player_attack_range + 0.5;
-                            if (InputManager::instance().isLeftClicked() && Utils::distance(player_x, player_y, map_x, map_y) <= diag) {
-                                InputManager::instance().deactivateLeftClick();
-                                player->attack(cell.getCharacter());
-                                UiManager::instance().updateMenu(true);
-                            }
-                        }
                     } else {
                         UiManager::instance().updateConsole(true);
+                    }
+
+                    // Attack
+                    if (combatMode) {
+                        // Add 0.5 to the range to allow diagonal attacks
+                        float diag = player_attack_range + 0.5;
+                        if (InputManager::instance().isLeftClicked() 
+                            && Utils::distance(player_x, player_y, map_x, map_y) <= diag
+                            && (cell.hasCharacter() || InputManager::instance().isDoubleClicked())) {
+                                InputManager::instance().deactivateLeftClick();
+                                InputManager::instance().deactivateDoubleClick();
+                                player->attack(cell);
+                                UiManager::instance().updateMenu(true);
+                        }
                     }
                 }    
             }
@@ -233,8 +234,8 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
 bool GameManager::movePlayer() {
     bool moved = false;
-    if (InputManager::instance().isKeyPressed(this->config->getUpKey())) {
-        InputManager::instance().deactivateKey(this->config->getUpKey());
+    if (InputManager::instance().isKeyPressed(Config::instance().getUpKey())) {
+        InputManager::instance().deactivateKey(Config::instance().getUpKey());
 
         if (MapManager::instance().canPlayerMove(player, 0, -1)) {
             player->move(0, -1);
@@ -242,8 +243,8 @@ bool GameManager::movePlayer() {
             moved = true;
         }
     }
-    if (InputManager::instance().isKeyPressed(this->config->getDownKey())) {
-        InputManager::instance().deactivateKey(this->config->getDownKey());
+    if (InputManager::instance().isKeyPressed(Config::instance().getDownKey())) {
+        InputManager::instance().deactivateKey(Config::instance().getDownKey());
 
         if (MapManager::instance().canPlayerMove(player, 0, 1)) {
             player->move(0, 1);
@@ -251,8 +252,8 @@ bool GameManager::movePlayer() {
             moved = true;
         }
     }
-    if (InputManager::instance().isKeyPressed(this->config->getLeftKey())) {
-        InputManager::instance().deactivateKey(this->config->getLeftKey());
+    if (InputManager::instance().isKeyPressed(Config::instance().getLeftKey())) {
+        InputManager::instance().deactivateKey(Config::instance().getLeftKey());
 
         if (MapManager::instance().canPlayerMove(player, -1, 0)) {
             player->move(-1, 0);
@@ -260,8 +261,8 @@ bool GameManager::movePlayer() {
             moved = true;
         }
     }
-    if (InputManager::instance().isKeyPressed(this->config->getRightKey())) {
-        InputManager::instance().deactivateKey(this->config->getRightKey());
+    if (InputManager::instance().isKeyPressed(Config::instance().getRightKey())) {
+        InputManager::instance().deactivateKey(Config::instance().getRightKey());
 
         if (MapManager::instance().canPlayerMove(player, 1, 0)) {
             player->move(1, 0);
