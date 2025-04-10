@@ -21,9 +21,10 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
                     int intelligence, int wisdom, int constitution, int luck,
                     const char symbol,
                     std::vector<int> desires, std::vector<int> disgusts)
-    : name(name), color(color), group(group), imagePath(imagePath), description(description), xPosition(0), yPosition(0), symbol(symbol),
+    : name(name), color(color), group(group), imagePath(imagePath), description(description), xPosition(0), yPosition(0), 
+    gold(0), silver(0), copper(0), symbol(symbol),
     hp(hp), mana(mana), energy(energy), stamina(stamina), 
-    maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina), gold(0), silver(0), copper(0),
+    maxHp(hp), maxMana(mana), maxEnergy(energy), maxStamina(stamina),
     // Level
     level(0), experience(0), isAuraUser(isAuraUser),
     // Fov
@@ -64,9 +65,10 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
 }
 
 Character::Character(const Character& other)
-    : name(other.name), color(other.color), group(other.group), imagePath(other.imagePath), description(other.description), xPosition(other.xPosition), yPosition(other.yPosition), symbol(other.symbol),
+    : name(other.name), color(other.color), group(other.group), imagePath(other.imagePath), description(other.description), xPosition(other.xPosition), yPosition(other.yPosition), 
+    gold(other.gold), silver(other.silver), copper(other.copper), symbol(other.symbol),
     hp(other.hp), mana(other.mana), energy(other.energy), stamina(other.stamina), 
-    maxHp(other.maxHp), maxMana(other.maxMana), maxEnergy(other.maxEnergy), maxStamina(other.maxStamina), gold(other.gold), silver(other.silver), copper(other.copper),
+    maxHp(other.maxHp), maxMana(other.maxMana), maxEnergy(other.maxEnergy), maxStamina(other.maxStamina),
     // Level
     level(other.level), experience(other.experience), isAuraUser(other.isAuraUser),
     // Fov

@@ -16,12 +16,12 @@ constitutionLevel(0), constitutionLevelRequirement(100)
 CharacterProgress::CharacterProgress(const CharacterProgress& other)
 : character(other.character),
 levelRequirement(other.levelRequirement),
+experiencesArray(other.experiencesArray),
 strengthLevel(other.strengthLevel), strengthLevelRequirement(other.strengthLevelRequirement),
 dexterityLevel(other.dexterityLevel), dexterityLevelRequirement(other.dexterityLevelRequirement),
 intelligenceLevel(other.intelligenceLevel), intelligenceLevelRequirement(other.intelligenceLevelRequirement),
 wisdomLevel(other.wisdomLevel), wisdomLevelRequirement(other.wisdomLevelRequirement),
-constitutionLevel(other.constitutionLevel), constitutionLevelRequirement(other.constitutionLevelRequirement),
-experiencesArray(other.experiencesArray)
+constitutionLevel(other.constitutionLevel), constitutionLevelRequirement(other.constitutionLevelRequirement)
 {
 }
 
