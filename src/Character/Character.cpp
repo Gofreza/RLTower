@@ -393,6 +393,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
     // Check if the attacker can attack
     // Check for mana/energy for spells or stamina for physical attacks
     if (isAuraUser) {
+        // TODO: Implement this correctly
         Logger::instance().info(this->name + " is an aura user. Implement this in Character.cpp.");
     } else {
         Item* weapon = this->getWeapon();

@@ -260,6 +260,32 @@ void DialogMenu::render(const SDL_Rect& rect, const Character* character) {
         currentY += textHeight + 5;
     }
 
+    // Mana/Energy in DebugMode
+    if (Config::instance().isDebugMode()) {
+        std::stringstream stream;
+        if (character->isCharacterAuraUser()) {
+            stream << std::fixed << std::setprecision(1) << character->getEnergy();
+        } else {
+            stream << std::fixed << std::setprecision(1) << character->getMana();
+        }
+        std::string speStr = stream.str();
+
+        std::string speText = LocalizationManager::instance().getText(character->isCharacterAuraUser() ? "energy_title" : "mana_title") + speStr;
+        SDL_Texture* speTextTexture = Utils::loadTextTexture(renderer, font, speText, Utils::textColor);
+        if (speTextTexture) {
+            SDL_QueryTexture(speTextTexture, nullptr, nullptr, &textWidth, &textHeight);
+            SDL_Rect healthRect = {
+                rect.x + 5 + imgWidth + 5, 
+                currentY, 
+                textWidth,
+                textHeight
+            };
+            SDL_RenderCopy(renderer, speTextTexture, nullptr, &healthRect);
+            SDL_DestroyTexture(speTextTexture);
+        }
+        currentY += textHeight + 5;
+    }
+
     // Description
     std::string descriptionText = LocalizationManager::instance().getText("item_description") + character->getDescription();
     std::vector<std::string> lines;
