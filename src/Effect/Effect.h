@@ -35,7 +35,9 @@ public:
     const std::string& getImagePath() const;
     EffectType getEffectType() const;
     SpellElement getElement() const;
+    int getBaseDuration() const;
     int getDuration() const;
+    void setDuration(int newDuration);
     void reduceDuration();
 
 private:
@@ -46,6 +48,7 @@ private:
     const std::string imagePath;
     EffectType effectType;
     SpellElement element;
+    int baseDuration;
     int duration;
     std::vector<EffectStat> effectStats;
     // Positive = true, negative = false

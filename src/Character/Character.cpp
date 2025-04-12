@@ -388,7 +388,7 @@ std::vector<Spell*> Character::getSpells() const {
 // COMBAT
 //===============
 
-void Character::attack(Cell& cell) {
+void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
     bool isAttacking = false;
     // Check if the attacker can attack
     // Check for mana/energy for spells or stamina for physical attacks
@@ -426,29 +426,56 @@ void Character::attack(Cell& cell) {
             Character* target = cell.getCharacter();
             Logger::instance().info(this->name + " attacks " + target->name + ".");
             if (isAttacking) {
-                target->defend(cell, this);
+                target->defend(cell, this, cellsAffectedByEffects);
             } else {
-                target->support(cell);
+                target->support(cell, cellsAffectedByEffects);
             }
         } else {
             // Attack the cell
-            // TODO: Add effects
             if (this->getCurrentActiveSpell() == nullptr) {
+                // Check for effects on non magic weapon
+                if (weapon) {
+                    Weapon* w = static_cast<Weapon*>(weapon);
+                    if (w->getEffects().size() > 0) {
+                        for (Effect* effect : w->getEffects()) {
+                            cell.addEffect(effect->clone());
+                        }
+                    }
+                    cellsAffectedByEffects.push_back(&cell);
+                }
                 return;
             }
+    
             std::vector<std::pair<int, int>> affectedCells;
-            MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), 2, affectedCells);
+            MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), this->getCurrentActiveSpell()->getRadius(), affectedCells);
+            // Remove mana only once
+            this->mana -= this->getCurrentActiveSpell()->getConsumption();
             for (const auto& affectedCell : affectedCells) {
                 // Attack all the cells
                 int x = affectedCell.first;
                 int y = affectedCell.second;
-                Cell& targetCell = MapManager::instance().getCell(x, y);
+                Cell& targetCell = MapManager::instance().getCell(x, y); 
+                // Add effects to targetedCells
+                for (Effect* effect : this->getCurrentActiveSpell()->getEffects()) {
+                    if (effect->getEffectType() != EffectType::Burst) {
+                        targetCell.addEffect(effect->clone());
+                    }
+                }             
+                cellsAffectedByEffects.push_back(&targetCell);  
+                // Check for character in the cell
                 Character* targetCharacter = targetCell.getCharacter();
                 if (targetCharacter != nullptr) {
+                    // Add effects to character
+                    for (Effect* effect : this->getCurrentActiveSpell()->getEffects()) {
+                        if (effect->getEffectType() != EffectType::Burst) {
+                            targetCharacter->addEffect(effect->clone());
+                        }
+                    }
+
+                    // Damage calculation
                     int distance = Utils::distance(cell.getX(), cell.getY(), targetCharacter->getXPosition(), targetCharacter->getYPosition());
                     int damage = this->magDamage + this->getCurrentActiveSpell()->getDamage() - targetCharacter->magicalDefense - distance;
                     targetCharacter->hp -= damage < 0 ? 0 : damage;
-                    targetCharacter->mana -= this->getCurrentActiveSpell()->getConsumption();
                 }
             }
         }
@@ -456,7 +483,7 @@ void Character::attack(Cell& cell) {
     }
 }
 
-void Character::defend(Cell& cell, Character* attacker) {
+void Character::defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects) {
     Logger::instance().info(this->name + " defends against " + attacker->name + ".");
     // Before applying the damage, check if the attacker can parry, if can't try dodging
     Item* shield = this->getShield();
@@ -480,10 +507,8 @@ void Character::defend(Cell& cell, Character* attacker) {
         Weapon* w = static_cast<Weapon*>(weapon);
         WeaponType wType = w->getWeaponType();
         
-        // TODO: Implement this correctly
-        // Also need to add effects from weapons and spells
-
         if (isAuraUser) {
+            // TODO: Implement this correctly
             Logger::instance().info(this->name + " is an aura user.");
         } else {
             if (is_weapon_magical(wType) && attacker->getCurrentActiveSpell() != nullptr) {
@@ -492,15 +517,28 @@ void Character::defend(Cell& cell, Character* attacker) {
                 int damage = attacker->getMagDamage() + attacker->getCurrentActiveSpell()->getDamage() - this->magicalDefense;
                 this->hp -= damage < 0 ? 0 : damage;
                 attacker->mana -= attacker->getCurrentActiveSpell()->getConsumption();
+                // Apply effect to the defender
+                for (Effect* effect : attacker->getCurrentActiveSpell()->getEffects()) {
+                    if (effect->getEffectType() != EffectType::Burst) {
+                        this->addEffect(effect->clone());
+                    }
+                }
 
                 // Check spell radius
                 if (attacker->getCurrentActiveSpell()->getRadius() > 0) {
                     Logger::instance().info(this->name + " is affected by the spell " + attacker->getCurrentActiveSpell()->getName() + ".");
                     // Apply the damage on the cells around the target minus the distance and apply effects
-                    // TODO: Don't work
                     std::vector<std::pair<int, int>> affectedCells;
                     MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), attacker->getCurrentActiveSpell()->getRadius(), affectedCells);
                     for (const auto& affectedCell : affectedCells) {
+                        // Apply effects to the cells (all of them)
+                        for (Effect* effect : attacker->getCurrentActiveSpell()->getEffects()) {
+                            if (effect->getEffectType() != EffectType::Burst) {
+                                MapManager::instance().getCell(affectedCell.first, affectedCell.second).addEffect(effect->clone());
+                            }
+                        }
+                        cellsAffectedByEffects.push_back(&MapManager::instance().getCell(affectedCell.first, affectedCell.second));
+
                         // Attack all cell except the one where the defender is (because it as already been attacked)
                         if (affectedCell.first == cell.getX() && affectedCell.second == cell.getY()) {
                             continue;
@@ -513,7 +551,12 @@ void Character::defend(Cell& cell, Character* attacker) {
                             int distance = std::sqrt(std::pow(targetCharacter->getXPosition() - x, 2) + std::pow(targetCharacter->getYPosition() - y, 2));
                             int damage = attacker->getMagDamage() + attacker->getCurrentActiveSpell()->getDamage() - targetCharacter->magicalDefense - distance;
                             targetCharacter->hp -= damage < 0 ? 0 : damage;
-                            targetCharacter->mana -= attacker->getCurrentActiveSpell()->getConsumption();
+                            // Apply effects to the character
+                            for (Effect* effect : attacker->getCurrentActiveSpell()->getEffects()) {
+                                if (effect->getEffectType() != EffectType::Burst) {
+                                    targetCharacter->addEffect(effect->clone());
+                                }
+                            }
                         }
                     }
                 }
@@ -522,6 +565,15 @@ void Character::defend(Cell& cell, Character* attacker) {
                 int damage = attacker->getPhyDamage() - this->physicalDefense;
                 this->hp -= damage < 0 ? 0 : damage;
                 attacker->stamina -= w->getWeight();
+
+                // Apply effects to the defender and the cell
+                for (Effect* effect : w->getEffects()) {
+                    if (effect->getEffectType() != EffectType::Burst) {
+                        this->addEffect(effect->clone());
+                        cell.addEffect(effect->clone());
+                    }
+                }
+                cellsAffectedByEffects.push_back(&cell);
             }
         }
     } else {
@@ -532,7 +584,8 @@ void Character::defend(Cell& cell, Character* attacker) {
     }
 }
 
-void Character::support(Cell& cell) {
+void Character::support(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
+    //TODO: For effects, add a flag to know if the effect need to be applied to the cell too
     Character* target = cell.getCharacter();
     // We're sure we have a spell here
     Spell* spell = this->getCurrentActiveSpell();
@@ -1481,6 +1534,14 @@ Spell* Character::getCurrentActiveSpell() const {
 //==========
 
 void Character::addEffect(Effect* effect) {
+    // Check if the effect already exists
+    for (Effect* e : effects) {
+        if (e->getEffectName() == effect->getEffectName()) {
+            // Effect already exists, update its duration
+            e->setDuration(effect->getBaseDuration());
+            return;
+        }
+    }
     effects.push_back(effect);
 }
 

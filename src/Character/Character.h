@@ -163,9 +163,9 @@ public:
 
     virtual void move(int x, int y);
 
-    void attack(Cell& cell);
-    virtual void defend(Cell& cell, Character* attacker);
-    virtual void support(Cell& cell);
+    void attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects);
+    virtual void defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects);
+    virtual void support(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects);
     bool canDodge();
 
     //=====================

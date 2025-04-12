@@ -42,8 +42,10 @@ private:
     std::vector<Character*> characters;
     std::vector<Character*> deferredDeletions;
 
-    // TODO: Use this to have the number of turns
+    std::vector<Cell*> cellsAffectedByEffects;
+
     int turn;
+    size_t numberOfCharactersThatPlayedThisTurn;
     size_t currentCharacterIndex;
 
     bool combatMode;

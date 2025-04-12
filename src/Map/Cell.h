@@ -23,6 +23,7 @@ public:
     void addEffect(Effect* effect);
     void removeEffect(Effect* effect);
     const std::vector<Effect*>& getEffects() const;
+    void updateEffects();
 
     void setItem(Item* item);
     Item* takeItem();

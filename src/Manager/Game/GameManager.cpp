@@ -5,7 +5,7 @@
 
 GameManager::GameManager():   
     player(CharactersManager::instance().getPlayer()),
-    turn(0),
+    turn(0), numberOfCharactersThatPlayedThisTurn(0),
     combatMode(false), spellMode(false), cacMode(false)
 {
 }
@@ -34,9 +34,8 @@ void GameManager::update()
 }
 
 void GameManager::playTurn() {
-
-    // Add all characters to the priority queue
     if (characters.empty()) {
+        // Add all characters to the priority queue
         characters.reserve(1 + npcs.size() + enemies.size());
         characters.push_back(player);
         for (auto& npc : npcs) {
@@ -69,10 +68,21 @@ void GameManager::playTurn() {
         this->addCharacterToDefferedDeletions(character);
     } else {
         if (hasPlay) {
+            numberOfCharactersThatPlayedThisTurn++;
             currentCharacterIndex = (currentCharacterIndex + 1) % characters.size();
         }
     }
 
+    // When all characters have played
+    if (numberOfCharactersThatPlayedThisTurn >= characters.size()) {
+        // Update turn
+        turn++;
+        // Update cell's effects
+        for (auto& cell : cellsAffectedByEffects) {
+            cell->updateEffects();
+        }
+        numberOfCharactersThatPlayedThisTurn = 0;
+    }
 }
 
 void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Texture* tileset, const std::vector<SDL_Rect>& tiles)
@@ -222,7 +232,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                             && (cell.hasCharacter() || InputManager::instance().isDoubleClicked())) {
                                 InputManager::instance().deactivateLeftClick();
                                 InputManager::instance().deactivateDoubleClick();
-                                player->attack(cell);
+                                player->attack(cell, cellsAffectedByEffects);
                                 UiManager::instance().updateMenu(true);
                         }
                     }
@@ -333,4 +343,6 @@ GameManager::~GameManager()
         std::cout << "Deleting character: " << character << std::endl;
         delete character;
     }
+    deferredDeletions.clear();
+    cellsAffectedByEffects.clear();
 }

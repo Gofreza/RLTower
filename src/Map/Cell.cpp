@@ -73,6 +73,26 @@ const std::vector<Effect*>& Cell::getEffects() const
     return effects;
 }
 
+void Cell::updateEffects() {
+    for (auto it = effects.begin(); it != effects.end(); ) {
+        Effect* effect = *it;
+        // Update cell colors
+        this->currentColor = getElementColor(effect->getElement());
+        // Update effect
+        if (this->hasCharacter()) {
+            getCharacter()->addEffect(effect->clone());
+        }
+        effect->reduceDuration();
+        if (effect->getDuration() <= 0) {
+            delete effect;
+            it = effects.erase(it);
+            this->currentColor = baseColor;
+        } else {
+            ++it;
+        }
+    }
+}
+
 void Cell::setItem(Item* item) {
     this->item = item;
     this->currentSymbol = to_char(item->getType());

@@ -268,7 +268,7 @@
             "imagePath": "red_flame.png",
             "element": "Fire",
             "type": "Dot",
-            "duration": 5,
+            "duration": 10,
             "stats": ["Hp"],
             "resultType": false,
             "value": [1]

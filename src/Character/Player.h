@@ -16,6 +16,6 @@ public:
     bool update() override;
     void move(int x, int y) override;
 
-    void defend(Cell& cell, Character* attacker) override;
+    void defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects) override;
 private:
 };

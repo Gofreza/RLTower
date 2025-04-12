@@ -98,8 +98,8 @@ void Player::move(int x, int y) {
     }   
 }
 
-void Player::defend(Cell& cell, Character* attacker)
+void Player::defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects)
 {
-    Character::defend(cell, attacker);
+    Character::defend(cell, attacker, cellsAffectedByEffects);
     UiManager::instance().updateMenu(false);
 }

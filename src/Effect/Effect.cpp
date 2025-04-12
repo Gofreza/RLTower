@@ -13,7 +13,7 @@ Effect::Effect(short id,
             bool resultType,
             std::vector<int> value)
 : id(id), effectName(effectName), description(description),
-  logText(logText), imagePath(imagePath), effectType(effectType), element(element), duration(duration),
+  logText(logText), imagePath(imagePath), effectType(effectType), element(element), baseDuration(duration), duration(duration),
   effectStats(effectStats), resultType(resultType), value(value)
 {
 }
@@ -46,7 +46,11 @@ EffectType Effect::getEffectType() const { return effectType; }
 
 SpellElement Effect::getElement() const { return element; }
 
+int Effect::getBaseDuration() const { return baseDuration; }
+
 int Effect::getDuration() const { return duration; }
+
+void Effect::setDuration(int newDuration) { duration = newDuration; }
 
 void Effect::reduceDuration() { duration--; }
 
