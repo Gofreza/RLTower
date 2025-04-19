@@ -4,6 +4,7 @@
 #include "../Characters/CharactersManager.h"
 #include "../../Character/Enemy.h"
 #include "../Config/Config.h"
+#include "../../Struct/AICells.h"
 
 class MapManager
 {
@@ -29,6 +30,7 @@ public:
     bool dropItem(int x, int y, Item* item);
 
     void calculateFov(Player* player);
+    AICells calculateCharacterFov(Enemy* character);
 
     void getAffectedCells(int x, int y, int radius, std::vector<std::pair<int, int>>& affectedCells);
 
@@ -52,6 +54,9 @@ private:
 
     std::vector<Cell*> visibleCells;
     void bresenham(int x1, int y1, int const x2, int const y2);
+    void characterBresenham(Enemy* character, int x1, int y1, int const x2, int const y2, AICells& visibleCells);
+
+    void processLoSCell(Enemy* character, int cellX, int cellY, AICells& visibleCells);
 
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;

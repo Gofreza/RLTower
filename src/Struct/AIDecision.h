@@ -5,17 +5,16 @@
 
 struct AIDecision
 {
-    Direction dir;
-    int aggression;
-    int fear;
-    int desire;
-    int wander;
-    int misc;
+    int aggression = 0;
+    int fear = 0;
+    int desire = 0;
+    int wander = 0;
+    int misc = 0;
+    bool blocked = false;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const AIDecision& decision)
 {
-    os << "Direction: " << static_cast<int>(decision.dir) << std::endl;
     os << "Aggression: " << decision.aggression << std::endl;
     os << "Fear: " << decision.fear << std::endl;
     os << "Desire: " << decision.desire << std::endl;

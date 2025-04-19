@@ -11,7 +11,9 @@ Enemy::Enemy(const std::string& name, SDL_Color color, GroupType group, const st
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc)
  : Character(name, color, group, imagePath, description, hp, mana, energy, stamina, isAuraUser, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desire, disgust),
     minSpawnLevel(minSpawnLevel), maxSpawnLevel(maxSpawnLevel), value(value),
-    basicAggression(basicAggression), basicFear(basicFear), bascDesire(bascDesire), basicWander(basicWander), basicMisc(basicMisc)
+    actionType(ActionType::NONE), hasBeenAttacked(false),
+    basicAggression(basicAggression), basicFear(basicFear), bascDesire(bascDesire), basicWander(basicWander), basicMisc(basicMisc),
+    wanderValue(basicWander)
 {
 }
 
@@ -30,23 +32,94 @@ Enemy::~Enemy()
 {
 }
 
-AIDecision Enemy::check()
-{
-    // Check the enemy, see it's state and what will it's next move be
-    return AIDecision();
-}
-
 bool Enemy::update()
 {   
     Character::update();
-    AIDecision decision = this->check();
-    // Move, attack, etc
-    int dx = RandomUtils::getRandomNumber(-1, 1);
-    int dy = RandomUtils::getRandomNumber(-1, 1);
-    if (MapManager::instance().canCharacterMove(this, dx, dy)) {
-        this->move(dx, dy);
-        MapManager::instance().moveCharacterInMap(this, dx, dy);
-        this->hasMoved = true;
+    // TODO: first check if we're in a fight
+    // If we're in a fight, don't bother checking our surroundings we have to fight
+    // But if we have a range weapon, we can attack from a distance so we still have to move
+
+
+    // Reset perceived combat strength
+    this->ownPerceivedCombatStrength = this->ownCombatStrength;
+    // First get what the character is seeing
+    AICells visibleCells = MapManager::instance().calculateCharacterFov(this);
+    // Pour chaque direction, on calcule la valeur d'agression 
+    // North
+    int aggression = 0;
+    if (visibleCells.closestNorthCharacter != nullptr) {
+        aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.northDistance) + (2*this->basicAggression);
+        visibleCells.nortValue += aggression;
+        visibleCells.decision.aggression = aggression;
+    }
+    // South
+    if (visibleCells.closestSouthCharacter != nullptr) {
+        aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.southDistance) + (2*this->basicAggression);
+        visibleCells.southValue += aggression;
+        visibleCells.decision.aggression = aggression;
+    }
+    // East
+    if (visibleCells.closestEastCharacter != nullptr) {
+        aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.eastDistance) + (2*this->basicAggression);
+        visibleCells.eastValue += aggression;
+        visibleCells.decision.aggression = aggression;
+    }
+    // West
+    if (visibleCells.closestWestCharacter != nullptr) {
+        aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.westDistance) + (2*this->basicAggression);
+        visibleCells.westValue += aggression;
+        visibleCells.decision.aggression = aggression;
+    }
+
+    // Set Action
+    int max_action = std::max({
+        visibleCells.decision.aggression,
+        visibleCells.decision.fear,
+        visibleCells.decision.desire,
+        visibleCells.decision.wander,
+        visibleCells.decision.misc
+    });
+    if (max_action == visibleCells.decision.aggression) {
+        this->actionType = ActionType::ATTACK;
+    } else if (max_action == visibleCells.decision.fear) {
+        this->actionType = ActionType::MOVE;
+    } else if (max_action == visibleCells.decision.desire) {
+        this->actionType = ActionType::MOVE;
+    } else if (max_action == visibleCells.decision.wander) {
+        this->actionType = ActionType::MOVE;
+    } else if (max_action == visibleCells.decision.misc) {
+        this->actionType = ActionType::MOVE;
+    }
+
+    if (this->actionType == ActionType::MOVE) {
+        // Set direction
+        int max_val = std::max({
+            visibleCells.nortValue,
+            visibleCells.southValue,
+            visibleCells.eastValue,
+            visibleCells.westValue
+        });
+        std::pair<int, int> offset = {0, 0};
+        if (max_val == visibleCells.nortValue) {
+            offset = getDirectionOffset(Direction::North);
+        } else if (max_val == visibleCells.southValue) {
+            offset = getDirectionOffset(Direction::South);
+        } else if (max_val == visibleCells.eastValue) {
+            offset = getDirectionOffset(Direction::East);
+        } else if (max_val == visibleCells.westValue) {
+            offset = getDirectionOffset(Direction::West);
+        }
+
+        // Move character
+        int dx = offset.first;
+        int dy = offset.second;
+        if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+            this->move(dx, dy);
+            MapManager::instance().moveCharacterInMap(this, dx, dy);
+            this->hasMoved = true;
+        }
+    } else {
+        Logger::instance().info(this->getName() + " is attacking.");
     }
 
     // Update hasMoved and hasAttack and call updateProgress
@@ -57,6 +130,56 @@ bool Enemy::update()
 
 int Enemy::getValue() const {
     return value;
+}
+
+void Enemy::addLastVisitedCell(Cell* cell) {
+    // Allow the 5 last visited cells
+    // When adding a new one, remove the oldest one
+    if (lastVisitedCells.size() >= 5) {
+        lastVisitedCells.erase(lastVisitedCells.begin());
+    }
+    // Check if the cell is already in the list
+    auto it = std::find(lastVisitedCells.begin(), lastVisitedCells.end(), cell);
+    if (it != lastVisitedCells.end()) {
+        // If it is, remove it to update it's order
+        lastVisitedCells.erase(it);
+    }
+    // Add the new cell
+    lastVisitedCells.push_back(cell);
+}
+
+bool Enemy::isLastVisitedCell(Cell* cell) const {
+    // Check if the cell is in the list
+    auto it = std::find(lastVisitedCells.begin(), lastVisitedCells.end(), cell);
+    return it != lastVisitedCells.end();
+}
+
+int Enemy::getBasicAggression() const {
+    return basicAggression;
+}
+
+int Enemy::getBasicFear() const {
+    return basicFear;
+}
+
+int Enemy::getBasicDesire() const {
+    return bascDesire;
+}
+
+int Enemy::getBasicWander() const {
+    return basicWander;
+}
+
+int Enemy::getBasicMisc() const {
+    return basicMisc;
+}
+
+int Enemy::getWanderValue() const {
+    return wanderValue;
+}
+
+void Enemy::setWanderValue(int value) {
+    wanderValue = value;
 }
 
 std::ostream& operator<<(std::ostream& os, const Enemy& enemy)

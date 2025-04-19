@@ -2,6 +2,7 @@
 
 #include "Character.h"
 #include "../Struct/AIDecision.h"
+#include "../Enum/ActionType.h"
 
 class Enemy : public Character 
 {
@@ -19,6 +20,18 @@ public:
 
     bool update() override;
     int getValue() const;
+    
+    void addLastVisitedCell(Cell* cell);
+    bool isLastVisitedCell(Cell* cell) const;
+
+    int getBasicAggression() const;
+    int getBasicFear() const;
+    int getBasicDesire() const;
+    int getBasicWander() const;
+    int getBasicMisc() const;
+
+    int getWanderValue() const;
+    void setWanderValue(int value);
 
     virtual Enemy* clone() const;
 
@@ -28,11 +41,15 @@ private:
     int maxSpawnLevel;
     int value;
 
+    ActionType actionType;
+    bool hasBeenAttacked;
+    std::vector<Cell*> lastVisitedCells;
+
     float basicAggression;
     float basicFear;
     float bascDesire;
     float basicWander;
     float basicMisc;
-    
-    AIDecision check();
+
+    float wanderValue;
 };

@@ -14,7 +14,7 @@ void GameManager::initialize()
 {   
     // Initialize the map
     MapManager::instance().initialize();
-    MapManager::instance().generateMap(100, 100, 5);
+    MapManager::instance().generateMap(50, 50, 0);
     MapManager::instance().addPlayer(player);
 
     // Add enemies

@@ -62,6 +62,7 @@ protected:
     bool isAuraUser;
 
     // Field of vision
+    int baseFov;
     int fov; // Define the radius of the circle of vision around the character
 
     // Speed
@@ -106,7 +107,6 @@ protected:
     int physicalDefenseBonus;
     int speedBonus;
     float dodgeBonus;
-    int fovBonus;
 
     // Resistance
     float fireResistance;
@@ -123,6 +123,10 @@ protected:
     float metalResistance;
     float soundResistance;
     float illusionResistance;
+
+    // AI
+    int ownCombatStrength; // The combat strength of the character, calculate by adding all the stats
+    int ownPerceivedCombatStrength; // The combat strength of the character + the combat strength of it's allies
 
     // Desire
     std::vector<int> desires;
@@ -307,7 +311,6 @@ public:
     void setPhysicalDefenseBonus(int bonus);
     void setSpeedBonus(int bonus);
     void setDodgeBonus(float bonus);
-    void setFovBonus(int bonus);
 
     // Fatigue
     int getFatigue() const;
@@ -342,6 +345,10 @@ public:
     void setSoundResistance(float newSoundResistance);
     float getIllusionResistance() const;
     void setIllusionResistance(float newIllusionResistance);
+
+    int getOwnCombatStrength() const;
+    int getOwnPerceivedCombatStrength() const;
+    void addToOwnPerceivedCombatStrength(int strengthToAdd);
 
     void setDesire(std::vector<int> newDesire);
     std::vector<int> getDesire() const;

@@ -28,7 +28,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     // Level
     level(0), experience(0), isAuraUser(isAuraUser),
     // Fov
-    fov(fov),
+    baseFov(fov), fov(fov),
     // Speed
     baseSpeed(speed), speed(0), 
     // Progress
@@ -40,13 +40,15 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     // Stats Dependants
     physicalDefense(0), magicalDefense(0), weight(0.f), maxWeight(0), dodge(0.0f),
     // Bonus
-    magicalDefenseBonus(0), physicalDefenseBonus(0), speedBonus(0), dodgeBonus(0.f), fovBonus(0),
+    magicalDefenseBonus(0), physicalDefenseBonus(0), speedBonus(0), dodgeBonus(0.f),
     // Resistances
     fireResistance(0.0f), waterResistance(0.0f), earthResistance(0.0f), airResistance(0.0f),
     lightningResistance(0.0f), iceResistance(0.0f), natureResistance(0.0f),
     lightResistance(0.0f), darknessResistance(0.0f), arcaneResistance(0.0f),
     poisonResistance(0.0f), metalResistance(0.0f), soundResistance(0.0f),
     illusionResistance(0.0f),
+    // IA
+    ownCombatStrength(0), ownPerceivedCombatStrength(0),
     // Desire
     desires(desires), disgusts(disgusts),
     // Spells
@@ -72,7 +74,7 @@ Character::Character(const Character& other)
     // Level
     level(other.level), experience(other.experience), isAuraUser(other.isAuraUser),
     // Fov
-    fov(other.fov),
+    baseFov(other.baseFov), fov(other.fov),
     // Speed
     baseSpeed(other.baseSpeed), speed(other.speed), 
     // Progress
@@ -91,6 +93,8 @@ Character::Character(const Character& other)
     lightResistance(other.lightResistance), darknessResistance(other.darknessResistance), arcaneResistance(other.arcaneResistance),
     poisonResistance(other.poisonResistance), metalResistance(other.metalResistance), soundResistance(other.soundResistance),
     illusionResistance(other.illusionResistance),
+    // IA
+    ownCombatStrength(other.ownCombatStrength), ownPerceivedCombatStrength(other.ownPerceivedCombatStrength),
     // Desire
     desires(other.desires), disgusts(other.disgusts),
     // Spells
@@ -186,11 +190,8 @@ void Character::updateStatsDependants() {
     // Dodge
     dodge = DODGE_SCALAR * (DODGE_DEXTERITY_SCALAR * this->dexterity + DODGE_LUCK_SCALAR * this->luck) + dodgeBonus;
 
-    // Fov
-    fov = std::round(std::sqrt(this->intelligence) * 2) + fovBonus;
-    if (fov < 1) {
-        fov = 1;
-    }
+    // CombatStrength
+    ownCombatStrength = phyDamage + magDamage + strength + dexterity + intelligence + wisdom + constitution + luck;
 }
 
 void Character::updateProgress() {
@@ -393,7 +394,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
     // Check if the attacker can attack
     // Check for mana/energy for spells or stamina for physical attacks
     if (isAuraUser) {
-        // TODO: Implement this correctly
+        // TODO implement this correctly
         Logger::instance().info(this->name + " is an aura user. Implement this in Character.cpp.");
     } else {
         Item* weapon = this->getWeapon();
@@ -1171,7 +1172,7 @@ void Character::setStat(EffectStat stat, bool resultType, int value) {
         case EffectStat::Stamina:
             resultType ? this->setStamina(this->getStamina() + value) : this->setStamina(this->getStamina() - value); break;
         case EffectStat::Fov:
-            resultType ? this->setFovBonus(value) : this->setFovBonus(-value); break;  
+            resultType ? this->setFov(baseFov+value) : this->setFov(baseFov); break;  
         case EffectStat::Speed:
             resultType ? this->setSpeedBonus(value) : this->setSpeedBonus(-value); break;
         case EffectStat::Fatigue:
@@ -1373,10 +1374,6 @@ void Character::setDodgeBonus(float bonus) {
     dodgeBonus += bonus;
 }
 
-void Character::setFovBonus(int bonus) {
-    fovBonus += bonus;
-}
-
 //=======
 // Bools
 //=======
@@ -1445,6 +1442,15 @@ void Character::setSoundResistance(float newSoundResistance) { soundResistance =
 
 float Character::getIllusionResistance() const { return illusionResistance; }
 void Character::setIllusionResistance(float newIllusionResistance) { illusionResistance = newIllusionResistance; }
+
+//=========
+// AI
+//=========
+
+int Character::getOwnCombatStrength() const { return ownCombatStrength; }
+
+int Character::getOwnPerceivedCombatStrength() const { return ownPerceivedCombatStrength; }
+void Character::addToOwnPerceivedCombatStrength(int strengthToAdd) { ownPerceivedCombatStrength+=strengthToAdd; }
 
 //=========
 // Desires

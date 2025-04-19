@@ -12,6 +12,7 @@ public:
     // Getters
     bool isDebugMode() const;
     bool isShowFps() const;
+    bool isArenaMode() const;
     SDL_Keycode getUpKey() const;
     SDL_Keycode getDownKey() const;
     SDL_Keycode getLeftKey() const;
@@ -19,6 +20,7 @@ public:
     // Setters
     void setDebugMode(bool mode);
     void setShowFps(bool mode);
+    void setArenaMode(bool mode);
     void setUpKey(SDL_Keycode key);
     void setDownKey(SDL_Keycode key);
     void setLeftKey(SDL_Keycode key);
@@ -33,6 +35,7 @@ private:
 
     bool debugMode = false;
     bool showFps = false;
+    bool isArena = false;
 
     SDL_Keycode upKey;
     SDL_Keycode downKey;
