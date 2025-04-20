@@ -168,6 +168,7 @@ int main(int argc, char* argv[]) {
             // DEBUG Click
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if (event.button.button == SDL_BUTTON_LEFT) {
+                    Logger::instance().info("This is a pretty long message used to debug the multi-line print in the console.");
                 } else if (event.button.button == SDL_BUTTON_RIGHT) {
                     if (player->isCharacterAuraUser()) {
                         player->setCharacterAuraUser(false);

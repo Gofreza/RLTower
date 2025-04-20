@@ -155,6 +155,7 @@ UpdateState Enemy::update()
                     isTryingToAttack = true;
                 } else {
                     // Out of reach, move to engage
+                    // TODO: If the direction of movement is blocked, try pathfinding
                     // Move character
                     int dx = offset.first;
                     int dy = offset.second;
@@ -170,6 +171,7 @@ UpdateState Enemy::update()
                     isTryingToAttack = true;
                 } else {
                     // Out of reach, move to engage
+                    // TODO: If the direction of movement is blocked, try pathfinding
                     // Move character
                     int dx = offset.first;
                     int dy = offset.second;
