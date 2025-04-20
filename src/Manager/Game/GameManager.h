@@ -34,6 +34,8 @@ public:
 
     void addCharacterToDefferedDeletions(Character* character);
     void deleteDeferredCharacters();
+
+    std::vector<Cell*>& getCellsAffectedByEffects();
 private:
     Player* player;
     std::vector<NPC*> npcs;

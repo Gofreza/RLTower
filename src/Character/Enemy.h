@@ -18,7 +18,7 @@ public:
     Enemy(const Enemy& enemy);
     ~Enemy();
 
-    bool update() override;
+    UpdateState update() override;
     int getValue() const;
     
     void addLastVisitedCell(Cell* cell);

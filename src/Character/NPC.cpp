@@ -14,6 +14,10 @@ NPC::~NPC()
 {
 }
 
-bool NPC::update() {
-    return true;
+UpdateState NPC::update() {
+    UpdateState state;
+    state.hasPlayed = true;
+    state.actionType = ActionType::NONE;
+    state.isAI = false;
+    return state;
 }

@@ -32,7 +32,7 @@ Enemy::~Enemy()
 {
 }
 
-bool Enemy::update()
+UpdateState Enemy::update()
 {   
     Character::update();
     // TODO: first check if we're in a fight
@@ -47,25 +47,25 @@ bool Enemy::update()
     // Pour chaque direction, on calcule la valeur d'agression 
     // North
     int aggression = 0;
-    if (visibleCells.closestNorthCharacter != nullptr) {
+    if (visibleCells.closestNorthCell != nullptr) {
         aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.northDistance) + (2*this->basicAggression);
         visibleCells.nortValue += aggression;
         visibleCells.decision.aggression = aggression;
     }
     // South
-    if (visibleCells.closestSouthCharacter != nullptr) {
+    if (visibleCells.closestSouthCell != nullptr) {
         aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.southDistance) + (2*this->basicAggression);
         visibleCells.southValue += aggression;
         visibleCells.decision.aggression = aggression;
     }
     // East
-    if (visibleCells.closestEastCharacter != nullptr) {
+    if (visibleCells.closestEastCell != nullptr) {
         aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.eastDistance) + (2*this->basicAggression);
         visibleCells.eastValue += aggression;
         visibleCells.decision.aggression = aggression;
     }
     // West
-    if (visibleCells.closestWestCharacter != nullptr) {
+    if (visibleCells.closestWestCell != nullptr) {
         aggression = this->ownPerceivedCombatStrength * (6 - visibleCells.westDistance) + (2*this->basicAggression);
         visibleCells.westValue += aggression;
         visibleCells.decision.aggression = aggression;
@@ -91,25 +91,32 @@ bool Enemy::update()
         this->actionType = ActionType::MOVE;
     }
 
-    if (this->actionType == ActionType::MOVE) {
-        // Set direction
-        int max_val = std::max({
-            visibleCells.nortValue,
-            visibleCells.southValue,
-            visibleCells.eastValue,
-            visibleCells.westValue
-        });
-        std::pair<int, int> offset = {0, 0};
-        if (max_val == visibleCells.nortValue) {
-            offset = getDirectionOffset(Direction::North);
-        } else if (max_val == visibleCells.southValue) {
-            offset = getDirectionOffset(Direction::South);
-        } else if (max_val == visibleCells.eastValue) {
-            offset = getDirectionOffset(Direction::East);
-        } else if (max_val == visibleCells.westValue) {
-            offset = getDirectionOffset(Direction::West);
-        }
+    // Set direction
+    int max_val = std::max({
+        visibleCells.nortValue,
+        visibleCells.southValue,
+        visibleCells.eastValue,
+        visibleCells.westValue
+    });
+    std::pair<int, int> offset = {0, 0};
+    Direction direction = Direction::None;
+    if (max_val == visibleCells.nortValue) {
+        offset = getDirectionOffset(Direction::North);
+        direction = Direction::North;
+    } else if (max_val == visibleCells.southValue) {
+        offset = getDirectionOffset(Direction::South);
+        direction = Direction::South;
+    } else if (max_val == visibleCells.eastValue) {
+        offset = getDirectionOffset(Direction::East);
+        direction = Direction::East;
+    } else if (max_val == visibleCells.westValue) {
+        offset = getDirectionOffset(Direction::West);
+        direction = Direction::West;
+    }
 
+    bool isTryingToAttack = false;
+    Cell* target = nullptr;
+    if (this->actionType == ActionType::MOVE) {
         // Move character
         int dx = offset.first;
         int dy = offset.second;
@@ -118,14 +125,74 @@ bool Enemy::update()
             MapManager::instance().moveCharacterInMap(this, dx, dy);
             this->hasMoved = true;
         }
-    } else {
-        Logger::instance().info(this->getName() + " is attacking.");
+    } else if (this->actionType == ActionType::ATTACK) {
+        // Ok here we are attacking
+        // First we need to get the target
+        int targetDistance = 0;
+        if (direction == Direction::North) {
+            target = visibleCells.closestNorthCell;
+            targetDistance = visibleCells.northDistance;
+        } else if (direction == Direction::South) {
+            target = visibleCells.closestSouthCell;
+            targetDistance = visibleCells.southDistance;
+        } else if (direction == Direction::East) {
+            target = visibleCells.closestEastCell;
+            targetDistance = visibleCells.eastDistance;
+        } else if (direction == Direction::West) {
+            target = visibleCells.closestWestCell;
+            targetDistance = visibleCells.westDistance;
+        }
+        // Check if there is realy a target
+        if (target == nullptr) {
+            // No target, we can't attack
+            this->actionType = ActionType::MOVE;    
+        } else {
+            // Then we need to check if we can reach the target
+            if (this->getWeapon() != nullptr) {
+                Weapon* weapon = static_cast<Weapon*>(this->getWeapon());
+                if (weapon->getLength() >= targetDistance) {
+                    // We can attack
+                    isTryingToAttack = true;
+                } else {
+                    // Out of reach, move to engage
+                    // Move character
+                    int dx = offset.first;
+                    int dy = offset.second;
+                    if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+                        this->move(dx, dy);
+                        MapManager::instance().moveCharacterInMap(this, dx, dy);
+                        this->hasMoved = true;
+                    }
+                }
+            } else {
+                if (targetDistance <= 1) {
+                    // We can attack
+                    isTryingToAttack = true;
+                } else {
+                    // Out of reach, move to engage
+                    // Move character
+                    int dx = offset.first;
+                    int dy = offset.second;
+                    if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+                        this->move(dx, dy);
+                        MapManager::instance().moveCharacterInMap(this, dx, dy);
+                        this->hasMoved = true;
+                    }
+                }
+            }
+        }
     }
 
     // Update hasMoved and hasAttack and call updateProgress
     Character::updateProgress();
+
+    UpdateState state;
+    state.hasPlayed = !isTryingToAttack;
+    state.target = target;
+    state.actionType = this->actionType;
+    state.isAI = true;
     
-    return true;
+    return state;
 }
 
 int Enemy::getValue() const {

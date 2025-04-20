@@ -15,5 +15,5 @@ public:
         std::vector<int> desires, std::vector<int> disgusts);
     ~NPC();
 
-    bool update() override;
+    UpdateState update() override;
 };

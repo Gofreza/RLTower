@@ -52,7 +52,21 @@ void GameManager::playTurn() {
 
     // Check the top characters and see if he has played
     Character* character = characters[currentCharacterIndex];
-    bool hasPlay = character->update();
+    UpdateState state = character->update();
+
+    // Check if an AI is playing
+    if (state.isAI && !state.hasPlayed) {
+        // Check the action
+        if (state.actionType == ActionType::ATTACK) {
+            Cell* targetCell = state.target;
+            if (targetCell != nullptr) {
+                // Check if the target is a character
+                character->attack(*targetCell, cellsAffectedByEffects);
+                Logger::instance().info(character->getName() + " attacks " + targetCell->getCharacter()->getName());
+                state.hasPlayed = true;
+            }
+        }
+    }
 
     // Check if character is dead
     if (character->getHp() <= 0) {
@@ -67,7 +81,7 @@ void GameManager::playTurn() {
         // Free the character
         this->addCharacterToDefferedDeletions(character);
     } else {
-        if (hasPlay) {
+        if (state.hasPlayed) {
             numberOfCharactersThatPlayedThisTurn++;
             currentCharacterIndex = (currentCharacterIndex + 1) % characters.size();
         }
@@ -335,6 +349,10 @@ void GameManager::deleteDeferredCharacters() {
         delete character;
     }
     deferredDeletions.clear();
+}
+
+std::vector<Cell*>& GameManager::getCellsAffectedByEffects() {
+    return cellsAffectedByEffects;
 }
 
 GameManager::~GameManager()

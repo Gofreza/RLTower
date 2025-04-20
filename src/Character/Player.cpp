@@ -17,7 +17,7 @@ Player::~Player()
 {
 }
 
-bool Player::update()
+UpdateState Player::update()
 {   
     this->hasWaited = false;
     bool moved = false;
@@ -88,7 +88,12 @@ bool Player::update()
         UiManager::instance().updateGame(true);
     }
 
-    return moved || attacked || hasWaited;
+    UpdateState state;
+    state.hasPlayed = moved || attacked || hasWaited;
+    state.actionType = ActionType::NONE;
+    state.isAI = false;
+
+    return state;
 }
 
 void Player::move(int x, int y) {

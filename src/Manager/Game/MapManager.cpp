@@ -425,28 +425,28 @@ void MapManager::characterBresenham(Enemy* character, int x1, int y1, int const 
             if (angle > 135 || angle <= -135) {
                 if (!isFriendly && visibleCells.westDistance < distance) {
                     visibleCells.westDistance = distance;
-                    visibleCells.closestWestCharacter = cell.getCharacter();
+                    visibleCells.closestWestCell = &cell;
                 }
                 visibleCells.west.push_back(&ascii_map[y1][x1]); // includes NW
                 visibleCells.eastValue += fear;
             } else if (angle > 45 && angle <= 135) {
                 if (!isFriendly && visibleCells.southDistance < distance) {
                     visibleCells.southDistance = distance;
-                    visibleCells.closestSouthCharacter = cell.getCharacter();
+                    visibleCells.closestSouthCell = &cell;
                 }
                 visibleCells.south.push_back(&ascii_map[y1][x1]); // includes SW
                 visibleCells.nortValue += fear;
             } else if (angle > -45 && angle <= 45) {
                 if (!isFriendly && visibleCells.eastDistance < distance) {
                     visibleCells.eastDistance = distance;
-                    visibleCells.closestEastCharacter = cell.getCharacter();
+                    visibleCells.closestEastCell = &cell;
                 }
                 visibleCells.east.push_back(&ascii_map[y1][x1]); // includes SE
                 visibleCells.westValue += fear;
             } else {
                 if (!isFriendly && visibleCells.northDistance < distance) {
                     visibleCells.northDistance = distance;
-                    visibleCells.closestNorthCharacter = cell.getCharacter();
+                    visibleCells.closestNorthCell = &cell;
                 }
                 visibleCells.north.push_back(&ascii_map[y1][x1]); // includes NE
                 visibleCells.southValue += fear;
@@ -519,28 +519,28 @@ void MapManager::characterBresenham(Enemy* character, int x1, int y1, int const 
             if (angle > 135 || angle <= -135) {
                 if (!isFriendly && visibleCells.westDistance < distance) {
                     visibleCells.westDistance = distance;
-                    visibleCells.closestWestCharacter = cell.getCharacter();
+                    visibleCells.closestWestCell = &cell;
                 }
                 visibleCells.west.push_back(&ascii_map[y1][x1]); // includes NW
                 visibleCells.eastValue += fear;
             } else if (angle > 45 && angle <= 135) {
                 if (!isFriendly && visibleCells.southDistance < distance) {
                     visibleCells.southDistance = distance;
-                    visibleCells.closestSouthCharacter = cell.getCharacter();
+                    visibleCells.closestSouthCell = &cell;
                 }
                 visibleCells.south.push_back(&ascii_map[y1][x1]); // includes SW
                 visibleCells.nortValue += fear;
             } else if (angle > -45 && angle <= 45) {
                 if (!isFriendly && visibleCells.eastDistance < distance) {
                     visibleCells.eastDistance = distance;
-                    visibleCells.closestEastCharacter = cell.getCharacter();
+                    visibleCells.closestEastCell = &cell;
                 }
                 visibleCells.east.push_back(&ascii_map[y1][x1]); // includes SE
                 visibleCells.westValue += fear;
             } else {
                 if (!isFriendly && visibleCells.northDistance < distance) {
                     visibleCells.northDistance = distance;
-                    visibleCells.closestNorthCharacter = cell.getCharacter();
+                    visibleCells.closestNorthCell = &cell;
                 }
                 visibleCells.north.push_back(&ascii_map[y1][x1]); // includes NE
                 visibleCells.southValue += fear;

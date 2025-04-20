@@ -226,7 +226,7 @@ void Character::updateProgress() {
     updateStatsDependants();
 }
 
-bool Character::update() {
+UpdateState Character::update() {
     // Process Effects
     for (auto it = effects.begin(); it != effects.end(); ) {
         Effect* effect = *it;
@@ -245,7 +245,12 @@ bool Character::update() {
         }
     }
 
-    return true;
+    UpdateState state;
+    state.hasPlayed = true;
+    state.actionType = ActionType::NONE;
+    state.isAI = false;
+
+    return state;
 }
 
 //===============

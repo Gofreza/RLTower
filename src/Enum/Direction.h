@@ -5,6 +5,7 @@ enum class Direction {
     East,
     South,
     West,
+    None
 };
 
 inline std::pair<int, int> getDirectionOffset(Direction direction)
@@ -18,6 +19,8 @@ inline std::pair<int, int> getDirectionOffset(Direction direction)
             return {0, 1};
         case Direction::West:
             return {-1, 0};
+        case Direction::None:
+            return {0, 0};
     }
     return {0, 0};
 }

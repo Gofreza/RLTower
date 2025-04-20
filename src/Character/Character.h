@@ -15,6 +15,7 @@
 #include "../Object/Misc/Consumable.h"
 #include "../Object/Misc/Containers.h"
 #include "../Enum/GroupType.h"
+#include "../Struct/UpdateState.h"
 
 class Cell;
 
@@ -150,7 +151,7 @@ public:
     // Next turn
     void updateStatsDependants();
     void updateProgress();
-    virtual bool update();
+    virtual UpdateState update();
 
     void addItemInInventory(Item* item);
     void addBackItemInInventory(Item* item);

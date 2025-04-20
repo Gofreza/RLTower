@@ -56,8 +56,6 @@ private:
     void bresenham(int x1, int y1, int const x2, int const y2);
     void characterBresenham(Enemy* character, int x1, int y1, int const x2, int const y2, AICells& visibleCells);
 
-    void processLoSCell(Enemy* character, int cellX, int cellY, AICells& visibleCells);
-
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;
 };

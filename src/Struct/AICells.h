@@ -9,19 +9,19 @@ struct AICells
     std::vector<Cell*> north;
     int northDistance = 0;
     int nortValue = 0;
-    Character* closestNorthCharacter = nullptr;
+    Cell* closestNorthCell = nullptr;
     std::vector<Cell*> east;
     int eastDistance = 0;
     int eastValue = 0;
-    Character* closestEastCharacter = nullptr;
+    Cell* closestEastCell = nullptr;
     std::vector<Cell*> south;
     int southDistance = 0;
     int southValue = 0;
-    Character* closestSouthCharacter = nullptr;
+    Cell* closestSouthCell = nullptr;
     std::vector<Cell*> west;
     int westDistance = 0;
     int westValue = 0;
-    Character* closestWestCharacter = nullptr;
+    Cell* closestWestCell = nullptr;
     AIDecision decision;
 };
 
