@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "../Game/GameManager.h"
+#include "../Controls/InputManager.h"
+#include "../Config/Config.h"
 
 #include "../../Menu/StatusMenu.h"
 #include "../../Menu/EquipmentMenu.h"
@@ -14,6 +16,7 @@
 #include "../../Menu/CharacterMenu.h"
 #include "../../Menu/SpellMenu.h"
 #include "../../Menu/EffectMenu.h"
+#include "../../Menu/Debug/DebugMenu.h"
 
 class UiManager
 {   
@@ -38,6 +41,7 @@ public:
     void renderStatusMenu();
     void renderEquipmentMenu();
     void renderInventoryMenu();
+    void renderDebugMenu();
 
     void renderTriggeredUI();
 
@@ -119,6 +123,7 @@ private:
     SDL_Rect menuRect;
     SDL_Rect itemRect;
     SDL_Rect effectRect;
+    SDL_Rect debugRect;
 
     // Sub Menus Rect
     SDL_Rect statusRect;
@@ -142,6 +147,9 @@ private:
     SpellMenu* spellMenu;
     bool isSpellMenuOpen;
     Spell* subSpell;
+
+    DebugMenu* debugMenu;
+    bool isDebugMenuOpen;
 
     // Tileset / MAP
     SDL_Texture* tileset = nullptr;

@@ -450,6 +450,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
                     }
                     cellsAffectedByEffects.push_back(&cell);
                 }
+                this->stamina -= weapon ? weapon->getWeight() : 1;
                 return;
             }
     
@@ -616,6 +617,36 @@ bool Character::canDodge() {
 
     return random_number <= this->dodge;
 }
+
+bool Character::canAttack() {
+    Item* weapon = this->getWeapon();
+    if (weapon) {
+        Weapon* w = static_cast<Weapon*>(weapon);
+        if (is_weapon_magical(w->getWeaponType()) && this->getCurrentActiveSpell() != nullptr) {
+            if (this->mana < this->getCurrentActiveSpell()->getConsumption()) {
+                Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
+                return false;
+            }
+            // Can cast spell
+            return true;
+        } else {
+            if (this->stamina < w->getWeight()) {
+                Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                return false;
+            }
+            // Can attack
+            return true;
+        }
+    } else {
+        if (this->stamina < 1) {
+            Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+            return false;
+        }
+        // Can attack with fists
+        return true;
+    }
+    return false;
+} 
 
 //===============
 // EQUIPMENTS

@@ -136,23 +136,23 @@ void EnemyManager::loadEnemiesFromFile(const std::string& filePath) {
 // TODO: Implement this function
 void EnemyManager::initialize(std::vector<Enemy*>& enemiesVector, int towerLevel, int numberOfEnemies) {
     // Add ennemies based on the tower level
-    while(numberOfEnemies > 0) {
-        // Get a random enemy
-        int randomEnemy = rand() % enemyCount;
-        Enemy* enemy = getEnemy(randomEnemy);
-        enemiesVector.push_back(enemy);
-        numberOfEnemies -= enemy->getValue();
-    }
-    // Enemy* enemy = getEnemy(1);
-    // enemiesVector.push_back(enemy);
-    // numberOfEnemies -= enemy->getValue();
-    // Enemy* enemy1 = getEnemy(0);
-    // enemiesVector.push_back(enemy1);
-    // numberOfEnemies -= enemy1->getValue();
-    // Enemy* enemy2 = getEnemy(2);
+    // while(numberOfEnemies > 0) {
+    //     // Get a random enemy
+    //     int randomEnemy = rand() % enemyCount;
+    //     Enemy* enemy = getEnemy(randomEnemy);
+    //     enemiesVector.push_back(enemy);
+    //     numberOfEnemies -= enemy->getValue();
+    // }
+    Enemy* enemy = getEnemy(1);
+    enemiesVector.push_back(enemy);
+    numberOfEnemies -= enemy->getValue();
+    Enemy* enemy1 = getEnemy(0);
+    enemiesVector.push_back(enemy1);
+    numberOfEnemies -= enemy1->getValue();
+    // Enemy* enemy2 = getEnemy(1);
     // enemiesVector.push_back(enemy2);
     // numberOfEnemies -= enemy2->getValue();
-    // Enemy* enemy3 = getEnemy(3);
+    // Enemy* enemy3 = getEnemy(1);
     // enemiesVector.push_back(enemy3);
     // numberOfEnemies -= enemy3->getValue();
 

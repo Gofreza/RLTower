@@ -8,7 +8,7 @@ UiManager::UiManager()
   isInConsole(false), isInGame(false), isInMenu(false), isInMenuStatus(false), isInMenuEquipment(false), isInMenuInventory(false),
   forceConsoleRender(false), forceGameRender(false), forceMenuRender(false),
   isItemInDialog(false), isCharacterInDialog(false),
-  isItemMenuOpen(false), isCharacterMenuOpen(false), isSpellMenuOpen(false)
+  isItemMenuOpen(false), isCharacterMenuOpen(false), isSpellMenuOpen(false), isDebugMenuOpen(false)
 {}
 
 void UiManager::initialize(SDL_Window* window, SDL_Renderer* renderer, TTF_Font* font) {
@@ -76,6 +76,14 @@ void UiManager::updateRects(int windowWidth, int windowHeight) {
         0,
         static_cast<int>(windowWidth * 0.70),
         50
+    };
+
+    // Debug menu
+    debugRect = {
+        static_cast<int>(windowWidth * 0.70), // Start at 70% of window width
+        0,
+        static_cast<int>(windowWidth * 0.30), // 30% of window width
+        windowHeight
     };
 }
 
@@ -165,6 +173,7 @@ void UiManager::updateUI(SDL_Renderer* renderer, TTF_Font* font) {
 
     // Render triggered menu
     renderTriggeredUI();
+    renderDebugMenu();
 }
 
 void UiManager::updateConsole(bool force) {
@@ -199,6 +208,10 @@ bool UiManager::isMouseHovering(const SDL_Rect& rect) const {
 }
 
 void UiManager::resetRectsDisplay() {
+    if (isDebugMenuOpen) {
+        return;
+    }
+
     if (this->isInConsole) {
         consoleDirty = true;
         this->isInConsole = false;
@@ -289,6 +302,10 @@ const SDL_Rect& UiManager::getInventoryRect() const {
 void UiManager::renderAllMenus(SDL_Renderer* renderer, TTF_Font* font, const SDL_Rect& mainRect, bool isHovering, bool force) {
     
     if(isInitialize) {
+        if (isDebugMenuOpen) {
+            return;
+        }
+
         if (!areMenusInitialize) {
             // Instantiate menus
             statusMenu = new StatusMenu(renderer, font);
@@ -297,6 +314,11 @@ void UiManager::renderAllMenus(SDL_Renderer* renderer, TTF_Font* font, const SDL
             itemMenu = new ItemMenu(renderer, font);
             characterMenu = new CharacterMenu(renderer, font);
             spellMenu = new SpellMenu(renderer, font);
+
+            if (Config::instance().isDebugMode()) {
+                debugMenu = new DebugMenu(renderer, font);
+            }
+
             std::cout << "Menu initialized" << std::endl;
             areMenusInitialize = true;
         } 
@@ -358,31 +380,48 @@ void UiManager::renderAllMenus(SDL_Renderer* renderer, TTF_Font* font, const SDL
             }   
         }
     } else {
-        throw std::runtime_error("UiManager is not initialized.");
+        throw std::runtime_error("UiManager is not initialized: renderAllMenus.");
     }   
 }
 
 void UiManager::renderStatusMenu() {
-    if (isInitialize) {
+    if (isInitialize && !isDebugMenuOpen) {
         statusMenu->render(statusRect);
     } else {
-        throw std::runtime_error("UiManager is not initialized.");
+        throw std::runtime_error("UiManager is not initialized: renderStatusMenu.");
     }  
 }
 
 void UiManager::renderEquipmentMenu() {
-    if (isInitialize) {
+    if (isInitialize && !isDebugMenuOpen) {
         equipmentMenu->render(equipmentRect);
     } else {
-        throw std::runtime_error("UiManager is not initialized.");
+        throw std::runtime_error("UiManager is not initialized: renderEquipmentMenu.");
     }  
 }
 
 void UiManager::renderInventoryMenu() {
-    if (isInitialize) {
+    if (isInitialize && !isDebugMenuOpen) {
         inventoryMenu->render(inventoryRect);
     } else {
-        throw std::runtime_error("UiManager is not initialized.");
+        throw std::runtime_error("UiManager is not initialized: renderInventoryMenu.");
+    }
+}
+
+void UiManager::renderDebugMenu() {
+    if (isInitialize) {
+        // Render debug menu if in debug mode
+        if (InputManager::instance().isKeyPressed(SDLK_F12)) {
+            InputManager::instance().deactivateKey(SDLK_F12);
+            isDebugMenuOpen = !isDebugMenuOpen;
+        }
+
+        if (Config::instance().isDebugMode() && isDebugMenuOpen) {
+            debugMenu->render(debugRect);
+            this->updateGame(true);
+        }
+    } else {
+        throw std::runtime_error("UiManager is not initialized: renderDebugMenu.");
     }
 }
 

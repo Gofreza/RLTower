@@ -26,11 +26,13 @@ public:
     void addEnemies(std::vector<Enemy*> enemies);
     void moveCharacterInMap(Character* character, int dx, int dy);
     bool canCharacterMove(Character* character, int dx, int dy);
+    void highlightEnemy(Enemy* enemy, bool reset = false);
+    void hightlightEnemyFov(Enemy* enemy, bool reset = false, int x = -1, int y = -1);
 
     bool dropItem(int x, int y, Item* item);
 
     void calculateFov(Player* player);
-    AICells calculateCharacterFov(Enemy* character);
+    AICells calculateCharacterFov(Enemy* character, int x, int y, int fov);
 
     void getAffectedCells(int x, int y, int radius, std::vector<std::pair<int, int>>& affectedCells);
 

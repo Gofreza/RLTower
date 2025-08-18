@@ -229,6 +229,39 @@ bool MapManager::canCharacterMove(Character* character, int dx, int dy)
     return ascii_map[y + dy][x + dx].isWalkable && !ascii_map[y + dy][x + dx].hasCharacter();
 }
 
+void MapManager::highlightEnemy(Enemy* enemy, bool reset)
+{
+    if (reset) {
+        int x = enemy->getXPosition();
+        int y = enemy->getYPosition();
+
+        // Reset the cell
+        ascii_map[y][x].currentColor = ascii_map[y][x].getCharacter()->getColor();
+    } else {
+        int x = enemy->getXPosition();
+        int y = enemy->getYPosition();
+
+        // Highlight the cell
+        ascii_map[y][x].currentColor = {255, 0, 0, 255};
+    }
+}
+
+void MapManager::hightlightEnemyFov(Enemy* enemy, bool reset, int x, int y)
+{
+    if (reset) {
+        // Reset the enemy fov
+        AICells visibleCells = calculateCharacterFov(enemy, x, y, enemy->getFov() + 100);
+        for (auto& cell : visibleCells.all) {
+            cell->currentColor = cell->baseColor; // Reset to the base color
+        }
+    } else {
+        // Highlight the enemy fov
+        AICells visibleCells = calculateCharacterFov(enemy, enemy->getXPosition(), enemy->getYPosition(), enemy->getFov());
+        for (auto& cell : visibleCells.all) {
+            cell->currentColor = {255, 165, 0, 255}; // Orange color for highlighted cells
+        }
+    }
+}
 //=========
 // Miscs
 //=========
@@ -405,7 +438,7 @@ void MapManager::characterBresenham(Enemy* character, int x1, int y1, int const 
                 if (isFriendly) {
                     character->addToOwnPerceivedCombatStrength(cell.getCharacter()->getOwnCombatStrength() + 1 - distance);
                 } else {
-                    fear = cell.getCharacter()->getOwnCombatStrength() * (6 - distance) + character->getBasicFear();
+                    fear = character->getBasicFear() == -1 ? 0 : cell.getCharacter()->getOwnCombatStrength() * (6 - distance) + character->getBasicFear();
                     visibleCells.decision.fear = fear;
                 }
             }
@@ -501,7 +534,7 @@ void MapManager::characterBresenham(Enemy* character, int x1, int y1, int const 
                 if (isFriendly) {
                     character->addToOwnPerceivedCombatStrength(cell.getCharacter()->getOwnCombatStrength() + 1 - distance);
                 } else {
-                    fear = cell.getCharacter()->getOwnCombatStrength() * (6 - distance) + character->getBasicFear();
+                    fear = character->getBasicFear() == -1 ? 0 : cell.getCharacter()->getOwnCombatStrength() * (6 - distance) + character->getBasicFear();
                     visibleCells.decision.fear = fear;
                 }
             }
@@ -589,13 +622,18 @@ void MapManager::calculateFov(Player* player) {
 
 }
 
-AICells MapManager::calculateCharacterFov(Enemy* character) {
-    int x = character->getXPosition();
-    int y = character->getYPosition();
-
-    // Check cells visibility
-    int fov = character->getFov();
-
+/**
+ * Calculate the field of view for a character (Enemy).
+ * This function uses Bresenham's line algorithm to determine which cells are visible
+ * from the character's position within the specified field of view (fov).
+ *
+ * @param character The character for which to calculate the field of view.
+ * @param x The x-coordinate of the character's position.
+ * @param y The y-coordinate of the character's position.
+ * @param fov The field of view radius.
+ * @return AICells containing all visible cells and their respective decisions.
+ */
+AICells MapManager::calculateCharacterFov(Enemy* character, int x, int y, int fov) {
     // Get all circle extremes
     std::vector<std::pair<int, int>> circle_extremes;
     for (int i = -fov; i <= fov; i++) {

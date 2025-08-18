@@ -71,7 +71,7 @@
             "desires": [0, 4, 5],
             "disgusts": [1, 2, 3],
             "aggression": 1,
-            "fear": 1,
+            "fear": -1,
             "desire": 1,
             "wander": 1,
             "misc": 0

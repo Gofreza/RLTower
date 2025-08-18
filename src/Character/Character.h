@@ -172,6 +172,7 @@ public:
     virtual void defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects);
     virtual void support(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects);
     bool canDodge();
+    bool canAttack();
 
     //=====================
     // Getters and Setters

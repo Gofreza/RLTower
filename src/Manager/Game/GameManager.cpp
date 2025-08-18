@@ -14,7 +14,7 @@ void GameManager::initialize()
 {   
     // Initialize the map
     MapManager::instance().initialize();
-    MapManager::instance().generateMap(50, 50, 0);
+    MapManager::instance().generateMap(30, 30, 0);
     MapManager::instance().addPlayer(player);
 
     // Add enemies
@@ -61,8 +61,7 @@ void GameManager::playTurn() {
             Cell* targetCell = state.target;
             if (targetCell != nullptr) {
                 // Check if the target is a character
-                character->attack(*targetCell, cellsAffectedByEffects);
-                Logger::instance().info(character->getName() + " attacks " + targetCell->getCharacter()->getName());
+                // character->attack(*targetCell, cellsAffectedByEffects);
                 state.hasPlayed = true;
             }
         }
@@ -349,6 +348,10 @@ void GameManager::deleteDeferredCharacters() {
         delete character;
     }
     deferredDeletions.clear();
+}
+
+std::vector<Enemy*>& GameManager::getEnemies() {
+    return enemies;
 }
 
 std::vector<Cell*>& GameManager::getCellsAffectedByEffects() {

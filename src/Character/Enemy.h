@@ -3,6 +3,9 @@
 #include "Character.h"
 #include "../Struct/AIDecision.h"
 #include "../Enum/ActionType.h"
+#include "../Struct/AICells.h"
+
+struct AICells;
 
 class Enemy : public Character 
 {
@@ -23,6 +26,7 @@ public:
     
     void addLastVisitedCell(Cell* cell);
     bool isLastVisitedCell(Cell* cell) const;
+    std::vector<Cell*>& getLastVisitedCells();
 
     int getBasicAggression() const;
     int getBasicFear() const;
@@ -33,6 +37,9 @@ public:
     int getWanderValue() const;
     void setWanderValue(int value);
 
+    AICells getAICells() const;
+    ActionType getActionType() const;
+
     virtual Enemy* clone() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Enemy& enemy);
@@ -41,6 +48,7 @@ private:
     int maxSpawnLevel;
     int value;
 
+    AICells aiCells;
     ActionType actionType;
     bool hasBeenAttacked;
     std::vector<Cell*> lastVisitedCells;

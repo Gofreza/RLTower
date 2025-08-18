@@ -35,6 +35,10 @@ Enemy::~Enemy()
 UpdateState Enemy::update()
 {   
     Character::update();
+    this->hasWaited = false;
+    this->hasMoved = false;
+    this->hasAttack = false;
+    this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
     // TODO: first check if we're in a fight
     // If we're in a fight, don't bother checking our surroundings we have to fight
     // But if we have a range weapon, we can attack from a distance so we still have to move
@@ -43,7 +47,8 @@ UpdateState Enemy::update()
     // Reset perceived combat strength
     this->ownPerceivedCombatStrength = this->ownCombatStrength;
     // First get what the character is seeing
-    AICells visibleCells = MapManager::instance().calculateCharacterFov(this);
+    AICells visibleCells = MapManager::instance().calculateCharacterFov(this, this->getXPosition(), this->getYPosition(), this->getFov());
+    
     // Pour chaque direction, on calcule la valeur d'agression 
     // North
     int aggression = 0;
@@ -86,7 +91,13 @@ UpdateState Enemy::update()
     } else if (max_action == visibleCells.decision.desire) {
         this->actionType = ActionType::MOVE;
     } else if (max_action == visibleCells.decision.wander) {
-        this->actionType = ActionType::MOVE;
+        int random = RandomUtils::getRandomNumber(0, 1);
+        if (random == 0) {
+            this->actionType = ActionType::MOVE;
+        } else {
+            this->actionType = ActionType::WAIT;
+            this->hasWaited = true;
+        }
     } else if (max_action == visibleCells.decision.misc) {
         this->actionType = ActionType::MOVE;
     }
@@ -123,65 +134,83 @@ UpdateState Enemy::update()
         if (MapManager::instance().canCharacterMove(this, dx, dy)) {
             this->move(dx, dy);
             MapManager::instance().moveCharacterInMap(this, dx, dy);
+            this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
             this->hasMoved = true;
         }
     } else if (this->actionType == ActionType::ATTACK) {
-        // Ok here we are attacking
-        // First we need to get the target
-        int targetDistance = 0;
-        if (direction == Direction::North) {
-            target = visibleCells.closestNorthCell;
-            targetDistance = visibleCells.northDistance;
-        } else if (direction == Direction::South) {
-            target = visibleCells.closestSouthCell;
-            targetDistance = visibleCells.southDistance;
-        } else if (direction == Direction::East) {
-            target = visibleCells.closestEastCell;
-            targetDistance = visibleCells.eastDistance;
-        } else if (direction == Direction::West) {
-            target = visibleCells.closestWestCell;
-            targetDistance = visibleCells.westDistance;
-        }
-        // Check if there is realy a target
-        if (target == nullptr) {
-            // No target, we can't attack
-            this->actionType = ActionType::MOVE;    
+        if (!this->canAttack()) {
+            // We can't attack, we need to move or wait
+            this->actionType = ActionType::WAIT;
+            this->hasWaited = true;
         } else {
-            // Then we need to check if we can reach the target
-            if (this->getWeapon() != nullptr) {
-                Weapon* weapon = static_cast<Weapon*>(this->getWeapon());
-                if (weapon->getLength() >= targetDistance) {
-                    // We can attack
-                    isTryingToAttack = true;
-                } else {
-                    // Out of reach, move to engage
-                    // TODO: If the direction of movement is blocked, try pathfinding
-                    // Move character
-                    int dx = offset.first;
-                    int dy = offset.second;
-                    if (MapManager::instance().canCharacterMove(this, dx, dy)) {
-                        this->move(dx, dy);
-                        MapManager::instance().moveCharacterInMap(this, dx, dy);
-                        this->hasMoved = true;
-                    }
-                }
+            // Ok here we are attacking
+            // First we need to get the target
+            int targetDistance = 0;
+            if (direction == Direction::North) {
+                target = visibleCells.closestNorthCell;
+                targetDistance = visibleCells.northDistance;
+            } else if (direction == Direction::South) {
+                target = visibleCells.closestSouthCell;
+                targetDistance = visibleCells.southDistance;
+            } else if (direction == Direction::East) {
+                target = visibleCells.closestEastCell;
+                targetDistance = visibleCells.eastDistance;
+            } else if (direction == Direction::West) {
+                target = visibleCells.closestWestCell;
+                targetDistance = visibleCells.westDistance;
+            }
+            // Check if there is realy a target
+            if (target == nullptr) {
+                // No target, we can't attack
+                this->actionType = ActionType::WAIT;
+                this->hasWaited = true;    
             } else {
-                if (targetDistance <= 1) {
-                    // We can attack
-                    isTryingToAttack = true;
+                // Then we need to check if we can reach the target
+                if (this->getWeapon() != nullptr) {
+                    Weapon* weapon = static_cast<Weapon*>(this->getWeapon());
+                    if (weapon->getLength() >= targetDistance) {
+                        // We can attack
+                        isTryingToAttack = true;
+                    } else {
+                        // Out of reach, move to engage
+                        // TODO: If the direction of movement is blocked, try pathfinding
+                        // Move character
+                        int dx = offset.first;
+                        int dy = offset.second;
+                        if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+                            this->move(dx, dy);
+                            MapManager::instance().moveCharacterInMap(this, dx, dy);
+                            this->hasMoved = true;
+                        }
+                    }
                 } else {
-                    // Out of reach, move to engage
-                    // TODO: If the direction of movement is blocked, try pathfinding
-                    // Move character
-                    int dx = offset.first;
-                    int dy = offset.second;
-                    if (MapManager::instance().canCharacterMove(this, dx, dy)) {
-                        this->move(dx, dy);
-                        MapManager::instance().moveCharacterInMap(this, dx, dy);
-                        this->hasMoved = true;
+                    if (targetDistance <= 1) {
+                        // We can attack
+                        isTryingToAttack = true;
+                    } else {
+                        // Out of reach, move to engage
+                        // TODO: If the direction of movement is blocked, try pathfinding
+                        // Move character
+                        int dx = offset.first;
+                        int dy = offset.second;
+                        if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+                            this->move(dx, dy);
+                            MapManager::instance().moveCharacterInMap(this, dx, dy);
+                            this->hasMoved = true;
+                        }
                     }
                 }
             }
+        }
+    }
+
+    this->aiCells = visibleCells;
+
+    if (hasMoved || hasWaited) {
+        if (!overweight && this->stamina < this->maxStamina) {
+            this->stamina += 1;
+        } else if (overweight && this->stamina > 0) {
+            this->stamina -= 1;
         }
     }
 
@@ -217,6 +246,10 @@ void Enemy::addLastVisitedCell(Cell* cell) {
     lastVisitedCells.push_back(cell);
 }
 
+std::vector<Cell*>& Enemy::getLastVisitedCells() {
+    return lastVisitedCells;
+}
+
 bool Enemy::isLastVisitedCell(Cell* cell) const {
     // Check if the cell is in the list
     auto it = std::find(lastVisitedCells.begin(), lastVisitedCells.end(), cell);
@@ -249,6 +282,14 @@ int Enemy::getWanderValue() const {
 
 void Enemy::setWanderValue(int value) {
     wanderValue = value;
+}
+
+AICells Enemy::getAICells() const {
+    return this->aiCells;   
+}
+
+ActionType Enemy::getActionType() const {
+    return this->actionType;
 }
 
 std::ostream& operator<<(std::ostream& os, const Enemy& enemy)
