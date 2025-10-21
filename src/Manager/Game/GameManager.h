@@ -7,6 +7,7 @@
 #include "../Config/Config.h"
 #include "../Characters/CharactersManager.h"
 #include <SDL2/SDL.h>
+#include <queue>
 
 using CharactersQueue = std::priority_queue<
     Character*, 

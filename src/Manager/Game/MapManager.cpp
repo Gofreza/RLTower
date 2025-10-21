@@ -250,7 +250,7 @@ void MapManager::hightlightEnemyFov(Enemy* enemy, bool reset, int x, int y)
 {
     if (reset) {
         // Reset the enemy fov
-        AICells visibleCells = calculateCharacterFov(enemy, x, y, enemy->getFov() + 100);
+        AICells visibleCells = calculateCharacterFov(enemy, x, y, enemy->getFov() + 1);
         for (auto& cell : visibleCells.all) {
             cell->currentColor = cell->baseColor; // Reset to the base color
         }

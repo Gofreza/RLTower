@@ -128,6 +128,8 @@ protected:
     // AI
     int ownCombatStrength; // The combat strength of the character, calculate by adding all the stats
     int ownPerceivedCombatStrength; // The combat strength of the character + the combat strength of it's allies
+    bool isInCombat;
+    Character* target;
 
     // Desire
     std::vector<int> desires;
@@ -351,6 +353,7 @@ public:
     int getOwnCombatStrength() const;
     int getOwnPerceivedCombatStrength() const;
     void addToOwnPerceivedCombatStrength(int strengthToAdd);
+    bool isCharacterInCombat() const;
 
     void setDesire(std::vector<int> newDesire);
     std::vector<int> getDesire() const;

@@ -14,7 +14,7 @@ void GameManager::initialize()
 {   
     // Initialize the map
     MapManager::instance().initialize();
-    MapManager::instance().generateMap(30, 30, 0);
+    MapManager::instance().generateMap(100, 100, 5);
     MapManager::instance().addPlayer(player);
 
     // Add enemies
@@ -61,7 +61,7 @@ void GameManager::playTurn() {
             Cell* targetCell = state.target;
             if (targetCell != nullptr) {
                 // Check if the target is a character
-                // character->attack(*targetCell, cellsAffectedByEffects);
+                character->attack(*targetCell, cellsAffectedByEffects);
                 state.hasPlayed = true;
             }
         }
@@ -72,6 +72,15 @@ void GameManager::playTurn() {
         std::cout << character->getName() << " is dead" << std::endl;
         // Remove the character from the map
         MapManager::instance().removeCharacter(character->getXPosition(), character->getYPosition());
+        
+        // If enemy, remove it from the enemies vector
+        if (dynamic_cast<Enemy*>(character)) {
+            auto it = std::find(enemies.begin(), enemies.end(), dynamic_cast<Enemy*>(character));
+            if (it != enemies.end()) {
+                enemies.erase(it);
+            }
+        }
+
         // Remove it from the vector
         characters.erase(characters.begin() + currentCharacterIndex);
         if (currentCharacterIndex >= characters.size()) {
@@ -145,7 +154,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                 dest.h = tile_size;
 
                 SDL_Rect src = tiles[0];
-                Cell cell = ascii_map[map_y][map_x];
+                const Cell& cell = ascii_map[map_y][map_x];
 
                 if (!cell.isExplored) {
                     // Render a dark cell

@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("SDL2 Window",
+    SDL_Window* window = SDL_CreateWindow("RLTower",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
                                           800, 600,
@@ -59,9 +59,9 @@ int main(int argc, char* argv[]) {
     // Config
     //=========
     Config& config = Config::instance();
-    config.setDebugMode(true);
+    config.setDebugMode(false);
     config.setShowFps(true);
-    config.setArenaMode(true);
+    config.setArenaMode(false);
 
     //=========
     // Player
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
                                 std::vector<int>{}, std::vector<int>{});
     CharactersManager::instance().setPlayer(player);
 
-    player->setHp(player->getHp() - 100);
+    player->setHp(player->getHp());
 
     //=========
     // Managers
@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
             }
 
             // DEBUG Click
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (config.isDebugMode() && event.type == SDL_MOUSEBUTTONDOWN) {
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     // Logger::instance().info("This is a pretty long message used to debug the multi-line print in the console.");
                 } else if (event.button.button == SDL_BUTTON_RIGHT) {

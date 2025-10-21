@@ -50,7 +50,6 @@ private:
 
     AICells aiCells;
     ActionType actionType;
-    bool hasBeenAttacked;
     std::vector<Cell*> lastVisitedCells;
 
     float basicAggression;

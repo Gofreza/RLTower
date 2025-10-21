@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <cmath>
 
 namespace Utils {
     SDL_Texture* loadTexture(const std::string& path, SDL_Renderer* renderer);

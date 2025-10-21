@@ -11,7 +11,7 @@ Enemy::Enemy(const std::string& name, SDL_Color color, GroupType group, const st
             float basicAggression, float basicFear, float bascDesire, float basicWander, float basicMisc)
  : Character(name, color, group, imagePath, description, hp, mana, energy, stamina, isAuraUser, fov, speed, phyDamage, magDamage, strength, dexterity, intelligence, wisdom, constitution, luck, symbol, desire, disgust),
     minSpawnLevel(minSpawnLevel), maxSpawnLevel(maxSpawnLevel), value(value),
-    actionType(ActionType::NONE), hasBeenAttacked(false),
+    actionType(ActionType::NONE),
     basicAggression(basicAggression), basicFear(basicFear), bascDesire(bascDesire), basicWander(basicWander), basicMisc(basicMisc),
     wanderValue(basicWander)
 {
@@ -34,15 +34,21 @@ Enemy::~Enemy()
 
 UpdateState Enemy::update()
 {   
+    // Update the character state
+    // Attack are done in the GameManager
+
     Character::update();
     this->hasWaited = false;
     this->hasMoved = false;
     this->hasAttack = false;
     this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
+
     // TODO: first check if we're in a fight
     // If we're in a fight, don't bother checking our surroundings we have to fight
     // But if we have a range weapon, we can attack from a distance so we still have to move
-
+    if (this->isInCombat && this->target) {
+        // If we are in combat and we have a target, we need to attack or move
+    }
 
     // Reset perceived combat strength
     this->ownPerceivedCombatStrength = this->ownCombatStrength;
@@ -129,6 +135,7 @@ UpdateState Enemy::update()
     Cell* target = nullptr;
     if (this->actionType == ActionType::MOVE) {
         // Move character
+        this->isInCombat = false; // Reset combat state
         int dx = offset.first;
         int dy = offset.second;
         if (MapManager::instance().canCharacterMove(this, dx, dy)) {

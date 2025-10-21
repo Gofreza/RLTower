@@ -17,6 +17,8 @@ void DebugMenu::render(const SDL_Rect& rect) {
 
     const int padding = 5;
     for (Enemy* enemy : enemies) {
+        if (!enemy) continue;
+
         SDL_Texture* enemyNameTextTexture = Utils::loadTextTexture(renderer, font, enemy->getName(), Utils::textColor);
         int textWidth = 0, textHeight = 0;
         SDL_QueryTexture(enemyNameTextTexture, nullptr, nullptr, &textWidth, &textHeight);
@@ -47,30 +49,30 @@ void DebugMenu::render(const SDL_Rect& rect) {
         if (InputManager::instance().isLeftClicked() && isMouseHovering(enemyMenuRect, 0)) {
             InputManager::instance().deactivateLeftClick();
             if (selectedCharacter == enemy) {
-                MapManager::instance().hightlightEnemyFov(selectedCharacter, true, enemy->getXPosition(), enemy->getYPosition());
+                // MapManager::instance().hightlightEnemyFov(selectedCharacter, true, enemy->getXPosition(), enemy->getYPosition());
                 MapManager::instance().highlightEnemy(selectedCharacter, true);
                 isFovEnabled = false;
                 selectedCharacter = nullptr;
             } else {
                 if (selectedCharacter) {
-                    MapManager::instance().hightlightEnemyFov(selectedCharacter, true, selectedCharacter->getXPosition(), selectedCharacter->getYPosition());
+                    // MapManager::instance().hightlightEnemyFov(selectedCharacter, true, selectedCharacter->getXPosition(), selectedCharacter->getYPosition());
                     MapManager::instance().highlightEnemy(selectedCharacter, true);
                     isFovEnabled = false;
                 }
-                MapManager::instance().hightlightEnemyFov(enemy);
+                // MapManager::instance().hightlightEnemyFov(enemy);
                 MapManager::instance().highlightEnemy(enemy);
                 selectedCharacter = enemy;
                 isFovEnabled = true;
             }
         }
 
-        if (selectedCharacter && isFovEnabled) {
-            std::vector<Cell*>& lastVisitedCells = selectedCharacter->getLastVisitedCells();
-            if (lastVisitedCells.size() > 0) {
-                MapManager::instance().hightlightEnemyFov(selectedCharacter, true, lastVisitedCells.at(0)->getX(), lastVisitedCells.at(0)->getY());
-            }
-            MapManager::instance().hightlightEnemyFov(selectedCharacter);
-        }
+        // if (selectedCharacter && isFovEnabled) {
+        //     std::vector<Cell*>& lastVisitedCells = selectedCharacter->getLastVisitedCells();
+        //     if (lastVisitedCells.size() > 0) {
+        //         MapManager::instance().hightlightEnemyFov(selectedCharacter, true, lastVisitedCells.at(0)->getX(), lastVisitedCells.at(0)->getY());
+        //     }
+        //     MapManager::instance().hightlightEnemyFov(selectedCharacter);
+        // }
     }
 
     // Draw a line
@@ -106,6 +108,7 @@ void DebugMenu::render(const SDL_Rect& rect) {
         renderWithoutColor(rect, currentY, "Misc:", std::to_string(decision.misc));
         renderWithoutColor(rect, currentY, "Blocked:", decision.blocked ? "true" : "false");
         renderWithoutColor(rect, currentY, "Action:", actionTypeToString(selectedCharacter->getActionType()));
+        renderWithoutColor(rect, currentY, "Is in Combat:", selectedCharacter->isCharacterInCombat() ? "true" : "false");
     }
     
 }

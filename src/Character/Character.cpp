@@ -48,7 +48,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     poisonResistance(0.0f), metalResistance(0.0f), soundResistance(0.0f),
     illusionResistance(0.0f),
     // IA
-    ownCombatStrength(0), ownPerceivedCombatStrength(0),
+    ownCombatStrength(0), ownPerceivedCombatStrength(0), isInCombat(false), target(nullptr),
     // Desire
     desires(desires), disgusts(disgusts),
     // Spells
@@ -429,6 +429,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
             isAttacking = true;
         }
         this->hasAttack = true;
+        this->isInCombat = true;
         if (cell.getCharacter() != nullptr) {
             Character* target = cell.getCharacter();
             Logger::instance().info(this->name + " attacks " + target->name + ".");
@@ -509,6 +510,7 @@ void Character::defend(Cell& cell, Character* attacker, std::vector<Cell*>& cell
         return;
     }
 
+    this->isInCombat = true;
     // Check the attacker weapon
     Item* weapon = attacker->getWeapon();
     if (weapon) {
@@ -1488,6 +1490,7 @@ int Character::getOwnCombatStrength() const { return ownCombatStrength; }
 int Character::getOwnPerceivedCombatStrength() const { return ownPerceivedCombatStrength; }
 void Character::addToOwnPerceivedCombatStrength(int strengthToAdd) { ownPerceivedCombatStrength+=strengthToAdd; }
 
+bool Character::isCharacterInCombat() const { return isInCombat; }
 //=========
 // Desires
 //=========
