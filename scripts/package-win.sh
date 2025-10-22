@@ -54,6 +54,7 @@ EOF
 
 # Create ZIP
 cd build-win
+rm -rf ../RLTower-Windows.zip
 zip -r ../RLTower-Windows.zip .
 cd ..
 

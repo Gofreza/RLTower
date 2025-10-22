@@ -88,6 +88,7 @@ protected:
     bool exhausted;
     bool hasMoved;
     bool hasAttack;
+    short manaRegenerationCounter;
 
     // Stats
     int phyDamage;

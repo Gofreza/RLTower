@@ -1,5 +1,8 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 #include "Manager/Config/Config.h"
 #include "Manager/UI/UiManager.h"
@@ -17,7 +20,31 @@
 
 static std::string LANGUAGE = "en";
 
+// Try simple locations for the VERSION file (project root or parent of build)
+static std::string readVersion() {
+    const char* candidates[] = {"VERSION", "../VERSION", "./VERSION"};
+    for (const char* p : candidates) {
+        std::ifstream f(p);
+        if (f) {
+            std::string line;
+            if (std::getline(f, line)) {
+                // trim
+                size_t start = line.find_first_not_of(" \t\r\n");
+                size_t end = line.find_last_not_of(" \t\r\n");
+                if (start != std::string::npos && end != std::string::npos)
+                    return line.substr(start, end - start + 1);
+                return line;
+            }
+        }
+    }
+    return std::string("unknown");
+}
+
 int main(int argc, char* argv[]) {
+    // Print runtime version read from VERSION file (if present)
+    std::string gameVersion = readVersion();
+    std::cout << "RLTower version: " << gameVersion << std::endl;
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;

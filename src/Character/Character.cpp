@@ -35,7 +35,7 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     combatMode(false), spellMode(false), cacMode(false),
     // Progress
     characterProgress(new CharacterProgress(this)), hasWaited(false), overweight(false), hasDodge(false), hasCastSpell(false), hasFoundAncientSite(false), hasHealDamage(false),
-    fatigue(0), exhausted(false), hasMoved(false), hasAttack(false),
+    fatigue(0), exhausted(false), hasMoved(false), hasAttack(false), manaRegenerationCounter(0),
     // Stats
     phyDamage(phyDamage), magDamage(magDamage), baseRange(1), range(1),
     strength(strength), dexterity(dexterity), intelligence(intelligence), wisdom(wisdom), constitution(constitution), luck(luck),
@@ -251,6 +251,18 @@ UpdateState Character::update() {
     state.hasPlayed = true;
     state.actionType = ActionType::NONE;
     state.isAI = false;
+
+    // Mana regeneration when waiting
+    if (hasWaited) {
+        this->manaRegenerationCounter++;
+        if (this->manaRegenerationCounter >= 3) {
+            this->mana += 1;
+            if (this->mana > this->maxMana) {
+                this->mana = this->maxMana;
+            }
+            this->manaRegenerationCounter = 0;
+        }
+    }
 
     return state;
 }
