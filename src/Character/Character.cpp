@@ -31,6 +31,8 @@ Character::Character(const std::string& name, SDL_Color color, GroupType group, 
     baseFov(fov), fov(fov),
     // Speed
     baseSpeed(speed), speed(0), 
+    // Combat
+    combatMode(false), spellMode(false), cacMode(false),
     // Progress
     characterProgress(new CharacterProgress(this)), hasWaited(false), overweight(false), hasDodge(false), hasCastSpell(false), hasFoundAncientSite(false), hasHealDamage(false),
     fatigue(0), exhausted(false), hasMoved(false), hasAttack(false),
@@ -440,52 +442,55 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
             }
         } else {
             // Attack the cell
-            if (this->getCurrentActiveSpell() == nullptr) {
-                // Check for effects on non magic weapon
-                if (weapon) {
-                    Weapon* w = static_cast<Weapon*>(weapon);
+            if (weapon) {
+                Weapon* w = static_cast<Weapon*>(weapon);
+                if (this->getSpellMode()) {
+                    if (this->getCurrentActiveSpell() != nullptr) {
+                        std::vector<std::pair<int, int>> affectedCells;
+                        MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), this->getCurrentActiveSpell()->getRadius(), affectedCells);
+                        // Remove mana only once
+                        this->mana -= this->getCurrentActiveSpell()->getConsumption();
+                        for (const auto& affectedCell : affectedCells) {
+                            // Attack all the cells
+                            int x = affectedCell.first;
+                            int y = affectedCell.second;
+                            Cell& targetCell = MapManager::instance().getCell(x, y); 
+                            // Add effects to targetedCells
+                            for (Effect* effect : this->getCurrentActiveSpell()->getEffects()) {
+                                if (effect->getEffectType() != EffectType::Burst) {
+                                    targetCell.addEffect(effect->clone());
+                                }
+                            }             
+                            cellsAffectedByEffects.push_back(&targetCell);  
+                            // Check for character in the cell
+                            Character* targetCharacter = targetCell.getCharacter();
+                            if (targetCharacter != nullptr) {
+                                // Add effects to character
+                                for (Effect* effect : this->getCurrentActiveSpell()->getEffects()) {
+                                    if (effect->getEffectType() != EffectType::Burst) {
+                                        targetCharacter->addEffect(effect->clone());
+                                    }
+                                }
+
+                                // Damage calculation
+                                int distance = Utils::distance(cell.getX(), cell.getY(), targetCharacter->getXPosition(), targetCharacter->getYPosition());
+                                int damage = this->magDamage + this->getCurrentActiveSpell()->getDamage() - targetCharacter->magicalDefense - distance;
+                                targetCharacter->hp -= damage < 0 ? 0 : damage;
+                            }
+                        }
+                    }
+                } else if (this->getCacMode()) {
                     if (w->getEffects().size() > 0) {
                         for (Effect* effect : w->getEffects()) {
                             cell.addEffect(effect->clone());
                         }
                     }
                     cellsAffectedByEffects.push_back(&cell);
+                    this->stamina -= w->getWeight();
                 }
-                this->stamina -= weapon ? weapon->getWeight() : 1;
-                return;
-            }
-    
-            std::vector<std::pair<int, int>> affectedCells;
-            MapManager::instance().getAffectedCells(cell.getX(), cell.getY(), this->getCurrentActiveSpell()->getRadius(), affectedCells);
-            // Remove mana only once
-            this->mana -= this->getCurrentActiveSpell()->getConsumption();
-            for (const auto& affectedCell : affectedCells) {
-                // Attack all the cells
-                int x = affectedCell.first;
-                int y = affectedCell.second;
-                Cell& targetCell = MapManager::instance().getCell(x, y); 
-                // Add effects to targetedCells
-                for (Effect* effect : this->getCurrentActiveSpell()->getEffects()) {
-                    if (effect->getEffectType() != EffectType::Burst) {
-                        targetCell.addEffect(effect->clone());
-                    }
-                }             
-                cellsAffectedByEffects.push_back(&targetCell);  
-                // Check for character in the cell
-                Character* targetCharacter = targetCell.getCharacter();
-                if (targetCharacter != nullptr) {
-                    // Add effects to character
-                    for (Effect* effect : this->getCurrentActiveSpell()->getEffects()) {
-                        if (effect->getEffectType() != EffectType::Burst) {
-                            targetCharacter->addEffect(effect->clone());
-                        }
-                    }
-
-                    // Damage calculation
-                    int distance = Utils::distance(cell.getX(), cell.getY(), targetCharacter->getXPosition(), targetCharacter->getYPosition());
-                    int damage = this->magDamage + this->getCurrentActiveSpell()->getDamage() - targetCharacter->magicalDefense - distance;
-                    targetCharacter->hp -= damage < 0 ? 0 : damage;
-                }
+            } else {
+                // Attaque à la main
+                this->stamina -= 1;
             }
         }
         
@@ -1338,6 +1343,15 @@ void Character::setExperience(int newExperience) { experience = newExperience; }
 
 int Character::getSpeed() const { return speed; }
 // void Character::setSpeed(int newSpeed) { speed = newSpeed; }
+
+bool Character::getCombatMode() {return combatMode;}
+void Character::setCombatMode(bool combatMode) {this->combatMode = combatMode;}
+
+bool Character::getSpellMode() {return spellMode;}
+void Character::setSpellMode(bool spellMode) {this->spellMode = spellMode;}
+
+bool Character::getCacMode() {return cacMode;}
+void Character::setCacMode(bool cacMode) {this->cacMode = cacMode;}
 
 bool Character::isCharacterAuraUser() const { return isAuraUser; }
 void Character::setCharacterAuraUser(bool auraUser) { isAuraUser = auraUser; }

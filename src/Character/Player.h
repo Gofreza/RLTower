@@ -13,7 +13,7 @@ public:
             std::vector<int> desires, std::vector<int> disgusts);
     ~Player();
 
-   UpdateState update() override;
+    UpdateState update() override;
     void move(int x, int y) override;
 
     void defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects) override;

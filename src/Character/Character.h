@@ -70,6 +70,11 @@ protected:
     int baseSpeed;
     int speed;
 
+    // Combat
+    bool combatMode;
+    bool spellMode;
+    bool cacMode;
+
     // Progress
     CharacterProgress* characterProgress;
     bool hasWaited;
@@ -252,6 +257,15 @@ public:
     void setExperience(int newExperience);
     int getSpeed() const;
     // void setSpeed(int newSpeed); // Use bonus
+
+    bool getCombatMode();
+    void setCombatMode(bool combatMode);
+
+    bool getSpellMode();
+    void setSpellMode(bool spellMode);
+
+    bool getCacMode();
+    void setCacMode(bool cacMode);
 
     bool isCharacterAuraUser() const;
     void setCharacterAuraUser(bool isAuraUser);

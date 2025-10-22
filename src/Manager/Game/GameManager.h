@@ -53,10 +53,6 @@ private:
     size_t numberOfCharactersThatPlayedThisTurn;
     size_t currentCharacterIndex;
 
-    bool combatMode;
-    bool spellMode;
-    bool cacMode;
-
     void playTurn();
 
     GameManager();

@@ -5,8 +5,7 @@
 
 GameManager::GameManager():   
     player(CharactersManager::instance().getPlayer()),
-    turn(0), numberOfCharactersThatPlayedThisTurn(0),
-    combatMode(false), spellMode(false), cacMode(false)
+    turn(0), numberOfCharactersThatPlayedThisTurn(0)
 {
 }
 
@@ -120,7 +119,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     int player_y = player->getYPosition();
 
     int player_attack_range = player->getRange();
-    if (spellMode && player->getCurrentActiveSpell() != nullptr) {
+    if (player->getSpellMode() && player->getCurrentActiveSpell() != nullptr) {
         player_attack_range = player->getCurrentActiveSpell()->getRange();
     } 
 
@@ -188,7 +187,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
 
                     // Highlight cells in combat mode
                     // TODO: Maybe switch with something else
-                    if (combatMode) {
+                    if (player->getCombatMode()) {
                         int dx = map_x - player_x;
                         int dy = map_y - player_y;
                         int distance = sqrt(dx * dx + dy * dy);
@@ -215,9 +214,9 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                 // ============
                 
                 if (Utils::isMouseHovering(dest, rect.x, rect.y)) {
-                    if (combatMode) {
+                    if (player->getCombatMode()) {
                         SDL_Color color = Utils::borderColor;
-                        if (spellMode) {
+                        if (player->getSpellMode()) {
                             color = Utils::magCombatColor;
                         } else {
                             color = Utils::phyCombatColor;
@@ -246,7 +245,7 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
                     }
 
                     // Attack
-                    if (combatMode) {
+                    if (player->getCombatMode()) {
                         // Add 0.5 to the range to allow diagonal attacks
                         float diag = player_attack_range + 0.5;
                         if (InputManager::instance().isLeftClicked() 
@@ -316,36 +315,36 @@ void GameManager::moveCharacter(Character* character, int dx, int dy) {
 }
 
 void GameManager::toggleCombatMode() {
-    if (spellMode) {
-        spellMode = false;
-        cacMode = true;
+    if (player->getSpellMode()) {
+        player->setSpellMode(false);
+        player->setCacMode(true);
     } else {
-        if (cacMode) {
-            cacMode = false;
-            combatMode = false;
+        if (player->getCacMode()) {
+            player->setCacMode(false);
+            player->setCombatMode(false);
         } else {
-            combatMode = true;
+            player->setCombatMode(true);
             Item* w = player->getWeapon();
             if (w) {
                 Weapon* weapon = static_cast<Weapon*>(w);
                 WeaponType weaponType = weapon->getWeaponType();
                 if ((weaponType == WeaponType::Staff && player->getCurrentActiveSpell() != nullptr) ||
                     (player->getCurrentActiveSpell() != nullptr && player->getCurrentActiveSpell()->getSpellEnergyType() == SpellEnergy::Energy)) {
-                    spellMode = true;
+                    player->setSpellMode(true);
                 } else {
-                    cacMode = true;
+                    player->setCacMode(true);
                 }
             } else {
-                cacMode = true;
+                player->setCacMode(true);
             }
         }   
     }    
 }
 
 void GameManager::stopCombatMode() {
-    combatMode = false;
-    spellMode = false;
-    cacMode = false;
+    player->setCombatMode(false);
+    player->setSpellMode(false);
+    player->setCacMode(false);
 }
 
 void GameManager::addCharacterToDefferedDeletions(Character* character) {

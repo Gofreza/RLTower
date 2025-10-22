@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     // Config
     //=========
     Config& config = Config::instance();
-    config.setDebugMode(false);
+    config.setDebugMode(true);
     config.setShowFps(true);
     config.setArenaMode(false);
 
