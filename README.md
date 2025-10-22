@@ -26,14 +26,18 @@ This is the first step of this project. I aim to build a working version of the 
   - Git: for version control
   - IDE: Visual Studio Code
 
+## ⚙ How to run
+
+On Windows, just download the release and run the .exe. For macOs you can try to build the project yourself first (you just have to download the dependencies 😉, I'll do a release for it one day 😅) and for Linux I didn't try so good luck 👍.
+
 ## 🖥️ How to Build
 
-To build the project, you have a **CMakeLists.txt** file. You just have to update the path to the given dependencies. <br>
+To build the project (for macOs), you have a **CMakeLists.txt** file. You just have to update the path to the given dependencies. <br>
 Then just, inside a build folder:
 ```
 cmake ..
 make
-./game
+./RLTower
 ```
 Or if you're in VSCode, you can use the CMakeTools extension.
 
