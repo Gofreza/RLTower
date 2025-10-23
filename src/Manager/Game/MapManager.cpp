@@ -155,56 +155,108 @@ void MapManager::addEnemies(std::vector<Enemy*> enemies)
     if (rooms.empty()) {
         return;
     }
-    // int e = 0;
-    Player* player = CharactersManager::instance().getPlayer();
+
+    const int minGroupSize = 3;
+    const int maxGroupSize = 5;
+    const int spreadRadius = 3;
+    
+    std::unordered_map<GroupType, std::vector<Enemy*>> groupedEnemies;
     for (auto& enemy : enemies) {
-        
-        // if (e == 0) {
-        //     // Center one
-        //     int x = player->getXPosition();
-        //     int y = player->getYPosition() - 1;
-        //     ascii_map[y][x].addCharacter(enemy);
-        //     ascii_map[y][x].currentColor = enemy->getColor();
-        //     enemy->setXPosition(x);
-        //     enemy->setYPosition(y);
-        // } else if (e == 1) {
-        //     // Left one
-        //     int x = player->getXPosition() - 1;
-        //     int y = player->getYPosition() - 1;
-        //     ascii_map[y][x].addCharacter(enemy);
-        //     ascii_map[y][x].currentColor = enemy->getColor();
-        //     enemy->setXPosition(x);
-        //     enemy->setYPosition(y);
-        // } else if (e == 2) {
-        //     // Right one
-        //     int x = player->getXPosition() + 1;
-        //     int y = player->getYPosition();
-        //     ascii_map[y][x].addCharacter(enemy);
-        //     ascii_map[y][x].currentColor = enemy->getColor();
-        //     enemy->setXPosition(x);
-        //     enemy->setYPosition(y);
-        // } else {
-        //     // Up one
-        //     int x = player->getXPosition() + 1;
-        //     int y = player->getYPosition() - 2;
-        //     ascii_map[y][x].addCharacter(enemy);
-        //     ascii_map[y][x].currentColor = enemy->getColor();
-        //     enemy->setXPosition(x);
-        //     enemy->setYPosition(y);
-        // }
-        // e++;
-        // Get random number
-        int random = RandomUtils::getRandomNumber(0, rooms.size() - 1);
-        // Pick a random room
-        const Room& room = rooms[random];
-        // Place randomly the enemy in the room
-        int x = room.x + rand() % room.w;
-        int y = room.y + rand() % room.h;
-        ascii_map[y][x].addCharacter(enemy);
-        ascii_map[y][x].currentColor = enemy->getColor();
-        enemy->setXPosition(x);
-        enemy->setYPosition(y);
+        groupedEnemies[enemy->getGroupType()].push_back(enemy);
     }
+
+    for (auto& [type, vector] : groupedEnemies) {
+        if (vector.empty()) {
+            continue;
+        }
+
+        int index = 0;
+        while (index < vector.size()) {
+            // Pick a random room for this subgroup
+            const Room& room = rooms[RandomUtils::getRandomNumber(0, rooms.size() - 1)];
+
+            // Random center in the room
+            int centerX = room.x + RandomUtils::getRandomNumber(1, room.w);
+            int centerY = room.y + RandomUtils::getRandomNumber(1, room.h);
+
+            // Decide how many enemies to spawn in this subgroup
+            int groupSize = RandomUtils::getRandomNumber(minGroupSize, maxGroupSize);
+            groupSize = std::min(groupSize, static_cast<int>(vector.size() - index));
+
+            // Place enemies near that center
+            for (int i = 0; i < groupSize && index < vector.size(); ++i) {
+                Enemy* enemy = vector[index++];
+
+                int offsetX = RandomUtils::getRandomNumber(-spreadRadius, spreadRadius);
+                int offsetY = RandomUtils::getRandomNumber(-spreadRadius, spreadRadius);
+
+                int x = std::clamp(centerX + offsetX, room.x, room.x + room.w - 1);
+                int y = std::clamp(centerY + offsetY, room.y, room.y + room.h - 1);
+
+                // Skip blocked cells
+                if (!ascii_map[y][x].isWalkable || ascii_map[y][x].hasCharacter()) {
+                    continue;
+                }
+
+                // Place enemy
+                ascii_map[y][x].addCharacter(enemy);
+                ascii_map[y][x].currentColor = enemy->getColor();
+                enemy->setXPosition(x);
+                enemy->setYPosition(y);
+            }
+        }
+    }
+
+    // // int e = 0;
+    // Player* player = CharactersManager::instance().getPlayer();
+    // for (auto& enemy : enemies) {
+        
+    //     // if (e == 0) {
+    //     //     // Center one
+    //     //     int x = player->getXPosition();
+    //     //     int y = player->getYPosition() - 1;
+    //     //     ascii_map[y][x].addCharacter(enemy);
+    //     //     ascii_map[y][x].currentColor = enemy->getColor();
+    //     //     enemy->setXPosition(x);
+    //     //     enemy->setYPosition(y);
+    //     // } else if (e == 1) {
+    //     //     // Left one
+    //     //     int x = player->getXPosition() - 1;
+    //     //     int y = player->getYPosition() - 1;
+    //     //     ascii_map[y][x].addCharacter(enemy);
+    //     //     ascii_map[y][x].currentColor = enemy->getColor();
+    //     //     enemy->setXPosition(x);
+    //     //     enemy->setYPosition(y);
+    //     // } else if (e == 2) {
+    //     //     // Right one
+    //     //     int x = player->getXPosition() + 1;
+    //     //     int y = player->getYPosition();
+    //     //     ascii_map[y][x].addCharacter(enemy);
+    //     //     ascii_map[y][x].currentColor = enemy->getColor();
+    //     //     enemy->setXPosition(x);
+    //     //     enemy->setYPosition(y);
+    //     // } else {
+    //     //     // Up one
+    //     //     int x = player->getXPosition() + 1;
+    //     //     int y = player->getYPosition() - 2;
+    //     //     ascii_map[y][x].addCharacter(enemy);
+    //     //     ascii_map[y][x].currentColor = enemy->getColor();
+    //     //     enemy->setXPosition(x);
+    //     //     enemy->setYPosition(y);
+    //     // }
+    //     // e++;
+    //     // Get random number
+    //     int random = RandomUtils::getRandomNumber(0, rooms.size() - 1);
+    //     // Pick a random room
+    //     const Room& room = rooms[random];
+    //     // Place randomly the enemy in the room
+    //     int x = room.x + rand() % room.w;
+    //     int y = room.y + rand() % room.h;
+    //     ascii_map[y][x].addCharacter(enemy);
+    //     ascii_map[y][x].currentColor = enemy->getColor();
+    //     enemy->setXPosition(x);
+    //     enemy->setYPosition(y);
+    // }
 }
 
 void MapManager::moveCharacterInMap(Character* character, int dx, int dy)
@@ -223,10 +275,30 @@ void MapManager::moveCharacterInMap(Character* character, int dx, int dy)
 
 bool MapManager::canCharacterMove(Character* character, int dx, int dy)
 {
+    // 1️⃣ Null pointer check
+    if (character == nullptr)
+    {
+        // Optional: log a warning instead of crashing
+        // std::cerr << "[WARN] canCharacterMove called with nullptr!\n";
+        return false;
+    }
+
     int x = character->getXPosition();
     int y = character->getYPosition();
 
-    return ascii_map[y + dy][x + dx].isWalkable && !ascii_map[y + dy][x + dx].hasCharacter();
+    // 2️⃣ Bounds check
+    int newX = x + dx;
+    int newY = y + dy;
+
+    if (newY < 0 || newY >= ascii_map.size() || newX < 0 || newX >= ascii_map[newY].size())
+    {
+        // Out of bounds — can’t move
+        return false;
+    }
+
+    // 3️⃣ Tile safety check
+    const auto& tile = ascii_map[newY][newX];
+    return tile.isWalkable && !tile.hasCharacter();
 }
 
 void MapManager::highlightEnemy(Enemy* enemy, bool reset)

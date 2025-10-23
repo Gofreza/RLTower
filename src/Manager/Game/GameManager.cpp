@@ -17,7 +17,7 @@ void GameManager::initialize()
     MapManager::instance().addPlayer(player);
 
     // Add enemies
-    EnemyManager::instance().initialize(this->enemies, 1, 10);
+    EnemyManager::instance().initialize(this->enemies, 1, 100);
     
     // Put enemies in the map
     MapManager::instance().addEnemies(this->enemies);
@@ -27,7 +27,11 @@ void GameManager::initialize()
 
 void GameManager::update()
 {   
-    playTurn();
+    int logicStepsPerFrame = std::min((int)this->enemies.size() + 1, 144);
+    for (int i = 0; i < logicStepsPerFrame; ++i)
+    {
+        playTurn();
+    }
 
     // TODO: When changing floor, clear the deferred deletions vector
 }
@@ -68,7 +72,6 @@ void GameManager::playTurn() {
 
     // Check if character is dead
     if (character->getHp() <= 0) {
-        std::cout << character->getName() << " is dead" << std::endl;
         // Remove the character from the map
         MapManager::instance().removeCharacter(character->getXPosition(), character->getYPosition());
         
@@ -113,7 +116,9 @@ void GameManager::renderMap(SDL_Renderer* renderer, const SDL_Rect& rect, SDL_Te
     const int map_height = ascii_map.size();
 
     // Calculate the field of view here to update the visibility if change in fov happened
-    MapManager::instance().calculateFov(player);
+    if (player->hasCharacterMoved()) {
+        MapManager::instance().calculateFov(player);
+    }
 
     int player_x = player->getXPosition(); 
     int player_y = player->getYPosition();

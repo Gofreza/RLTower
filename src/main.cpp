@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     Config& config = Config::instance();
     config.setDebugMode(true);
     config.setShowFps(true);
-    config.setArenaMode(false);
+    config.setArenaMode(true);
 
     //=========
     // Player

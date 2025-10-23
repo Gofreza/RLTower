@@ -421,7 +421,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
             Weapon* w = static_cast<Weapon*>(weapon);
             if (is_weapon_magical(w->getWeaponType()) && this->getCurrentActiveSpell() != nullptr) {
                 if (this->mana < this->getCurrentActiveSpell()->getConsumption()) {
-                    Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
+                    // Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
                     return;
                 }
 
@@ -430,14 +430,14 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
                 isAttacking = sType == SpellType::Attack;
             } else {
                 if (this->stamina < w->getWeight()) {
-                    Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                    // Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
                     return;
                 }
                 isAttacking = true;
             }
         } else {
             if (this->stamina < 1) {
-                Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                // Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
                 return;
             }
             isAttacking = true;
@@ -446,7 +446,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
         this->isInCombat = true;
         if (cell.getCharacter() != nullptr) {
             Character* target = cell.getCharacter();
-            Logger::instance().info(this->name + " attacks " + target->name + ".");
+            // Logger::instance().info(this->name + " attacks " + target->name + ".");
             if (isAttacking) {
                 target->defend(cell, this, cellsAffectedByEffects);
             } else {
@@ -510,19 +510,19 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
 }
 
 void Character::defend(Cell& cell, Character* attacker, std::vector<Cell*>& cellsAffectedByEffects) {
-    Logger::instance().info(this->name + " defends against " + attacker->name + ".");
+    // Logger::instance().info(this->name + " defends against " + attacker->name + ".");
     // Before applying the damage, check if the attacker can parry, if can't try dodging
     Item* shield = this->getShield();
     if (shield) {
         Shield* s = static_cast<Shield*>(shield);
         if (s->block()) {
-            Logger::instance().info(this->name + " parries the attack.");
+            // Logger::instance().info(this->name + " parries the attack.");
             return;
         }
     }
     // Try dodging
     if (this->canDodge()) {
-        Logger::instance().info(this->name + " dodges the attack.");
+        // Logger::instance().info(this->name + " dodges the attack.");
         this->hasDodge = true;
         return;
     }
@@ -643,14 +643,14 @@ bool Character::canAttack() {
         Weapon* w = static_cast<Weapon*>(weapon);
         if (is_weapon_magical(w->getWeaponType()) && this->getCurrentActiveSpell() != nullptr) {
             if (this->mana < this->getCurrentActiveSpell()->getConsumption()) {
-                Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
+                // Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
                 return false;
             }
             // Can cast spell
             return true;
         } else {
             if (this->stamina < w->getWeight()) {
-                Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                // Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
                 return false;
             }
             // Can attack
@@ -658,7 +658,7 @@ bool Character::canAttack() {
         }
     } else {
         if (this->stamina < 1) {
-            Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+            // Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
             return false;
         }
         // Can attack with fists
