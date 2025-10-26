@@ -369,6 +369,7 @@ public:
     int getOwnPerceivedCombatStrength() const;
     void addToOwnPerceivedCombatStrength(int strengthToAdd);
     bool isCharacterInCombat() const;
+    const Character* getTarget() const;
 
     void setDesire(std::vector<int> newDesire);
     std::vector<int> getDesire() const;

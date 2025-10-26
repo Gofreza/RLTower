@@ -138,7 +138,7 @@ void EnemyManager::initialize(std::vector<Enemy*>& enemiesVector, int towerLevel
     // Add ennemies based on the tower level
     while(numberOfEnemies > 0) {
         // Get a random enemy
-        int randomEnemy = rand() % enemyCount;
+        int randomEnemy = RandomUtils::getRandomNumber(0, enemyCount - 1);
         Enemy* enemy = getEnemy(randomEnemy);
         enemiesVector.push_back(enemy);
         numberOfEnemies -= enemy->getValue();

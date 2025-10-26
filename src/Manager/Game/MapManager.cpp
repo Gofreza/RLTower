@@ -156,7 +156,7 @@ void MapManager::addEnemies(std::vector<Enemy*> enemies)
         return;
     }
 
-    const int minGroupSize = 3;
+    const int minGroupSize = 1;
     const int maxGroupSize = 5;
     const int spreadRadius = 3;
     

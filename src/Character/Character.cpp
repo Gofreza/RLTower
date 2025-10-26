@@ -96,7 +96,7 @@ Character::Character(const Character& other)
     poisonResistance(other.poisonResistance), metalResistance(other.metalResistance), soundResistance(other.soundResistance),
     illusionResistance(other.illusionResistance),
     // IA
-    ownCombatStrength(other.ownCombatStrength), ownPerceivedCombatStrength(other.ownPerceivedCombatStrength),
+    ownCombatStrength(other.ownCombatStrength), ownPerceivedCombatStrength(other.ownPerceivedCombatStrength), isInCombat(other.isInCombat), target(other.target),
     // Desire
     desires(other.desires), disgusts(other.disgusts),
     // Spells
@@ -421,7 +421,7 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
             Weapon* w = static_cast<Weapon*>(weapon);
             if (is_weapon_magical(w->getWeaponType()) && this->getCurrentActiveSpell() != nullptr) {
                 if (this->mana < this->getCurrentActiveSpell()->getConsumption()) {
-                    // Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
+                    Logger::instance().info(this->name + " doesn't have enough mana to cast the spell.");
                     return;
                 }
 
@@ -430,14 +430,14 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
                 isAttacking = sType == SpellType::Attack;
             } else {
                 if (this->stamina < w->getWeight()) {
-                    // Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                    Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
                     return;
                 }
                 isAttacking = true;
             }
         } else {
             if (this->stamina < 1) {
-                // Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
+                Logger::instance().info(this->name + " doesn't have enough stamina to attack.");
                 return;
             }
             isAttacking = true;
@@ -446,7 +446,8 @@ void Character::attack(Cell& cell, std::vector<Cell*>& cellsAffectedByEffects) {
         this->isInCombat = true;
         if (cell.getCharacter() != nullptr) {
             Character* target = cell.getCharacter();
-            // Logger::instance().info(this->name + " attacks " + target->name + ".");
+            this->target = target;
+            Logger::instance().info(this->name + " attacks " + target->name + ".");
             if (isAttacking) {
                 target->defend(cell, this, cellsAffectedByEffects);
             } else {
@@ -528,6 +529,7 @@ void Character::defend(Cell& cell, Character* attacker, std::vector<Cell*>& cell
     }
 
     this->isInCombat = true;
+    this->target = attacker;
     // Check the attacker weapon
     Item* weapon = attacker->getWeapon();
     if (weapon) {
@@ -1517,6 +1519,8 @@ int Character::getOwnPerceivedCombatStrength() const { return ownPerceivedCombat
 void Character::addToOwnPerceivedCombatStrength(int strengthToAdd) { ownPerceivedCombatStrength+=strengthToAdd; }
 
 bool Character::isCharacterInCombat() const { return isInCombat; }
+
+const Character* Character::getTarget() const { return target; }
 //=========
 // Desires
 //=========

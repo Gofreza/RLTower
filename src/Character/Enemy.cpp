@@ -43,11 +43,117 @@ UpdateState Enemy::update()
     this->hasAttack = false;
     this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
 
-    // TODO: first check if we're in a fight
+    if (this->target && this->target->getHp() <= 0) {
+        this->target = nullptr;
+        this->isInCombat = false;
+    }
+
     // If we're in a fight, don't bother checking our surroundings we have to fight
-    // But if we have a range weapon, we can attack from a distance so we still have to move
+    // But if we have a range weapon, we can attack from a distance so we still have to move to engage
     if (this->isInCombat && this->target) {
         // If we are in combat and we have a target, we need to attack or move
+        Character* targetCharacter = this->target;
+
+        int targetX = targetCharacter->getXPosition();
+        int targetY = targetCharacter->getYPosition();
+        int distanceToTarget = std::max(std::abs(targetX - this->getXPosition()), 
+                                        std::abs(targetY - this->getYPosition()));
+        
+        // Check if we can attack this turn
+        if (!this->canAttack()) {
+            // Can't attack yet, just wait
+            this->actionType = ActionType::WAIT;
+            this->hasWaited = true;
+
+            if (!overweight && this->stamina < this->maxStamina) {
+                this->stamina += 1;
+            } else if (overweight && this->stamina > 0) {
+                this->stamina -= 1;
+            }            
+            
+            UpdateState state;
+            state.hasPlayed = true;
+            state.target = nullptr;
+            state.actionType = this->actionType;
+            state.isAI = true;
+            return state;
+        }
+        
+        // Check weapon range
+        int attackRange = 1; // Default melee range
+        if (this->getWeapon() != nullptr) {
+            Weapon* weapon = static_cast<Weapon*>(this->getWeapon());
+            attackRange = weapon->getLength();
+        }
+        
+        // If target is in range
+        if (distanceToTarget <= attackRange) {
+            this->actionType = ActionType::ATTACK;
+            this->hasAttack = true;
+            
+            UpdateState state;
+            state.hasPlayed = false;
+            state.target = &MapManager::instance().getCell(targetX, targetY);
+            state.actionType = this->actionType;
+            state.isAI = true;
+            return state;
+        }
+        
+        // Target is out of range, move towards it
+        int dx = 0, dy = 0;
+        if (targetX > this->getXPosition()) dx = 1;
+        else if (targetX < this->getXPosition()) dx = -1;
+        
+        if (targetY > this->getYPosition()) dy = 1;
+        else if (targetY < this->getYPosition()) dy = -1;
+        
+        // Try to move towards target
+        if (MapManager::instance().canCharacterMove(this, dx, dy)) {
+            this->move(dx, dy);
+            MapManager::instance().moveCharacterInMap(this, dx, dy);
+            this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
+            this->hasMoved = true;
+            this->actionType = ActionType::MOVE;
+        } else {
+            // Can't move directly, try alternate paths
+            if (dx != 0 && MapManager::instance().canCharacterMove(this, dx, 0)) {
+                this->move(dx, 0);
+                MapManager::instance().moveCharacterInMap(this, dx, 0);
+                this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
+                this->hasMoved = true;
+                this->actionType = ActionType::MOVE;
+            } else if (dy != 0 && MapManager::instance().canCharacterMove(this, 0, dy)) {
+                this->move(0, dy);
+                MapManager::instance().moveCharacterInMap(this, 0, dy);
+                this->addLastVisitedCell(&MapManager::instance().getCell(this->getXPosition(), this->getYPosition()));
+                this->hasMoved = true;
+                this->actionType = ActionType::MOVE;
+            } else {
+                // Completely blocked, wait
+                // Logger::instance().info(this->name + " is blocked.");   
+                this->actionType = ActionType::WAIT;
+                this->hasWaited = true;
+            }
+        }
+        
+        // Update stamina
+        if (hasMoved || hasWaited) {
+            if (!overweight && this->stamina < this->maxStamina) {
+                this->stamina += 1;
+            } else if (overweight && this->stamina > 0) {
+                this->stamina -= 1;
+            }
+        }
+        
+        Character::updateProgress();
+        
+        UpdateState state;
+        state.hasPlayed = true;
+        state.target = nullptr;
+        state.actionType = this->actionType;
+        state.isAI = true;
+        return state;
+
     }
 
     // Reset perceived combat strength
@@ -135,7 +241,7 @@ UpdateState Enemy::update()
     Cell* target = nullptr;
     if (this->actionType == ActionType::MOVE) {
         // Move character
-        this->isInCombat = false; // Reset combat state
+        // this->isInCombat = false; // Reset combat state // TODO do another check to get out of combat mode
         int dx = offset.first;
         int dy = offset.second;
         if (MapManager::instance().canCharacterMove(this, dx, dy)) {
@@ -180,15 +286,28 @@ UpdateState Enemy::update()
                         isTryingToAttack = true;
                     } else {
                         // Out of reach, move to engage
-                        // TODO: If the direction of movement is blocked, try pathfinding
-                        // Move character
-                        int dx = offset.first;
-                        int dy = offset.second;
-                        if (MapManager::instance().canCharacterMove(this, dx, dy)) {
-                            this->move(dx, dy);
-                            MapManager::instance().moveCharacterInMap(this, dx, dy);
-                            this->hasMoved = true;
+                        // Direct path blocked, try pathfinding
+                        // Create a lambda to check if moves are valid
+                        auto canMove = [this](int fromX, int fromY, int dx, int dy) -> bool {
+                            return MapManager::instance().canCharacterMove(this, dx, dy);
+                        };
+                        
+                        std::pair<int, int> pathStep = Pathfinding::findNextStep(
+                            this->getXPosition(), this->getYPosition(),
+                            target->getX(), target->getY(),
+                            canMove,
+                            15  // maxSearchDistance
+                        );
+                        
+                        if (pathStep.first != 0 || pathStep.second != 0) {
+                            // Found a path, take the next step
+                            if (MapManager::instance().canCharacterMove(this, pathStep.first, pathStep.second)) {
+                                this->move(pathStep.first, pathStep.second);
+                                MapManager::instance().moveCharacterInMap(this, pathStep.first, pathStep.second);
+                                this->hasMoved = true;
+                            }
                         }
+                        // If pathfinding fails, hasMoved remains false (enemy will wait)
                     }
                 } else {
                     if (targetDistance <= 1) {
@@ -196,15 +315,28 @@ UpdateState Enemy::update()
                         isTryingToAttack = true;
                     } else {
                         // Out of reach, move to engage
-                        // TODO: If the direction of movement is blocked, try pathfinding
-                        // Move character
-                        int dx = offset.first;
-                        int dy = offset.second;
-                        if (MapManager::instance().canCharacterMove(this, dx, dy)) {
-                            this->move(dx, dy);
-                            MapManager::instance().moveCharacterInMap(this, dx, dy);
-                            this->hasMoved = true;
+                        // Direct path blocked, try pathfinding
+                        // Create a lambda to check if moves are valid
+                        auto canMove = [this](int fromX, int fromY, int dx, int dy) -> bool {
+                            return MapManager::instance().canCharacterMove(this, dx, dy);
+                        };
+                        
+                        std::pair<int, int> pathStep = Pathfinding::findNextStep(
+                            this->getXPosition(), this->getYPosition(),
+                            target->getX(), target->getY(),
+                            canMove,
+                            15  // maxSearchDistance
+                        );
+                        
+                        if (pathStep.first != 0 || pathStep.second != 0) {
+                            // Found a path, take the next step
+                            if (MapManager::instance().canCharacterMove(this, pathStep.first, pathStep.second)) {
+                                this->move(pathStep.first, pathStep.second);
+                                MapManager::instance().moveCharacterInMap(this, pathStep.first, pathStep.second);
+                                this->hasMoved = true;
+                            }
                         }
+                        // If pathfinding fails, hasMoved remains false (enemy will wait)
                     }
                 }
             }

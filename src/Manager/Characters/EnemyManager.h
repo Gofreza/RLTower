@@ -2,6 +2,7 @@
 
 #include <map>
 #include "../../Character/Enemy.h"
+#include "../../Misc/RandomUtils.h"
 
 /**
  * @brief Manager for the enemies

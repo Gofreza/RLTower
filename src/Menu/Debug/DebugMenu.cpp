@@ -101,6 +101,7 @@ void DebugMenu::render(const SDL_Rect& rect) {
 
         // Draw AIDecision
         AIDecision decision = aiCells.decision;
+        renderWithoutColor(rect, currentY, "Stamina: ", std::to_string(selectedCharacter->getStamina()));
         renderWithoutColor(rect, currentY, "Aggression:", std::to_string(decision.aggression));
         renderWithoutColor(rect, currentY, "Fear:", std::to_string(decision.fear));
         renderWithoutColor(rect, currentY, "Desire:", std::to_string(decision.desire));
@@ -109,6 +110,7 @@ void DebugMenu::render(const SDL_Rect& rect) {
         renderWithoutColor(rect, currentY, "Blocked:", decision.blocked ? "true" : "false");
         renderWithoutColor(rect, currentY, "Action:", actionTypeToString(selectedCharacter->getActionType()));
         renderWithoutColor(rect, currentY, "Is in Combat:", selectedCharacter->isCharacterInCombat() ? "true" : "false");
+        renderWithoutColor(rect, currentY, "Target: ", selectedCharacter->getTarget() != nullptr ? selectedCharacter->getTarget()->getName() : "No Target");
     }
     
 }

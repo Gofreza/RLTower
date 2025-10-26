@@ -4,6 +4,7 @@
 #include "../Struct/AIDecision.h"
 #include "../Enum/ActionType.h"
 #include "../Struct/AICells.h"
+#include "../Pathfinding/Pathfinding.h"
 
 struct AICells;
 

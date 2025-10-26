@@ -13,11 +13,11 @@ void GameManager::initialize()
 {   
     // Initialize the map
     MapManager::instance().initialize();
-    MapManager::instance().generateMap(100, 100, 5);
+    MapManager::instance().generateMap(30, 30, 0);
     MapManager::instance().addPlayer(player);
 
     // Add enemies
-    EnemyManager::instance().initialize(this->enemies, 1, 100);
+    EnemyManager::instance().initialize(this->enemies, 1, 30);
     
     // Put enemies in the map
     MapManager::instance().addEnemies(this->enemies);
