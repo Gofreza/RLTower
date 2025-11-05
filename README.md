@@ -4,6 +4,12 @@
 
 This project is provided as-is, without any warranty or guarantee. No license is granted for usage, distribution, or modification unless explicitly agreed upon.
 
+## Currently on this project
+
+I may have paused coding this, I'm currently developping a 2D engine that will probably be able to replace the UIManager here and do a lot of things (like an engine does). It uses the same tech so that will be doable. Maybe one day I'll change it, for now I only want to at least finish adding the level system to at least have a playable game.
+Next I'd like to resume working on the tunneling algorithm I wanted to, I hope I take the time to do that.
+
+There are a lot of things missing here, so for the me of the future stop starting new projects and finish this one 😉.
 
 ## 🧙‍♂️ About the Project
 
